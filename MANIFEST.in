@@ -1,0 +1,4 @@
+include source/semanticpy/VERSION.txt
+include source/semanticpy/__init__.py
+include source/semanticpy/profiles/*.json
+exclude source/semanticpy/profiles/_*

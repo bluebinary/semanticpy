@@ -1,0 +1,3731 @@
+{
+    "CRMEntity": {
+        "_raw": {
+            "@id": "crm:E1_CRM_Entity"
+        },
+        "type": "E1",
+        "id": "crm:E1_CRM_Entity",
+        "name": "E1_CRM_Entity",
+        "class": "CRMEntity",
+        "superclasses": null,
+        "properties": {}
+    },
+    "TemporalEntity": {
+        "_raw": {
+            "@id": "crm:E2_Temporal_Entity"
+        },
+        "type": "E2",
+        "id": "crm:E2_Temporal_Entity",
+        "name": "E2_Temporal_Entity",
+        "class": "TemporalEntity",
+        "superclasses": null,
+        "properties": {}
+    },
+    "ConditionState": {
+        "_raw": {
+            "@id": "crm:E3_Condition_State"
+        },
+        "type": "E3",
+        "id": "crm:E3_Condition_State",
+        "name": "E3_Condition_State",
+        "class": "ConditionState",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Period": {
+        "_raw": {
+            "@id": "crm:E4_Period",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E4",
+        "id": "crm:E4_Period",
+        "name": "E4_Period",
+        "class": "Period",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Event": {
+        "_raw": {
+            "@id": "crm:E5_Event",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E5",
+        "id": "crm:E5_Event",
+        "name": "E5_Event",
+        "class": "Event",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Destruction": {
+        "_raw": {
+            "@id": "crm:E6_Destruction",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E6",
+        "id": "crm:E6_Destruction",
+        "name": "E6_Destruction",
+        "class": "Destruction",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Activity": {
+        "_raw": {
+            "@id": "crm:E7_Activity",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E7",
+        "id": "crm:E7_Activity",
+        "name": "E7_Activity",
+        "class": "Activity",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Acquisition": {
+        "_raw": {
+            "@id": "crm:E8_Acquisition",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E8",
+        "id": "crm:E8_Acquisition",
+        "name": "E8_Acquisition",
+        "class": "Acquisition",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Move": {
+        "_raw": {
+            "@id": "crm:E9_Move",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E9",
+        "id": "crm:E9_Move",
+        "name": "E9_Move",
+        "class": "Move",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "TransferOfCustody": {
+        "_raw": {
+            "@id": "crm:E10_Transfer_of_Custody",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E10",
+        "id": "crm:E10_Transfer_of_Custody",
+        "name": "E10_Transfer_of_Custody",
+        "class": "TransferOfCustody",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Modification": {
+        "_raw": {
+            "@id": "crm:E11_Modification",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E11",
+        "id": "crm:E11_Modification",
+        "name": "E11_Modification",
+        "class": "Modification",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Production": {
+        "_raw": {
+            "@id": "crm:E12_Production",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E12",
+        "id": "crm:E12_Production",
+        "name": "E12_Production",
+        "class": "Production",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "AttributeAssignment": {
+        "_raw": {
+            "@id": "crm:E13_Attribute_Assignment",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E13",
+        "id": "crm:E13_Attribute_Assignment",
+        "name": "E13_Attribute_Assignment",
+        "class": "AttributeAssignment",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "ConditionAssessment": {
+        "_raw": {
+            "@id": "crm:E14_Condition_Assessment"
+        },
+        "type": "E14",
+        "id": "crm:E14_Condition_Assessment",
+        "name": "E14_Condition_Assessment",
+        "class": "ConditionAssessment",
+        "superclasses": null,
+        "properties": {}
+    },
+    "IdentifierAssignment": {
+        "_raw": {
+            "@id": "crm:E15_Identifier_Assignment"
+        },
+        "type": "E15",
+        "id": "crm:E15_Identifier_Assignment",
+        "name": "E15_Identifier_Assignment",
+        "class": "IdentifierAssignment",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Measurement": {
+        "_raw": {
+            "@id": "crm:E16_Measurement"
+        },
+        "type": "E16",
+        "id": "crm:E16_Measurement",
+        "name": "E16_Measurement",
+        "class": "Measurement",
+        "superclasses": null,
+        "properties": {}
+    },
+    "TypeAssignment": {
+        "_raw": {
+            "@id": "crm:E17_Type_Assignment"
+        },
+        "type": "E17",
+        "id": "crm:E17_Type_Assignment",
+        "name": "E17_Type_Assignment",
+        "class": "TypeAssignment",
+        "superclasses": null,
+        "properties": {}
+    },
+    "PhysicalThing": {
+        "_raw": {
+            "@id": "crm:E18_Physical_Thing",
+            "@context": {
+                "part": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E18",
+        "id": "crm:E18_Physical_Thing",
+        "name": "E18_Physical_Thing",
+        "class": "PhysicalThing",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "PhysicalObject": {
+        "_raw": {
+            "@id": "crm:E19_Physical_Object",
+            "@context": {
+                "part": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E19",
+        "id": "crm:E19_Physical_Object",
+        "name": "E19_Physical_Object",
+        "class": "PhysicalObject",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "BiologicalObject": {
+        "_raw": {
+            "@id": "crm:E20_Biological_Object",
+            "@context": {
+                "part": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E20",
+        "id": "crm:E20_Biological_Object",
+        "name": "E20_Biological_Object",
+        "class": "BiologicalObject",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Person": {
+        "_raw": {
+            "@id": "crm:E21_Person",
+            "@context": {
+                "member": {
+                    "@id": "crm:P107_has_current_or_former_member",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "crm:P107i_is_current_or_former_member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E21",
+        "id": "crm:E21_Person",
+        "name": "E21_Person",
+        "class": "Person",
+        "superclasses": null,
+        "properties": {
+            "member": {
+                "_raw": {
+                    "@id": "crm:P107_has_current_or_former_member",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P107_has_current_or_former_member",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "crm:P107i_is_current_or_former_member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P107i_is_current_or_former_member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "HumanMadeObject": {
+        "_raw": {
+            "@id": "crm:E22_Human-Made_Object",
+            "@context": {
+                "part": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E22",
+        "id": "crm:E22_Human-Made_Object",
+        "name": "E22_Human-Made_Object",
+        "class": "HumanMadeObject",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "PhysicalHumanMadeThing": {
+        "_raw": {
+            "@id": "crm:E24_Physical_Human-Made_Thing",
+            "@context": {
+                "part": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E24",
+        "id": "crm:E24_Physical_Human-Made_Thing",
+        "name": "E24_Physical_Human-Made_Thing",
+        "class": "PhysicalHumanMadeThing",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "HumanMadeFeature": {
+        "_raw": {
+            "@id": "crm:E25_Human-Made_Feature",
+            "@context": {
+                "part": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E25",
+        "id": "crm:E25_Human-Made_Feature",
+        "name": "E25_Human-Made_Feature",
+        "class": "HumanMadeFeature",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "PhysicalFeature": {
+        "_raw": {
+            "@id": "crm:E26_Physical_Feature",
+            "@context": {
+                "part": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E26",
+        "id": "crm:E26_Physical_Feature",
+        "name": "E26_Physical_Feature",
+        "class": "PhysicalFeature",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Site": {
+        "_raw": {
+            "@id": "crm:E27_Site",
+            "@context": {
+                "part": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E27",
+        "id": "crm:E27_Site",
+        "name": "E27_Site",
+        "class": "Site",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P46_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P46i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P46i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "ConceptualObject": {
+        "_raw": {
+            "@id": "crm:E28_Conceptual_Object"
+        },
+        "type": "E28",
+        "id": "crm:E28_Conceptual_Object",
+        "name": "E28_Conceptual_Object",
+        "class": "ConceptualObject",
+        "superclasses": null,
+        "properties": {}
+    },
+    "DesignOrProcedure": {
+        "_raw": {
+            "@id": "crm:E29_Design_or_Procedure"
+        },
+        "type": "E29",
+        "id": "crm:E29_Design_or_Procedure",
+        "name": "E29_Design_or_Procedure",
+        "class": "DesignOrProcedure",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Right": {
+        "_raw": {
+            "@id": "crm:E30_Right",
+            "@context": {
+                "part": {
+                    "@id": "crm:P148_has_component",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P148i_is_component_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E30",
+        "id": "crm:E30_Right",
+        "name": "E30_Right",
+        "class": "Right",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P148_has_component",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P148_has_component",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P148i_is_component_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P148i_is_component_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Document": {
+        "_raw": {
+            "@id": "crm:E31_Document"
+        },
+        "type": "E31",
+        "id": "crm:E31_Document",
+        "name": "E31_Document",
+        "class": "Document",
+        "superclasses": null,
+        "properties": {}
+    },
+    "AuthorityDocument": {
+        "_raw": {
+            "@id": "crm:E32_Authority_Document"
+        },
+        "type": "E32",
+        "id": "crm:E32_Authority_Document",
+        "name": "E32_Authority_Document",
+        "class": "AuthorityDocument",
+        "superclasses": null,
+        "properties": {}
+    },
+    "LinguisticObject": {
+        "_raw": {
+            "@id": "crm:E33_Linguistic_Object",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E33",
+        "id": "crm:E33_Linguistic_Object",
+        "name": "E33_Linguistic_Object",
+        "class": "LinguisticObject",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Inscription": {
+        "_raw": {
+            "@id": "crm:E34_Inscription",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E34",
+        "id": "crm:E34_Inscription",
+        "name": "E34_Inscription",
+        "class": "Inscription",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Title": {
+        "_raw": {
+            "@id": "crm:E35_Title",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E35",
+        "id": "crm:E35_Title",
+        "name": "E35_Title",
+        "class": "Title",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "VisualItem": {
+        "_raw": {
+            "@id": "crm:E36_Visual_Item",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E36",
+        "id": "crm:E36_Visual_Item",
+        "name": "E36_Visual_Item",
+        "class": "VisualItem",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Mark": {
+        "_raw": {
+            "@id": "crm:E37_Mark",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E37",
+        "id": "crm:E37_Mark",
+        "name": "E37_Mark",
+        "class": "Mark",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Actor": {
+        "_raw": {
+            "@id": "crm:E39_Actor"
+        },
+        "type": "E39",
+        "id": "crm:E39_Actor",
+        "name": "E39_Actor",
+        "class": "Actor",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Appellation": {
+        "_raw": {
+            "@id": "crm:E41_Appellation",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E41",
+        "id": "crm:E41_Appellation",
+        "name": "E41_Appellation",
+        "class": "Appellation",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Identifier": {
+        "_raw": {
+            "@id": "crm:E42_Identifier",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E42",
+        "id": "crm:E42_Identifier",
+        "name": "E42_Identifier",
+        "class": "Identifier",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "TimeSpan": {
+        "_raw": {
+            "@id": "crm:E52_Time-Span",
+            "@context": {
+                "part": {
+                    "@id": "crm:P86i_contains",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P86_falls_within",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E52",
+        "id": "crm:E52_Time-Span",
+        "name": "E52_Time-Span",
+        "class": "TimeSpan",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P86i_contains",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P86i_contains",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P86_falls_within",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P86_falls_within",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Place": {
+        "_raw": {
+            "@id": "crm:E53_Place",
+            "@context": {
+                "part": {
+                    "@id": "crm:P89i_contains",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P89_falls_within",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E53",
+        "id": "crm:E53_Place",
+        "name": "E53_Place",
+        "class": "Place",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P89i_contains",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P89i_contains",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P89_falls_within",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P89_falls_within",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Dimension": {
+        "_raw": {
+            "@id": "crm:E54_Dimension"
+        },
+        "type": "E54",
+        "id": "crm:E54_Dimension",
+        "name": "E54_Dimension",
+        "class": "Dimension",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Type": {
+        "_raw": {
+            "@id": "crm:E55_Type",
+            "@context": {
+                "part": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E55",
+        "id": "crm:E55_Type",
+        "name": "E55_Type",
+        "class": "Type",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:narrower",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:broader",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Language": {
+        "_raw": {
+            "@id": "crm:E56_Language",
+            "@context": {
+                "part": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E56",
+        "id": "crm:E56_Language",
+        "name": "E56_Language",
+        "class": "Language",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:narrower",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:broader",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Material": {
+        "_raw": {
+            "@id": "crm:E57_Material",
+            "@context": {
+                "part": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E57",
+        "id": "crm:E57_Material",
+        "name": "E57_Material",
+        "class": "Material",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:narrower",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:broader",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "MeasurementUnit": {
+        "_raw": {
+            "@id": "crm:E58_Measurement_Unit",
+            "@context": {
+                "part": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E58",
+        "id": "crm:E58_Measurement_Unit",
+        "name": "E58_Measurement_Unit",
+        "class": "MeasurementUnit",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:narrower",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:broader",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "BeginningOfExistence": {
+        "_raw": {
+            "@id": "crm:E63_Beginning_of_Existence",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E63",
+        "id": "crm:E63_Beginning_of_Existence",
+        "name": "E63_Beginning_of_Existence",
+        "class": "BeginningOfExistence",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "EndOfExistence": {
+        "_raw": {
+            "@id": "crm:E64_End_of_Existence",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E64",
+        "id": "crm:E64_End_of_Existence",
+        "name": "E64_End_of_Existence",
+        "class": "EndOfExistence",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Creation": {
+        "_raw": {
+            "@id": "crm:E65_Creation",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E65",
+        "id": "crm:E65_Creation",
+        "name": "E65_Creation",
+        "class": "Creation",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Formation": {
+        "_raw": {
+            "@id": "crm:E66_Formation",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E66",
+        "id": "crm:E66_Formation",
+        "name": "E66_Formation",
+        "class": "Formation",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Birth": {
+        "_raw": {
+            "@id": "crm:E67_Birth",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E67",
+        "id": "crm:E67_Birth",
+        "name": "E67_Birth",
+        "class": "Birth",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Dissolution": {
+        "_raw": {
+            "@id": "crm:E68_Dissolution",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E68",
+        "id": "crm:E68_Dissolution",
+        "name": "E68_Dissolution",
+        "class": "Dissolution",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Death": {
+        "_raw": {
+            "@id": "crm:E69_Death",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E69",
+        "id": "crm:E69_Death",
+        "name": "E69_Death",
+        "class": "Death",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Thing": {
+        "_raw": {
+            "@id": "crm:E70_Thing"
+        },
+        "type": "E70",
+        "id": "crm:E70_Thing",
+        "name": "E70_Thing",
+        "class": "Thing",
+        "superclasses": null,
+        "properties": {}
+    },
+    "HumanMadeThing": {
+        "_raw": {
+            "@id": "crm:E71_Human-Made_Thing"
+        },
+        "type": "E71",
+        "id": "crm:E71_Human-Made_Thing",
+        "name": "E71_Human-Made_Thing",
+        "class": "HumanMadeThing",
+        "superclasses": null,
+        "properties": {}
+    },
+    "LegalObject": {
+        "_raw": {
+            "@id": "crm:E72_Legal_Object"
+        },
+        "type": "E72",
+        "id": "crm:E72_Legal_Object",
+        "name": "E72_Legal_Object",
+        "class": "LegalObject",
+        "superclasses": null,
+        "properties": {}
+    },
+    "InformationObject": {
+        "_raw": {
+            "@id": "crm:E73_Information_Object",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E73",
+        "id": "crm:E73_Information_Object",
+        "name": "E73_Information_Object",
+        "class": "InformationObject",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Group": {
+        "_raw": {
+            "@id": "crm:E74_Group",
+            "@context": {
+                "member": {
+                    "@id": "crm:P107_has_current_or_former_member",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "crm:P107i_is_current_or_former_member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E74",
+        "id": "crm:E74_Group",
+        "name": "E74_Group",
+        "class": "Group",
+        "superclasses": null,
+        "properties": {
+            "member": {
+                "_raw": {
+                    "@id": "crm:P107_has_current_or_former_member",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P107_has_current_or_former_member",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "crm:P107i_is_current_or_former_member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P107i_is_current_or_former_member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "PersistentItem": {
+        "_raw": {
+            "@id": "crm:E77_Persistent_Item"
+        },
+        "type": "E77",
+        "id": "crm:E77_Persistent_Item",
+        "name": "E77_Persistent_Item",
+        "class": "PersistentItem",
+        "superclasses": null,
+        "properties": {}
+    },
+    "CuratedHolding": {
+        "_raw": {
+            "@id": "crm:E78_Curated_Holding"
+        },
+        "type": "E78",
+        "id": "crm:E78_Curated_Holding",
+        "name": "E78_Curated_Holding",
+        "class": "CuratedHolding",
+        "superclasses": null,
+        "properties": {}
+    },
+    "PartAddition": {
+        "_raw": {
+            "@id": "crm:E79_Part_Addition",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E79",
+        "id": "crm:E79_Part_Addition",
+        "name": "E79_Part_Addition",
+        "class": "PartAddition",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "PartRemoval": {
+        "_raw": {
+            "@id": "crm:E80_Part_Removal",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E80",
+        "id": "crm:E80_Part_Removal",
+        "name": "E80_Part_Removal",
+        "class": "PartRemoval",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Transformation": {
+        "_raw": {
+            "@id": "crm:E81_Transformation",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E81",
+        "id": "crm:E81_Transformation",
+        "name": "E81_Transformation",
+        "class": "Transformation",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "TypeCreation": {
+        "_raw": {
+            "@id": "crm:E83_Type_Creation"
+        },
+        "type": "E83",
+        "id": "crm:E83_Type_Creation",
+        "name": "E83_Type_Creation",
+        "class": "TypeCreation",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Joining": {
+        "_raw": {
+            "@id": "crm:E85_Joining",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E85",
+        "id": "crm:E85_Joining",
+        "name": "E85_Joining",
+        "class": "Joining",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Leaving": {
+        "_raw": {
+            "@id": "crm:E86_Leaving",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E86",
+        "id": "crm:E86_Leaving",
+        "name": "E86_Leaving",
+        "class": "Leaving",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "CurationActivity": {
+        "_raw": {
+            "@id": "crm:E87_Curation_Activity"
+        },
+        "type": "E87",
+        "id": "crm:E87_Curation_Activity",
+        "name": "E87_Curation_Activity",
+        "class": "CurationActivity",
+        "superclasses": null,
+        "properties": {}
+    },
+    "PropositionalObject": {
+        "_raw": {
+            "@id": "crm:E89_Propositional_Object",
+            "@context": {
+                "part": {
+                    "@id": "crm:P148_has_component",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P148i_is_component_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E89",
+        "id": "crm:E89_Propositional_Object",
+        "name": "E89_Propositional_Object",
+        "class": "PropositionalObject",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P148_has_component",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P148_has_component",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P148i_is_component_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P148i_is_component_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "SymbolicObject": {
+        "_raw": {
+            "@id": "crm:E90_Symbolic_Object",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E90",
+        "id": "crm:E90_Symbolic_Object",
+        "name": "E90_Symbolic_Object",
+        "class": "SymbolicObject",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "SpacetimeVolume": {
+        "_raw": {
+            "@id": "crm:E92_Spacetime_Volume"
+        },
+        "type": "E92",
+        "id": "crm:E92_Spacetime_Volume",
+        "name": "E92_Spacetime_Volume",
+        "class": "SpacetimeVolume",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Presence": {
+        "_raw": {
+            "@id": "crm:E93_Presence"
+        },
+        "type": "E93",
+        "id": "crm:E93_Presence",
+        "name": "E93_Presence",
+        "class": "Presence",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Purchase": {
+        "_raw": {
+            "@id": "crm:E96_Purchase",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E96",
+        "id": "crm:E96_Purchase",
+        "name": "E96_Purchase",
+        "class": "Purchase",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "MonetaryAmount": {
+        "_raw": {
+            "@id": "crm:E97_Monetary_Amount"
+        },
+        "type": "E97",
+        "id": "crm:E97_Monetary_Amount",
+        "name": "E97_Monetary_Amount",
+        "class": "MonetaryAmount",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Currency": {
+        "_raw": {
+            "@id": "crm:E98_Currency",
+            "@context": {
+                "part": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E98",
+        "id": "crm:E98_Currency",
+        "name": "E98_Currency",
+        "class": "Currency",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "skos:narrower",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:narrower",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "skos:broader",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "skos:broader",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "ProductType": {
+        "_raw": {
+            "@id": "crm:E99_Product_Type"
+        },
+        "type": "E99",
+        "id": "crm:E99_Product_Type",
+        "name": "E99_Product_Type",
+        "class": "ProductType",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Name": {
+        "_raw": {
+            "@id": "crm:E33_E41_Linguistic_Appellation",
+            "@context": {
+                "part": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "E33",
+        "id": "crm:E33_E41_Linguistic_Appellation",
+        "name": "E33_E41_Linguistic_Appellation",
+        "class": "Name",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P106_is_composed_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106_is_composed_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P106i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P106i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "note": {
+        "_raw": {
+            "@id": "crm:P3_has_note"
+        },
+        "type": "P3",
+        "id": "crm:P3_has_note",
+        "name": "P3_has_note",
+        "class": "note",
+        "superclasses": null,
+        "properties": {}
+    },
+    "number_of_parts": {
+        "_raw": {
+            "@id": "crm:P57_has_number_of_parts"
+        },
+        "type": "P57",
+        "id": "crm:P57_has_number_of_parts",
+        "name": "P57_has_number_of_parts",
+        "class": "number_of_parts",
+        "superclasses": null,
+        "properties": {}
+    },
+    "beginning_is_qualified_by": {
+        "_raw": {
+            "@id": "crm:P79_beginning_is_qualified_by"
+        },
+        "type": "P79",
+        "id": "crm:P79_beginning_is_qualified_by",
+        "name": "P79_beginning_is_qualified_by",
+        "class": "beginning_is_qualified_by",
+        "superclasses": null,
+        "properties": {}
+    },
+    "end_is_qualified_by": {
+        "_raw": {
+            "@id": "crm:P80_end_is_qualified_by"
+        },
+        "type": "P80",
+        "id": "crm:P80_end_is_qualified_by",
+        "name": "P80_end_is_qualified_by",
+        "class": "end_is_qualified_by",
+        "superclasses": null,
+        "properties": {}
+    },
+    "ongoing_throughout": {
+        "_raw": {
+            "@id": "crm:P81_ongoing_throughout"
+        },
+        "type": "P81",
+        "id": "crm:P81_ongoing_throughout",
+        "name": "P81_ongoing_throughout",
+        "class": "ongoing_throughout",
+        "superclasses": null,
+        "properties": {}
+    },
+    "at_some_time_within": {
+        "_raw": {
+            "@id": "crm:P82_at_some_time_within"
+        },
+        "type": "P82",
+        "id": "crm:P82_at_some_time_within",
+        "name": "P82_at_some_time_within",
+        "class": "at_some_time_within",
+        "superclasses": null,
+        "properties": {}
+    },
+    "value": {
+        "_raw": {
+            "@id": "crm:P90_has_value"
+        },
+        "type": "P90",
+        "id": "crm:P90_has_value",
+        "name": "P90_has_value",
+        "class": "value",
+        "superclasses": null,
+        "properties": {}
+    },
+    "defined_by": {
+        "_raw": {
+            "@id": "crm:P168_place_is_defined_by"
+        },
+        "type": "P168",
+        "id": "crm:P168_place_is_defined_by",
+        "name": "P168_place_is_defined_by",
+        "class": "defined_by",
+        "superclasses": null,
+        "properties": {}
+    },
+    "spacetime_volume_is_defined_by": {
+        "_raw": {
+            "@id": "crm:P169i_spacetime_volume_is_defined_by"
+        },
+        "type": "P169i",
+        "id": "crm:P169i_spacetime_volume_is_defined_by",
+        "name": "P169i_spacetime_volume_is_defined_by",
+        "class": "spacetime_volume_is_defined_by",
+        "superclasses": null,
+        "properties": {}
+    },
+    "time_is_defined_by": {
+        "_raw": {
+            "@id": "crm:P170i_time_is_defined_by"
+        },
+        "type": "P170i",
+        "id": "crm:P170i_time_is_defined_by",
+        "name": "P170i_time_is_defined_by",
+        "class": "time_is_defined_by",
+        "superclasses": null,
+        "properties": {}
+    },
+    "at_some_place_within": {
+        "_raw": {
+            "@id": "crm:P171_at_some_place_within"
+        },
+        "type": "P171",
+        "id": "crm:P171_at_some_place_within",
+        "name": "P171_at_some_place_within",
+        "class": "at_some_place_within",
+        "superclasses": null,
+        "properties": {}
+    },
+    "spatially_contains": {
+        "_raw": {
+            "@id": "crm:P172_contains"
+        },
+        "type": "P172",
+        "id": "crm:P172_contains",
+        "name": "P172_contains",
+        "class": "spatially_contains",
+        "superclasses": null,
+        "properties": {}
+    },
+    "assigned_property": {
+        "_raw": {
+            "@id": "crm:P177_assigned_property_of_type",
+            "@type": "@vocab"
+        },
+        "type": "P177",
+        "id": "crm:P177_assigned_property_of_type",
+        "name": "P177_assigned_property_of_type",
+        "class": "assigned_property",
+        "superclasses": null,
+        "properties": {}
+    },
+    "content": {
+        "_raw": {
+            "@id": "crm:P190_has_symbolic_content"
+        },
+        "type": "P190",
+        "id": "crm:P190_has_symbolic_content",
+        "name": "P190_has_symbolic_content",
+        "class": "content",
+        "superclasses": null,
+        "properties": {}
+    },
+    "end_of_the_begin": {
+        "_raw": {
+            "@id": "crm:P81a_end_of_the_begin",
+            "@type": "xsd:dateTime"
+        },
+        "type": "P81a",
+        "id": "crm:P81a_end_of_the_begin",
+        "name": "P81a_end_of_the_begin",
+        "class": "end_of_the_begin",
+        "superclasses": null,
+        "properties": {}
+    },
+    "begin_of_the_end": {
+        "_raw": {
+            "@id": "crm:P81b_begin_of_the_end",
+            "@type": "xsd:dateTime"
+        },
+        "type": "P81b",
+        "id": "crm:P81b_begin_of_the_end",
+        "name": "P81b_begin_of_the_end",
+        "class": "begin_of_the_end",
+        "superclasses": null,
+        "properties": {}
+    },
+    "begin_of_the_begin": {
+        "_raw": {
+            "@id": "crm:P82a_begin_of_the_begin",
+            "@type": "xsd:dateTime"
+        },
+        "type": "P82a",
+        "id": "crm:P82a_begin_of_the_begin",
+        "name": "P82a_begin_of_the_begin",
+        "class": "begin_of_the_begin",
+        "superclasses": null,
+        "properties": {}
+    },
+    "end_of_the_end": {
+        "_raw": {
+            "@id": "crm:P82b_end_of_the_end",
+            "@type": "xsd:dateTime"
+        },
+        "type": "P82b",
+        "id": "crm:P82b_end_of_the_end",
+        "name": "P82b_end_of_the_end",
+        "class": "end_of_the_end",
+        "superclasses": null,
+        "properties": {}
+    },
+    "lower_value_limit": {
+        "_raw": {
+            "@id": "crm:P90a_has_lower_value_limit"
+        },
+        "type": "P90a",
+        "id": "crm:P90a_has_lower_value_limit",
+        "name": "P90a_has_lower_value_limit",
+        "class": "lower_value_limit",
+        "superclasses": null,
+        "properties": {}
+    },
+    "upper_value_limit": {
+        "_raw": {
+            "@id": "crm:P90b_has_upper_value_limit"
+        },
+        "type": "P90b",
+        "id": "crm:P90b_has_upper_value_limit",
+        "name": "P90b_has_upper_value_limit",
+        "class": "upper_value_limit",
+        "superclasses": null,
+        "properties": {}
+    },
+    "DigitalObject": {
+        "_raw": {
+            "@id": "dig:D1_Digital_Object"
+        },
+        "type": "D1",
+        "id": "dig:D1_Digital_Object",
+        "name": "D1_Digital_Object",
+        "class": "DigitalObject",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Encounter": {
+        "_raw": {
+            "@id": "sci:S19_Encounter_Event"
+        },
+        "type": "S19",
+        "id": "sci:S19_Encounter_Event",
+        "name": "S19_Encounter_Event",
+        "class": "Encounter",
+        "superclasses": null,
+        "properties": {}
+    },
+    "_label": {
+        "_raw": {
+            "@id": "rdfs:label"
+        },
+        "type": "label",
+        "id": "rdfs:label",
+        "name": "label",
+        "class": "_label",
+        "superclasses": null,
+        "properties": {}
+    },
+    "format": {
+        "_raw": {
+            "@id": "dc:format"
+        },
+        "type": "format",
+        "id": "dc:format",
+        "name": "format",
+        "class": "format",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Payment": {
+        "_raw": {
+            "@id": "la:Payment",
+            "@context": {
+                "part": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "part_of": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "Payment",
+        "id": "la:Payment",
+        "name": "Payment",
+        "class": "Payment",
+        "superclasses": null,
+        "properties": {
+            "part": {
+                "_raw": {
+                    "@id": "crm:P9_consists_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9_consists_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "part_of": {
+                "_raw": {
+                    "@id": "crm:P9i_forms_part_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "crm:P9i_forms_part_of",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "RightAcquisition": {
+        "_raw": {
+            "@id": "la:RightAcquisition"
+        },
+        "type": "RightAcquisition",
+        "id": "la:RightAcquisition",
+        "name": "RightAcquisition",
+        "class": "RightAcquisition",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Phase": {
+        "_raw": {
+            "@id": "la:Phase"
+        },
+        "type": "Phase",
+        "id": "la:Phase",
+        "name": "Phase",
+        "class": "Phase",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Set": {
+        "_raw": {
+            "@id": "la:Set",
+            "@context": {
+                "member": {
+                    "@id": "la:has_member",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "member_of": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                }
+            }
+        },
+        "type": "Set",
+        "id": "la:Set",
+        "name": "Set",
+        "class": "Set",
+        "superclasses": null,
+        "properties": {
+            "member": {
+                "_raw": {
+                    "@id": "la:has_member",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:has_member",
+                "accepted": true,
+                "invidivual": false
+            },
+            "member_of": {
+                "_raw": {
+                    "@id": "la:member_of",
+                    "@type": "@id",
+                    "@container": "@set"
+                },
+                "name": "la:member_of",
+                "accepted": true,
+                "invidivual": false
+            }
+        }
+    },
+    "Addition": {
+        "_raw": {
+            "@id": "la:Addition"
+        },
+        "type": "Addition",
+        "id": "la:Addition",
+        "name": "Addition",
+        "class": "Addition",
+        "superclasses": null,
+        "properties": {}
+    },
+    "Removal": {
+        "_raw": {
+            "@id": "la:Removal"
+        },
+        "type": "Removal",
+        "id": "la:Removal",
+        "name": "Removal",
+        "class": "Removal",
+        "superclasses": null,
+        "properties": {}
+    },
+    "DigitalService": {
+        "_raw": {
+            "@id": "la:DigitalService"
+        },
+        "type": "DigitalService",
+        "id": "la:DigitalService",
+        "name": "DigitalService",
+        "class": "DigitalService",
+        "superclasses": null,
+        "properties": {}
+    }
+}
