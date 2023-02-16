@@ -352,12 +352,27 @@ class Model(Node):
             return super().__delattr__(name)
         else:
             if range := prop.get("range"):
-                if typed := self._find_type(range, name):
-                    if not isinstance(value, typed):
-                        raise TypeError(
-                            "Cannot set value of type '%s' on `%s`; must be of type '%s'!"
-                            % (type(value), name, typed)
-                        )
+                types = ()
+
+                if isinstance(range, str):
+                    ranges = [range]
+                elif isinstance(range, list):
+                    ranges = range
+
+                for range in ranges:
+                    if typed := self._find_type(range, name):
+                        types += (typed, )
+
+                if len(types) == 0:
+                    raise RuntimeError(
+                        "Unable to find associated types for any of the specified ranges!"
+                    )
+
+                if not isinstance(value, types):
+                    raise TypeError(
+                        "Cannot set value of type '%s' on `%s`; must be of type %s!"
+                        % (type(value), name, (", ".join(["'%s'" % (x) for x in types])))
+                    )
 
             if domain := prop.get("domain"):
                 pass
