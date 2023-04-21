@@ -414,33 +414,6 @@ class Model(Node):
 
         return data
 
-    def properties(
-        self,
-        sorting: list[str] | dict[str, int] = None,
-        callback: callable = None,
-        attribute: str | int = None,
-    ):
-        properties = (
-            super().properties(
-                sorting=sorting,
-                callback=callback,
-                attribute=attribute,
-            )
-            or {}
-        )
-
-        # If a context has been specified, prepend the @context property
-        if context := (self._context or self._profile.get("context")):
-            properties = {**{"@context": context}, **properties}
-
-        return properties
-
-    def property(self, name: str = None) -> dict | None:
-        if name is None:
-            return copy.copy(self._properties)
-        elif info := self._properties.get(name):
-            return copy.copy(info)
-
     def clone(self, properties: bool = True, reference: bool = False) -> Model:
         cloned = self.__class__(ident=self.id, label=self._label)
 
@@ -482,6 +455,33 @@ class Model(Node):
     @property
     def is_reference(self) -> bool:
         return hasattr(self, "_reference") and self._reference is True
+
+    def properties(
+        self,
+        sorting: list[str] | dict[str, int] = None,
+        callback: callable = None,
+        attribute: str | int = None,
+    ):
+        properties = (
+            super().properties(
+                sorting=sorting,
+                callback=callback,
+                attribute=attribute,
+            )
+            or {}
+        )
+
+        # If a context has been specified, prepend the @context property
+        if context := (self._context or self._profile.get("context")):
+            properties = {**{"@context": context}, **properties}
+
+        return properties
+
+    def property(self, name: str = None) -> dict | None:
+        if name is None:
+            return copy.copy(self._properties)
+        elif info := self._properties.get(name):
+            return copy.copy(info)
 
     def documents(
         self,
