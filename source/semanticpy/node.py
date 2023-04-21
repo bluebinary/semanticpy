@@ -13,7 +13,15 @@ class Node(object):
     _settings = {}
     _multiple = []
     _sorting = {}
-    _special = ["_type", "_name", "_data", "_settings", "_multiple", "_sorting"]
+    _special = [
+        "_type",
+        "_name",
+        "_data",
+        "_settings",
+        "_multiple",
+        "_sorting",
+        "_annotations",
+    ]
 
     def __init__(self, data: dict = None, **kwargs):
         # logger.debug("%s.__init__(data: %s)" % (self.__class__.__name__, data))
@@ -30,6 +38,8 @@ class Node(object):
 
         if not self._sorting:
             self._sorting = self._settings.get("properties", {}).get("sorting") or {}
+
+        self._annotations = {}
 
     def __str__(self):
         return self.__repr__()
@@ -66,6 +76,20 @@ class Node(object):
             raise RuntimeError("The settings must be defined as a dictionary!")
 
         self._settings = settings
+
+    def annotate(self, name: str, value):
+        """Support adding arbitrary named 'annotations' to a node for later retrieval"""
+        self._annotations[name] = value
+
+    def annotation(self, name: str, default=None):
+        """Support retrieving a named annotation if available or returning the default"""
+        if name in self._annotations:
+            return self._annotations[name]
+        return default
+
+    def annotations(self) -> dict:
+        """Support retrieving a copy of all named annotations associated with the node"""
+        return dict(self._annotations)
 
     def __getattr__(self, name):
         value = None
@@ -176,6 +200,8 @@ class Node(object):
         prepend: dict = None,
         append: dict = None,
         sorting: list[str] | dict[str, int] = None,
+        callback: callable = None,
+        attribute: str = None,
     ):
         if properties := self._serialize(self.data, sorting=sorting):
             if prepend:
@@ -184,24 +210,140 @@ class Node(object):
             if append:
                 properties = {**properties, **append}
 
+            if callable(callback):
+                properties = self.walkthrough(
+                    callback=callback,
+                    attribute=attribute,
+                    container=properties,
+                )
+
             return properties
+
+    def walkthrough(
+        self,
+        callback: callable,
+        attribute: str | int = None,
+        container: dict | list = None,
+    ):
+        """Perform a recursive walkthrough of a dictionary/list calling the callback
+        for any matched attribute"""
+
+        if container is None:
+            container = dict(self.properties())
+
+        if not isinstance(container, (dict, list)):
+            raise RuntimeError("The 'container' argument must be a dictionary or list!")
+
+        if not (
+            attribute is None or (isinstance(attribute, str) and len(attribute) > 0)
+        ):
+            raise RuntimeError(
+                "If provided, the 'attribute' parameter must be a non-empty string!"
+            )
+
+        if isinstance(container, dict):
+            for key in container:
+                value = container[key]
+
+                if attribute is None or attribute == key:
+                    value = callback(
+                        key=key,
+                        value=value,
+                        container=container,
+                    )
+
+                if isinstance(value, (dict, list)):
+                    value = self.walkthrough(
+                        callback=callback,
+                        attribute=attribute,
+                        container=value,
+                    )
+
+                container[key] = value
+        elif isinstance(container, list):
+            for key, value in enumerate(container):
+                if attribute is None or attribute == key:
+                    value = callback(
+                        key=key,
+                        value=value,
+                        container=container,
+                    )
+
+                if isinstance(value, (dict, list)):
+                    value = self.walkthrough(
+                        callback=callback,
+                        attribute=attribute,
+                        container=value,
+                    )
+
+                container[key] = value
+
+        return container
 
     def json(
         self,
         compact: bool = False,
         indent: int = 4,
         sorting: list[str] | dict[str, int] = None,
-    ):
+        callback: callable = None,
+        attribute: str = None,
+    ) -> str:
         logger.debug(
-            "%s.json(compact: %s, indent: %d, sorting: %s) called"
-            % (self.__class__.__name__, compact, indent, sorting)
+            "%s.json(compact: %s, indent: %d, sorting: %s, callback: %s, attribute: %s)"
+            % (self.__class__.__name__, compact, indent, sorting, callback, attribute)
         )
 
-        data = self.properties(sorting=sorting) or {}
+        if compact is True:
+            indent = None
+
+        properties = (
+            self.properties(
+                sorting=sorting,
+                callback=callback,
+                attribute=attribute,
+            )
+            or {}
+        )
 
         return json.dumps(
-            data,
-            indent=indent if compact is False else None,
-            sort_keys=False,
-            ensure_ascii=False,
+            properties, indent=indent, ensure_ascii=False, sort_keys=False
         )
+
+    def print(self):
+        if properties := self.properties():
+
+            def _print(
+                value,
+                name: str,
+                key: str | int = None,
+                indent: int = 0,
+                position: int = 0,
+            ):
+                if position > 0:
+                    prefix = (" " * indent) + " |-(\033[1;32m%d\033[0m)->" % (position)
+                else:
+                    prefix = (" " * indent) + " |-(0)->"
+
+                if isinstance(value, (int, float, bool, str)):
+                    if key:
+                        print(
+                            "%s \033[1;33m%s.%s\033[0m => %s"
+                            % (prefix, name, key, value)
+                        )
+                    else:
+                        print("%s \033[1;33m%s\033[0m => %s" % (prefix, name, value))
+                elif isinstance(value, list):
+                    print("%s \033[1;33m%s\033[0m =>" % (prefix, name))
+
+                    for index, val in enumerate(value, start=1):
+                        _print(val, name, indent=indent + 1, position=index)
+                elif isinstance(value, dict):
+                    print("%s \033[1;33m%s\033[0m =>" % (prefix, name))
+
+                    for prop, attr in value.items():
+                        _print(attr, value.get("type"), prop, indent=indent + 1)
+
+            print(self)
+            for name, value in properties.items():
+                _print(value, name)
+            print()

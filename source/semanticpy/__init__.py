@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 import os
 import copy
@@ -258,14 +259,18 @@ class Model(Node):
                     subclass._properties[prop] = props
 
     @classmethod
-    def entities(cls, name: str) -> Node | None:
+    def entity(cls, name: str) -> Model | None:
         """Helper method to return the named entity type from the model"""
 
         if name in cls._entities:
             return cls._entities[name]
 
     def __new__(cls, **kwargs):
-        cls._special += ["_hidden"]
+        cls._special += [
+            "_hidden",
+            "_reference",
+            "_cloned",
+        ]  # defined in the base class
 
         return super().__new__(cls)
 
@@ -277,6 +282,8 @@ class Model(Node):
         **kwargs,
     ):
         super().__init__(data=data)
+
+        self._annotations = {}
 
         # Ensure support for essential properties
         for prop in ["id", "type", "_label"]:
@@ -319,12 +326,26 @@ class Model(Node):
 
         if name == "rdfs:Literal":
             return (str, int, float)
+        elif name == "rdfs:Class":
+            return str
         elif name == "xsd:string":
             return str
         elif name == "xsd:dateTime":
             return (str, datetime.datetime)
         else:
             raise RuntimeError(f"Cannot find a match for the '{name}' range type!")
+
+    @property
+    def name(self):
+        return self.__class__.__name__
+
+    @property
+    def ident(self):
+        return self.id
+
+    @property
+    def label(self):
+        return self._label
 
     def __setattr__(self, name, value):
         # logger.debug("%s.%s(name: %s, value: %s) called" % (self.__class__.__name__, self.__setattr__.__name__, name, value))
@@ -340,7 +361,7 @@ class Model(Node):
             or prop.get("accepted") is True
         ):
             raise KeyError(
-                "Cannot set property `%s` on %s as it is not in the list of accepted properties (%s)!"
+                "Cannot set property '%s' on %s as it is not in the list of accepted properties (%s)!"
                 % (
                     name,
                     self.__class__.__name__,
@@ -361,7 +382,7 @@ class Model(Node):
 
                 for range in ranges:
                     if typed := self._find_type(range, name):
-                        types += (typed, )
+                        types += (typed,)
 
                 if len(types) == 0:
                     raise RuntimeError(
@@ -370,8 +391,12 @@ class Model(Node):
 
                 if not isinstance(value, types):
                     raise TypeError(
-                        "Cannot set value of type '%s' on `%s`; must be of type %s!"
-                        % (type(value), name, (", ".join(["'%s'" % (x) for x in types])))
+                        "Cannot set value of type '%s' on '%s'; must be of type %s!"
+                        % (
+                            type(value),
+                            name,
+                            (", ".join(["'%s'" % (x) for x in types])),
+                        )
                     )
 
             if domain := prop.get("domain"):
@@ -389,8 +414,20 @@ class Model(Node):
 
         return data
 
-    def properties(self, sorting: list[str] | dict[str, int] = None):
-        properties = super().properties(sorting=sorting) or {}
+    def properties(
+        self,
+        sorting: list[str] | dict[str, int] = None,
+        callback: callable = None,
+        attribute: str | int = None,
+    ):
+        properties = (
+            super().properties(
+                sorting=sorting,
+                callback=callback,
+                attribute=attribute,
+            )
+            or {}
+        )
 
         # If a context has been specified, prepend the @context property
         if context := (self._context or self._profile.get("context")):
@@ -398,6 +435,110 @@ class Model(Node):
 
         return properties
 
+    def property(self, name: str = None) -> dict | None:
+        if name is None:
+            return copy.copy(self._properties)
+        elif info := self._properties.get(name):
+            return copy.copy(info)
+
+    def clone(self, properties: bool = True, reference: bool = False) -> Model:
+        cloned = self.__class__(ident=self.id, label=self._label)
+
+        special = ["ident", "label", "data", "name", "type"]
+
+        for prop in dir(self):
+            if prop.startswith("_") or properties is False:
+                continue
+
+            if attr := getattr(self, prop):
+                if not callable(attr) and not prop in special:
+                    setattr(cloned, prop, attr)
+
+        # if not "_cloned" in self._special: self._special.append("_cloned")
+
+        if reference is False:
+            cloned._cloned = self
+
+        return cloned
+
     @property
-    def name(self):
-        return self.__class__.__name__
+    def is_cloned(self) -> bool:
+        return hasattr(self, "_cloned") and isinstance(self._cloned, Model)
+
+    def reference(self) -> Model:
+        cloned = self.clone(properties=False, reference=True)
+
+        # if not "_reference" in self._special: self._special.append("_reference")
+
+        cloned._reference = True
+
+        # Copy any annotations across to the cloned reference entity
+        if annotations := self.annotations():
+            for name, value in annotations.items():
+                cloned.annotate(name, value)
+
+        return cloned
+
+    @property
+    def is_reference(self) -> bool:
+        return hasattr(self, "_reference") and self._reference is True
+
+    def documents(
+        self,
+        embedded: bool = True,
+        references: bool = True,
+        filter: callable = None,
+    ) -> list[Model]:
+
+        def _nodes(node: Model, nodes: list, parent: Model) -> list[Model]:
+            # nonlocal embedded, references
+
+            if node.is_cloned is True:
+                node = parent = node._cloned
+
+            if node in nodes:  # node seen before, so return, preventing an endless loop
+                return nodes
+
+            included = True
+            if embedded is False:
+                if not node is parent:
+                    if node.id and parent.id:
+                        if node.id.startswith(parent.id):
+                            included = False
+
+            if references is False:
+                if not node is parent:
+                    if node.is_reference is True:
+                        included = False
+
+            if included is True:
+                nodes += [node]
+
+            for key, value in node.data.items():
+                if isinstance(value, Model):
+                    _nodes(value, nodes, parent=parent)
+                elif isinstance(value, list):
+                    for _index, _value in enumerate(value):
+                        if isinstance(_value, Model):
+                            _nodes(_value, nodes, parent=parent)
+                elif isinstance(value, dict):
+                    for _key, _value in value.items():
+                        if isinstance(_value, Model):
+                            _nodes(_value, nodes, parent=parent)
+                else:
+                    pass
+
+            return nodes
+
+        nodes = _nodes(self, nodes=[], parent=self)
+
+        if callable(filter):
+            temp = []
+
+            for node in nodes:
+                if filter(node) is True:
+                    temp.append(node)
+
+            nodes = temp
+
+        return nodes
