@@ -269,6 +269,7 @@ class Model(Node):
         cls._special += [
             "_hidden",
             "_reference",
+            "_referenced",
             "_cloned",
         ]  # defined in the base class
 
@@ -414,6 +415,11 @@ class Model(Node):
 
         return data
 
+    @property
+    def is_blank(self) -> bool:
+        """Determine if a node is a blank node (i.e. that it does not have an id)"""
+        return self.id is None
+
     def clone(self, properties: bool = True, reference: bool = False) -> Model:
         cloned = self.__class__(ident=self.id, label=self._label)
 
@@ -436,14 +442,17 @@ class Model(Node):
 
     @property
     def is_cloned(self) -> bool:
+        """Determine if a node has been cloned"""
         return hasattr(self, "_cloned") and isinstance(self._cloned, Model)
 
     def reference(self) -> Model:
         cloned = self.clone(properties=False, reference=True)
 
-        # if not "_reference" in self._special: self._special.append("_reference")
+        # Create a reference to the current node for later access
+        cloned._reference = self
 
-        cloned._reference = True
+        # Note that the current node has been referenced by another node at least once
+        self._referenced = True
 
         # Copy any annotations across to the cloned reference entity
         if annotations := self.annotations():
@@ -454,7 +463,13 @@ class Model(Node):
 
     @property
     def is_reference(self) -> bool:
-        return hasattr(self, "_reference") and self._reference is True
+        """Determine if a node is reference to another node"""
+        return hasattr(self, "_reference") and isinstance(self._reference, Model)
+
+    @property
+    def was_referenced(self) -> bool:
+        """Determine if a node was referenced by another node at least once"""
+        return self._referenced is True
 
     def properties(
         self,
@@ -485,60 +500,95 @@ class Model(Node):
 
     def documents(
         self,
+        blank: bool = True,
         embedded: bool = True,
-        references: bool = True,
+        referenced: bool = True,
         filter: callable = None,
     ) -> list[Model]:
+        """Support assembling a list of documents from the current node structure"""
 
-        def _nodes(node: Model, nodes: list, parent: Model) -> list[Model]:
-            # nonlocal embedded, references
+        def _nodes(
+            node: Model, nodes: list, parent: Model, ancestor: Model = None
+        ) -> list[Model]:
+            """Recursive method to support filtering and assembling a list of nodes"""
 
             if node.is_cloned is True:
                 node = parent = node._cloned
-
-            if node in nodes:  # node seen before, so return, preventing an endless loop
-                return nodes
+            elif node.is_reference is True:
+                node = node._reference
 
             included = True
-            if embedded is False:
-                if not node is parent:
-                    if node.id and parent.id:
-                        if node.id.startswith(parent.id):
-                            included = False
 
-            if references is False:
-                if not node is parent:
-                    if node.is_reference is True:
+            if not isinstance(node, Model):
+                logger.debug(">>> node is invalid: %s" % (type(node)))
+                included = False
+
+            logger.debug("> node:           %s" % (node))
+            logger.debug("> id:             %s" % (node.id))
+            logger.debug("> is_parent:      %s" % (node is parent))
+            logger.debug("> is_blank:       %s" % (node.is_blank))
+            logger.debug("> is_clone:       %s" % (node.is_cloned))
+            logger.debug("> is_reference:   %s" % (node.is_reference))
+            logger.debug("> was_referenced: %s" % (node.was_referenced))
+
+            if included is True and node in nodes:
+                logger.debug(">>> node already seen before: %s" % (node.id))
+                included = False
+
+            if included is True and node is parent and not self is parent:
+                logger.debug(">>> node is parent: %s" % (node.id))
+                included = False
+
+            if included is True and blank is False:
+                if node.is_blank is True:
+                    logger.debug(">>> node is blank: %s" % (node))
+                    included = False
+
+            if included is True and embedded is False:
+                if node.id and parent.id:
+                    if len(node.id) > len(parent.id) and node.id.startswith(parent.id):
+                        logger.debug(
+                            ">>> node is embedded (starts with parent.id): %s"
+                            % (node.id)
+                        )
                         included = False
 
+            if included is True and referenced is False:
+                if node.was_referenced is True:
+                    logger.debug(
+                        ">>> node was referenced by another node: %s"
+                        % (node.id)
+                    )
+                    included = False
+
+            if included is True and callable(filter):
+                if filter(node, self) is False:
+                    logger.debug(
+                        ">>> node was filtered out by custom filter callback logic: %s"
+                        % (node.id)
+                    )
+                    included = False
+
             if included is True:
+                logger.debug(">>> node was included: %s" % (node.id))
                 nodes += [node]
+            else:
+                logger.debug(">>> node not included: %s" % (node.id))
 
             for key, value in node.data.items():
                 if isinstance(value, Model):
-                    _nodes(value, nodes, parent=parent)
+                    _nodes(value, nodes, parent=parent, ancestor=node)
                 elif isinstance(value, list):
                     for _index, _value in enumerate(value):
                         if isinstance(_value, Model):
-                            _nodes(_value, nodes, parent=parent)
+                            _nodes(_value, nodes, parent=parent, ancestor=node)
                 elif isinstance(value, dict):
                     for _key, _value in value.items():
                         if isinstance(_value, Model):
-                            _nodes(_value, nodes, parent=parent)
-                else:
-                    pass
+                            _nodes(_value, nodes, parent=parent, ancestor=node)
 
             return nodes
 
         nodes = _nodes(self, nodes=[], parent=self)
-
-        if callable(filter):
-            temp = []
-
-            for node in nodes:
-                if filter(node) is True:
-                    temp.append(node)
-
-            nodes = temp
 
         return nodes
