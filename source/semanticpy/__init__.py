@@ -517,11 +517,13 @@ class Model(Node):
             elif node.is_reference is True:
                 node = node._reference
 
-            included = True
-
             if not isinstance(node, Model):
                 logger.debug(">>> node is invalid: %s" % (type(node)))
-                included = False
+                return nodes
+
+            if node in nodes:  # node seen before, so return, preventing an endless loop
+                logger.debug(">>> node seen before: %s" % (node))
+                return nodes
 
             logger.debug("> node:           %s" % (node))
             logger.debug("> id:             %s" % (node.id))
@@ -531,11 +533,9 @@ class Model(Node):
             logger.debug("> is_reference:   %s" % (node.is_reference))
             logger.debug("> was_referenced: %s" % (node.was_referenced))
 
-            if included is True and node in nodes:
-                logger.debug(">>> node already seen before: %s" % (node.id))
-                included = False
+            included = True
 
-            if included is True and node is parent and not self is parent:
+            if node is parent and not self is parent:
                 logger.debug(">>> node is parent: %s" % (node.id))
                 included = False
 
