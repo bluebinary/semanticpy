@@ -24,6 +24,24 @@ class Model(Node):
 
     @classmethod
     def factory(cls, profile: str, context: str = None, globals: dict = None):
+        if not (isinstance(profile, str) and len(profile := profile.strip()) > 0):
+            raise SemanticPyError(
+                "The 'profile' argument must be assigned a string containing a valid profile name!"
+            )
+
+        if not (
+            context is None
+            or (isinstance(context, str) and len(context := context.strip()) > 0)
+        ):
+            raise TypeError(
+                "The 'context' argument must be None or a string containing the URL for a valid JSON-LD context!"
+            )
+
+        if not (globals is None or isinstance(globals, dict)):
+            raise TypeError(
+                "The 'globals' argument must be None or reference a dictionary!"
+            )
+
         glo = globals if globals else cls._globals
 
         if not os.path.exists(profile):
@@ -58,13 +76,21 @@ class Model(Node):
         if context is None:
             if not isinstance(context := cls._profile.get("context"), str):
                 raise SemanticPyError(
-                    "The specified profile (%s) does not contain a valid context property!"
+                    "The specified profile (%s) does not contain a valid 'context' property!"
                     % (profile),
                 )
+        elif not (isinstance(context, str) and len(context := context.strip()) > 0):
+            raise SemanticPyError(
+                "The 'context' argument must contain a URL for a valid JSON-LD context document!"
+            )
+        elif not (context.startswith("http://") or context.startswith("https://")):
+            raise SemanticPyError(
+                "The 'context' argument must contain a URL for a valid JSON-LD context document!"
+            )
 
         if not isinstance(entities := cls._profile.get("entities"), dict):
             raise SemanticPyError(
-                "The specified profile (%s) does not contain a valid entities property!"
+                "The specified profile (%s) does not contain a valid 'entities' property!"
                 % (profile),
             )
 
@@ -556,8 +582,7 @@ class Model(Node):
             if included is True and referenced is False:
                 if node.was_referenced is True:
                     logger.debug(
-                        ">>> node was referenced by another node: %s"
-                        % (node.id)
+                        ">>> node was referenced by another node: %s" % (node.id)
                     )
                     included = False
 
