@@ -1,0 +1,21 @@
+services:
+
+  black:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    command: black --check /source /tests
+    volumes:
+      - ./source/semanticpy:/source/semanticpy
+      - ./source/semanticpy:/usr/local/lib/python3.11/site-packages/semanticpy
+      - ./tests:/tests
+
+  tests:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    command: pytest /tests
+    volumes:
+      - ./source/semanticpy:/source/semanticpy
+      - ./source/semanticpy:/usr/local/lib/python3.11/site-packages/semanticpy
+      - ./tests:/tests
