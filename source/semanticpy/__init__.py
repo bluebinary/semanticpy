@@ -293,10 +293,14 @@ class Model(Node):
 
     def __new__(cls, **kwargs):
         cls._special += [
-            "_hidden",
-            "_reference",
-            "_referenced",
-            "_cloned",
+            attr
+            for attr in [
+                "_hidden",
+                "_reference",
+                "_referenced",
+                "_cloned",
+            ]
+            if attr not in cls._special
         ]  # defined in the base class
 
         return super().__new__(cls)
@@ -387,12 +391,20 @@ class Model(Node):
             or name in self._special
             or prop.get("accepted") is True
         ):
-            raise KeyError(
-                "Cannot set property '%s' on %s as it is not in the list of accepted properties (%s)!"
+            raise AttributeError(
+                "Cannot set property '%s' on %s as it is not in the list of accepted properties: '%s'!"
                 % (
                     name,
                     self.__class__.__name__,
-                    sorted([key for key in self._properties.keys()]),
+                    "', '".join(
+                        sorted(
+                            [
+                                name
+                                for name, prop in self._properties.items()
+                                if prop.get("accepted") is True
+                            ]
+                        )
+                    ),
                 ),
             )
 
