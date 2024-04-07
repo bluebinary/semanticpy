@@ -212,6 +212,27 @@ class Model(Node):
                 raise SemanticPyError("Failed to create entity type '%s'!" % (name))
 
     @classmethod
+    def teardown(cls, globals: dict = None):
+        if not (globals is None or isinstance(globals, dict)):
+            raise TypeError(
+                "The 'globals' argument must be None or reference a dictionary!"
+            )
+
+        glo = globals if globals else cls._globals
+
+        removals = []
+
+        for key, value in glo.items():
+            if not isinstance(value, type):
+                continue
+
+            if issubclass(value, cls):
+                removals.append(key)
+
+        for key in removals:
+            del glo[key]
+
+    @classmethod
     def _validate_properties(cls, props: dict) -> dict:
         """Helper method to validate property specification dictionaries"""
 
