@@ -9,7 +9,7 @@ if ! docker compose run tests; then
 fi
 
 # Install the build requirements (twine, wheel)
-pip install -r requirements.build.txt
+pip install --requirement requirements.distribution.txt
 
 rm -Rrf dist/*
 
