@@ -4,6 +4,8 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: ./
+    environment:
+      - SERVICE=black
     command: black --check /source /tests
     volumes:
       - ./source/semanticpy:/source/semanticpy
@@ -14,6 +16,8 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: ./
+    environment:
+      - SERVICE=tests
     command: pytest /tests
     volumes:
       - ./source/semanticpy:/source/semanticpy
