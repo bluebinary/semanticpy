@@ -303,7 +303,7 @@ class Model(Node):
 
         if not (isinstance(filepath, str) and len(filepath := filepath.strip()) > 0):
             raise ValueError(
-                "The 'filepath' parameter must be a valid non-empty string!"
+                "The 'filepath' argument must be a valid non-empty string!"
             )
 
         if not cls._entities:
@@ -381,63 +381,63 @@ class Model(Node):
             raise ValueError("No data could be loaded from the specified file!")
 
     @classmethod
-    def _validate_properties(cls, props: dict, prop: str) -> dict:
+    def _validate_properties(cls, properties: dict, property: str) -> dict:
         """Helper method to validate property specification dictionaries"""
 
-        if not isinstance(props, dict):
+        if not isinstance(properties, dict):
             raise TypeError(
-                "The passed properties for '%s' are not a valid dictionary!" % (prop)
+                "The 'properties' argument provided for the '%s' property must have a dictionary value!" % (property)
             )
 
-        if "accepted" in props:
-            if not isinstance(props["accepted"], bool):
+        if "accepted" in properties:
+            if not isinstance(properties["accepted"], bool):
                 raise TypeError(
                     "The 'accepted' property for '%s' must have a boolean value!"
-                    % (prop)
+                    % (property)
                 )
         else:
-            props["accepted"] = True
+            properties["accepted"] = True
 
-        if "individual" in props:
-            if not isinstance(props["individual"], bool):
+        if "individual" in properties:
+            if not isinstance(properties["individual"], bool):
                 raise TypeError(
                     "The 'individual' property for '%s' must have a boolean value!"
-                    % (prop)
+                    % (property)
                 )
         else:
-            props["individual"] = False
+            properties["individual"] = False
 
-        if "sorting" in props:
-            if isinstance(props["sorting"], int):
-                if not props["sorting"].__class__ is int and issubclass(
-                    props["sorting"].__class__, int
+        if "sorting" in properties:
+            if isinstance(properties["sorting"], int):
+                if not properties["sorting"].__class__ is int and issubclass(
+                    properties["sorting"].__class__, int
                 ):
                     raise TypeError(
                         "The 'sorting' property for '%s' must have an integer value, held in an `int` data type!"
-                        % (prop)
+                        % (property)
                     )
-                elif not (0 <= props["sorting"] <= 100000000):
+                elif not (0 <= properties["sorting"] <= 100000000):
                     raise ValueError(
                         "The 'sorting' property for '%s' must have a positive integer value (0 – 100,000,000), not %s!"
-                        % (prop, props["sorting"])
+                        % (property, properties["sorting"])
                     )
             else:
                 raise TypeError(
                     "The 'sorting' property for '%s' must have an integer value!"
-                    % (prop)
+                    % (property)
                 )
         else:
-            props["sorting"] = 10000
+            properties["sorting"] = 10000
 
-        if "alias" in props:
-            if not isinstance(props["alias"], str):
+        if "alias" in properties:
+            if not isinstance(properties["alias"], str):
                 raise TypeError("The 'alias' property must have a string value!")
 
-        if "canonical" in props:
-            if not isinstance(props["canonical"], str):
+        if "canonical" in properties:
+            if not isinstance(properties["canonical"], str):
                 raise TypeError("The 'canonical' property must have a string value!")
 
-        return props
+        return properties
 
     @classmethod
     def extend(
@@ -453,12 +453,14 @@ class Model(Node):
 
         if not issubclass(subclass, Model):
             raise TypeError(
-                "The 'subclass' property must reference a subclass of Model!"
+                "The 'subclass' argument must reference a subclass of Model!"
             )
 
         name: str = subclass.__name__
 
-        if not (globals is None or isinstance(globals, dict)):
+        if globals is None:
+            pass
+        elif not isinstance(globals, dict):
             raise TypeError(
                 "The 'globals' argument must be None or reference a dictionary!"
             )
@@ -466,10 +468,11 @@ class Model(Node):
         glo: dict[str, object] = globals if globals else cls._globals
 
         # If any model-wide properties have been defined, apply them to each model entity
-        if not properties is None:
-            if not isinstance(properties, dict):
-                raise TypeError("The 'properties' property must be a dictionary!")
-
+        if properties is None:
+            pass
+        elif not isinstance(properties, dict):
+            raise TypeError("The 'properties' argument must be a dictionary!")
+        else:
             # If any subclass-level properties have been defined, apply them to the subclass
             if hasattr(subclass, "_property"):
                 if subclass._property is None:
@@ -516,12 +519,28 @@ class Model(Node):
         else:
             subclass._properties = {}
 
-        if isinstance(context, str):
+        if context is None:
+            pass
+        elif isinstance(context, str):
+            if not (
+                len(context := context.strip()) > 0
+                and (context.startswith("https://") or context.startswith("http://"))
+            ):
+                raise ValueError(
+                    "The 'context' argument, if specified, must have a valid non-empty context URL string value!"
+                )
+
             subclass._context = context
+        else:
+            raise TypeError(
+                "The 'context' argument, if specified, must have a string value!"
+            )
 
         # If this class is a special case that will be serialized without a "type", mark
         # its "type" property as hidden, so when serialized, "type" will be skipped
-        if typed is False:
+        if not isinstance(typed, bool):
+            raise TypeError("The 'typed' argument must have a boolean value!")
+        elif typed is False:
             subclass._hidden.append("type")
 
         # Merge any superclass properties into the subclass' property list
@@ -561,8 +580,9 @@ class Model(Node):
                 "An entity name or entity-assignable property name must be provided!"
             )
 
-    def __new__(cls, **kwargs):
-        # _special is defined in the base class
+    def __new__(cls, *args, **kwargs):
+        # The '_special' list variable is defined in the base class and holds a list of
+        # special class attribute names
 
         cls._special += [
             attr
@@ -589,11 +609,9 @@ class Model(Node):
             # data=data,
         )
 
-        self.type: str = self.__class__.__name__
-
         self._annotations: dict[str, object] = {}
 
-        # Ensure support for essential properties
+        # Enable support for the essential model properties
         for prop in ["id", "type", "_label"]:
             if not prop in self._properties:
                 self._properties[prop] = {
@@ -602,11 +620,13 @@ class Model(Node):
                     "range": "xsd:string",
                 }
 
+        self.type: str = self.__class__.__name__
+
         if isinstance(data, dict):
-            if "id" in data and ident is None:
+            if ident is None:
                 ident = data.get("id")
 
-            if "_label" in data and label is None:
+            if label is None:
                 label = data.get("_label")
 
         if ident is None:
@@ -627,10 +647,12 @@ class Model(Node):
 
         self._label: str = label or None
 
+        # If a 'json' keyword argument has been specified, attempt to parse the value as
+        # a JSON serialized string so long as the 'data' argument has not been specified
         if not (jsons := kwargs.pop("json", None)) is None:
             if not isinstance(jsons, str):
                 raise TypeError(
-                    "The 'json' parameter must be a string containing the JSON-LD of the record to load!"
+                    "The 'json' argument must be a string containing the JSON-LD of the record to load!"
                 )
 
             if data is None:
@@ -638,19 +660,22 @@ class Model(Node):
                     data = json.loads(jsons)
                 except Exception as exception:
                     raise ValueError(
-                        "The 'json' paramater does not contain a valid JSON string: %s!"
+                        "The 'json' argument does not contain a valid JSON string: %s!"
                         % (str(exception))
                     )
             else:
                 raise ValueError(
-                    "The 'json' and 'data' parameters cannot be specified at the same time; please provide data as a dictionary via the 'data' parameter or as a serialized JSON string via the 'json' parameter!"
+                    "The 'json' and 'data' arguments cannot be specified at the same time; please either provide data as a dictionary via the 'data' argument or as a serialized JSON string via the 'json' argument!"
                 )
 
-        if not data is None:
-            if not isinstance(data, dict):
-                raise TypeError("The 'data' parameter must be None or a dictionary!")
-
+        if data is None:
+            pass
+        elif isinstance(data, dict):
             self.load(data=data, model=self)
+        else:
+            raise TypeError(
+                "The 'data' argument, if specified, must have a dictionary value!"
+            )
 
         for key, value in kwargs.items():
             self.__setattr__(key, value)
@@ -688,7 +713,7 @@ class Model(Node):
         # completely and in accordance with the provided data, including any extensions
         else:
             raise ValueError(
-                "The entity type cannot be determined for the provided data dictionary; it must contain a valid 'type' property or be an extended model entity assigned to an expected named property!"
+                "The entity type cannot be determined for the provided data dictionary; the dictionary must contain a valid 'type' property, or be an extended model entity assigned to an expected named property!"
             )
 
         return model
