@@ -12,8 +12,8 @@ RUN pip install --requirement /app/requirements.txt
 COPY ./requirements.development.txt /app/requirements.development.txt
 RUN pip install --requirement /app/requirements.development.txt
 
-COPY ./requirements.deployment.txt /app/requirements.deployment.txt
-RUN pip install --requirement /app/requirements.deployment.txt
+COPY ./requirements.distribution.txt /app/requirements.distribution.txt
+RUN pip install --requirement /app/requirements.distribution.txt
 
 # Copy the tests into the container
 COPY ./tests /tests

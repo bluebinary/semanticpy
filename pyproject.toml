@@ -40,11 +40,12 @@ version = {file = "source/semanticpy/version.txt"}
 dependencies = {file = "requirements.txt"}
 
 [tool.setuptools.dynamic.optional-dependencies]
-deployment = {file = "requirements.deployment.txt"}
 development = {file = "requirements.development.txt"}
+distribution = {file = "requirements.distribution.txt"}
 
 [tool.setuptools.packages.find]
 where = ["source", "."]
+exclude = ["resources*", "*#*"]
 
 [tool.setuptools.package-data]
 tests = ["*.json", "*.tsv", "*.csv"]
