@@ -1,4 +1,0 @@
-# SemanticPy Dependencies: Deployment
-build
-twine
-wheel

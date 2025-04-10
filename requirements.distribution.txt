@@ -1,0 +1,4 @@
+# SemanticPy Dependencies: Distribution
+build
+twine
+wheel
