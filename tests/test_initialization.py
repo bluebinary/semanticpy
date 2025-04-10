@@ -1,5 +1,9 @@
 import pytest
+import logging
 import semanticpy
+
+
+logger = logging.getLogger(__name__)
 
 
 def test_initialization_without_profile():
@@ -17,6 +21,15 @@ def test_initialization_with_valid_profile():
         profile="linked-art",
         globals={},
     )
+
+
+def test_initialization_with_valid_profile_no_globals():
+    model = semanticpy.Model.factory(
+        profile="linked-art",
+        globals=None,
+    )
+
+    assert hasattr(model, "HumanMadeObject")
 
 
 def test_initialization_with_invalid_profile():

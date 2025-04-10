@@ -5,7 +5,7 @@ from semanticpy.logging import logger
 
 
 class Node(object):
-    """Generic Data Node"""
+    """Node data type class supporting the creation of node tree structures"""
 
     _type = None
     _name = None
@@ -91,10 +91,10 @@ class Node(object):
         """Support retrieving a copy of all named annotations associated with the node"""
         return dict(self._annotations)
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> object | None:
         value = None
 
-        if name.startswith("_") and name in self._special:
+        if isinstance(name, str) and name.startswith("_") and name in self._special:
             if name in self.__dict__:
                 value = self.__dict__[name]
         else:
@@ -105,7 +105,7 @@ class Node(object):
 
         return value
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: object):
         logger.debug(
             "%s.__setattr__(name: %s, value: %s)"
             % (self.__class__.__name__, name, value)
@@ -125,7 +125,7 @@ class Node(object):
             else:
                 self._data[name] = value
 
-    def __delattr__(self, name):
+    def __delattr__(self, name: str):
         logger.debug(
             "%s.__delattr__(name: %s) called" % (self.__class__.__name__, name)
         )
@@ -133,28 +133,28 @@ class Node(object):
         if name in self._data:
             del self._data[name]
 
-    def __getitem__(self, name):
-        return self.__getattr(name)
+    def __getitem__(self, name: str) -> object | None:
+        return self.__getattr__(name)
 
-    def __setitem__(self, name, value):
+    def __setitem__(self, name: str, value: object):
         return self.__setattr__(name, value)
 
-    def _serialize(self, variable=None, sorting: list[str] | dict[str, int] = None):
+    def _serialize(self, source=None, sorting: list[str] | dict[str, int] = None):
         data = None
 
-        if variable is None:
-            variable = self
+        if source is None:
+            source = self
 
-        if isinstance(variable, Node):
-            data = variable._serialize(variable.data, sorting=sorting)
+        if isinstance(source, Node):
+            data = source._serialize(source.data, sorting=sorting)
 
             if isinstance(data, dict):
-                data = variable._sort(data, sorting=sorting)
-        elif isinstance(variable, dict):
+                data = source._sort(data, sorting=sorting)
+        elif isinstance(source, dict):
             data = {}
 
-            for key in variable:
-                value = variable[key]
+            for key in source:
+                value = source[key]
 
                 if value is None:
                     continue
@@ -162,16 +162,16 @@ class Node(object):
                 data[key] = self._serialize(value, sorting=sorting)
 
             data = self._sort(data, sorting=sorting) if data else data
-        elif isinstance(variable, list):
+        elif isinstance(source, list):
             data = []
 
-            for index, value in enumerate(variable):
+            for index, value in enumerate(source):
                 if value is None:
                     continue
 
                 data.append(self._serialize(value, sorting=sorting))
         else:
-            data = variable
+            data = source
 
         return data
 
@@ -222,7 +222,7 @@ class Node(object):
     def walkthrough(
         self,
         callback: callable,
-        attribute: str | int = None,
+        attribute: str = None,
         container: dict | list = None,
     ):
         """Perform a recursive walkthrough of a dictionary/list calling the callback
@@ -252,7 +252,7 @@ class Node(object):
                         container=container,
                     )
 
-                if isinstance(value, (dict, list)):
+                if isinstance(value, (dict, list, tuple, set)):
                     value = self.walkthrough(
                         callback=callback,
                         attribute=attribute,
@@ -260,7 +260,7 @@ class Node(object):
                     )
 
                 container[key] = value
-        elif isinstance(container, list):
+        elif isinstance(container, (list, tuple, set)):
             for key, value in enumerate(container):
                 if attribute is None or attribute == key:
                     value = callback(
@@ -269,7 +269,7 @@ class Node(object):
                         container=container,
                     )
 
-                if isinstance(value, (dict, list)):
+                if isinstance(value, (dict, list, tuple, set)):
                     value = self.walkthrough(
                         callback=callback,
                         attribute=attribute,
