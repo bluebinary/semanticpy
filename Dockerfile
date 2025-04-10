@@ -6,8 +6,14 @@ FROM python:3.11
 RUN pip install --upgrade pip
 
 # Copy and install the dependencies from requirements.txt
-COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
+RUN pip install --requirement /app/requirements.txt
+
+COPY ./requirements.development.txt /app/requirements.development.txt
+RUN pip install --requirement /app/requirements.development.txt
+
+COPY ./requirements.deployment.txt /app/requirements.deployment.txt
+RUN pip install --requirement /app/requirements.deployment.txt
 
 # Copy the tests into the container
 COPY ./tests /tests
