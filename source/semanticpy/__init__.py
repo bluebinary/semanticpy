@@ -1,12 +1,18 @@
 from __future__ import annotations
+
 import json
 import os
 import copy
 import datetime
+import requests
 
 from semanticpy.logging import logger
 from semanticpy.errors import SemanticPyError
-from semanticpy.node import Node
+from semanticpy.types import (
+    Node,
+    Namespace,
+    readonlydict,
+)
 
 
 logger.debug("semanticpy library imported from: %s" % (__file__))
@@ -15,15 +21,27 @@ logger.debug("semanticpy library imported from: %s" % (__file__))
 class Model(Node):
     """SemanticPy Base Model Class"""
 
-    _profile = None
-    _context = None
-    _entities = {}
-    _properties = {}
-    _hidden = []
-    _globals = globals()
+    _profile: str = None
+    _context: str = None
+    _entities: Namespace[str, Model] = Namespace()
+    _property: list[str] = []
+    _properties: dict[str, dict] = {}
+    _hidden: list[str] = []
+    _globals: dict[str, object] = None
 
     @classmethod
-    def factory(cls, profile: str, context: str = None, globals: dict = None):
+    def factory(
+        cls, profile: str, context: str = None, globals: dict = None
+    ) -> Namespace:
+        if not isinstance(cls._entities, Namespace):
+            raise TypeError(
+                "The %s._entities attribute must be an %s instance!"
+                % (
+                    cls.__name__,
+                    type(Namespace),
+                )
+            )
+
         if not (isinstance(profile, str) and len(profile := profile.strip()) > 0):
             raise SemanticPyError(
                 "The 'profile' argument must be assigned a string containing a valid profile name!"
@@ -42,7 +60,7 @@ class Model(Node):
                 "The 'globals' argument must be None or reference a dictionary!"
             )
 
-        glo = globals if globals else cls._globals
+        glo = globals if isinstance(globals, dict) else cls._globals
 
         if not os.path.exists(profile):
             if not profile.endswith(".json"):
@@ -54,6 +72,13 @@ class Model(Node):
             raise SemanticPyError(
                 "The specified profile (%s) does not exist!" % (profile)
             )
+
+        if not os.path.isfile(profile):
+            raise SemanticPyError(
+                "The specified profile (%s) is not a file!" % (profile)
+            )
+
+        logger.debug("%s.factory() Loading profile => %s", cls.__name__, profile)
 
         with open(profile, "r") as handle:
             if contents := handle.read():
@@ -95,11 +120,21 @@ class Model(Node):
             )
 
         def _class_factory(name: str) -> type:
-            nonlocal glo, entities, cls
+            nonlocal cls, glo, entities
 
             # If the named class already exists, return immediately
-            if class_type := glo.get(name):
-                return class_type
+            if isinstance(class_type := cls._entities.get(name, default=None), type):
+                if issubclass(class_type, Model):
+                    return class_type
+                else:
+                    raise TypeError(
+                        "The %s.%s attribute is not a subclass of %s as expected! Ensure this attribute has not been set on the class accidentally!"
+                        % (
+                            cls.__name__,
+                            name,
+                            cls.__name__,
+                        )
+                    )
 
             if not (entity := entities.get(name)):
                 raise SemanticPyError(
@@ -107,11 +142,11 @@ class Model(Node):
                     % (name)
                 )
 
-            bases = ()
-            properties = {}
+            bases: tuple = ()
+            properties: dict[str, object] = {}
 
             for prop, props in (cls._profile.get("properties") or {}).items():
-                properties[prop] = cls._validate_properties(props)
+                properties[prop] = cls._validate_properties(props, prop)
 
             if superclasses := entity.get("superclasses"):
                 if isinstance(superclasses, str):
@@ -122,7 +157,7 @@ class Model(Node):
                         bases += (superclass,)
 
                         for prop, props in (superclass._properties or {}).items():
-                            properties[prop] = cls._validate_properties(props)
+                            properties[prop] = cls._validate_properties(props, prop)
                     else:
                         raise SemanticPyError(
                             "Failed to find or create (base) superclass: %s!"
@@ -131,15 +166,15 @@ class Model(Node):
 
             if self_properties := entity.get("properties"):
                 for prop, props in self_properties.items():
-                    properties[prop] = cls._validate_properties(props)
+                    properties[prop] = cls._validate_properties(props, prop)
 
             if len(bases) == 0:
                 bases += (cls,)
 
-            accepted = False
-            multiple = []
-            hidden = []
-            sorting = {}
+            accepted: bool = False
+            multiple: list[str] = []
+            hidden: list[str] = []
+            sorting: dict[str, int] = {}
 
             # properties_sorted = {}
             # for key in sorted(properties.keys()):
@@ -179,12 +214,19 @@ class Model(Node):
                 "_multiple": multiple,
                 "_sorting": sorting,
                 "_hidden": hidden,
+                "_property": None,
                 "_properties": properties,
             }
 
             if class_type := type(name, bases, attributes):
-                # Add the class to global namespace so that it can be accessed elsewhere
-                glo[name] = class_type
+                # Add the class to the Model's namespace so that it can be accessed elsewhere
+
+                # setattr(cls, name, class_type)
+                cls._entities[name] = class_type
+
+                if isinstance(glo, dict):
+                    # Add the class to global namespace so that it can be accessed elsewhere
+                    glo[name] = class_type
 
                 # If the class has a synonym, map it into the global namespace too; this
                 # is useful for supporting backwards compatibility if classes are renamed
@@ -200,76 +242,256 @@ class Model(Node):
                         )
 
                     for _synonym in _synonyms:
+                        if not isinstance(_synonym, str):
+                            raise TypeError(
+                                "Entity class synonyms must be defined as strings!"
+                            )
+
                         class_type._synonym = synonym
-                        glo[synonym] = class_type
+
+                        # setattr(cls, synonym, class_type)
+                        cls._entities[synonym] = class_type
+
+                        if isinstance(glo, dict):
+                            glo[synonym] = class_type
 
                 return class_type
 
         for name in entities:
             if class_type := _class_factory(name):
                 cls._entities[name] = class_type
+
+                # setattr(cls, name, class_type)
+
+                if isinstance(glo, dict):
+                    glo[name] = class_type
             else:
                 raise SemanticPyError("Failed to create entity type '%s'!" % (name))
 
+        return cls._entities
+
     @classmethod
     def teardown(cls, globals: dict = None):
+        """This method will clear the dynamically created model classes from the globals
+        dictionary, reversing the work of the factory method used during initialization."""
+
         if not (globals is None or isinstance(globals, dict)):
             raise TypeError(
                 "The 'globals' argument must be None or reference a dictionary!"
             )
 
-        glo = globals if globals else cls._globals
+        glo: dict[str, object] = globals if globals else cls._globals
 
-        removals = []
+        removals: list[str] = []
 
-        for key, value in glo.items():
-            if not isinstance(value, type):
-                continue
-
-            if issubclass(value, cls):
-                removals.append(key)
+        for key, value in cls._entities:
+            removals.append(key)
 
         for key in removals:
-            del glo[key]
+            del cls._entities[key]
+
+            if isinstance(glo, dict):
+                del glo[key]
 
     @classmethod
-    def _validate_properties(cls, props: dict) -> dict:
+    def open(cls, filepath: str) -> Model:
+        """Support opening and loading model instances from stored JSON-LD files"""
+
+        # cls.factory(profile=profile, context=context, globals=globals)
+
+        logger.debug("%s.open(filepath: %s)", cls.__name__, filepath)
+
+        if not (isinstance(filepath, str) and len(filepath := filepath.strip()) > 0):
+            raise ValueError(
+                "The 'filepath' parameter must be a valid non-empty string!"
+            )
+
+        if not cls._entities:
+            raise RuntimeError(
+                "Please ensure that the Model.factory() method has been called to initialize the models!"
+            )
+
+        data: dict[str, object] = None
+
+        if (
+            filepath.startswith("http://")
+            or filepath.startswith("https://")
+            or filepath.startswith("//")
+        ):
+            try:
+                if isinstance(response := requests.get(url), object):
+                    if response.status_code == 200:
+                        if not isinstance(data := response.json(), dict):
+                            raise ValueError(
+                                "The specified file does not contain valid JSON data!"
+                            )
+                    else:
+                        raise ValueError(
+                            "The specified file could not be loaded from its URL!"
+                        )
+                else:
+                    raise ValueError(
+                        "The specified file could not be loaded from its URL!"
+                    )
+            except Exception as exception:
+                raise ValueError(
+                    "The specified file could not be loaded (%s) from its URL!"
+                    % (exception)
+                )
+        elif (
+            filepath.startswith("/")
+            or filepath.startswith("./")
+            or filepath.startswith("../")
+            or filepath.startswith("~/")
+        ):
+            if filepath.startswith("~/"):
+                filepath = os.path.expanduser(filepath)
+
+            with open(filepath, "r") as handle:
+                if not isinstance(data := json.load(handle), dict):
+                    raise ValueError(
+                        "The specified file does not contain valid JSON data!"
+                    )
+        else:
+            raise ValueError("The specified filepath (%s) is unsupported!" % (filepath))
+
+        if isinstance(data, dict):
+            if context := data.get("@context"):
+                if typed := data.get("type"):
+                    if entity := cls.entity(typed):
+                        if instance := entity(data=readonlydict(data)):
+                            return instance
+                        else:
+                            raise ValueError(
+                                "The data could not be loaded into an %s model entity instance!"
+                                % (entity)
+                            )
+                    else:
+                        raise ValueError(
+                            "The type (%s) does not correspond to any known model entities; ensure that SemanticPy's Model.factory() method has been called with a suitable profile!"
+                            % (typed)
+                        )
+                else:
+                    raise ValueError("The data does not contain a 'type' property!")
+            else:
+                raise ValueError(
+                    "The filepath does not reference a valid JSON-LD file!"
+                )
+        else:
+            raise ValueError("No data could be loaded from the specified file!")
+
+    @classmethod
+    def _validate_properties(cls, props: dict, prop: str) -> dict:
         """Helper method to validate property specification dictionaries"""
 
         if not isinstance(props, dict):
-            raise TypeError("The passed properties are not a valid dictionary!")
+            raise TypeError(
+                "The passed properties for '%s' are not a valid dictionary!" % (prop)
+            )
 
-        if not "accepted" in props:
+        if "accepted" in props:
+            if not isinstance(props["accepted"], bool):
+                raise TypeError(
+                    "The 'accepted' property for '%s' must have a boolean value!"
+                    % (prop)
+                )
+        else:
             props["accepted"] = True
 
-        if not "individual" in props:
+        if "individual" in props:
+            if not isinstance(props["individual"], bool):
+                raise TypeError(
+                    "The 'individual' property for '%s' must have a boolean value!"
+                    % (prop)
+                )
+        else:
             props["individual"] = False
 
-        if not "sorting" in props:
+        if "sorting" in props:
+            if isinstance(props["sorting"], int):
+                if not props["sorting"].__class__ is int and issubclass(
+                    props["sorting"].__class__, int
+                ):
+                    raise TypeError(
+                        "The 'sorting' property for '%s' must have an integer value, held in an `int` data type!"
+                        % (prop)
+                    )
+                elif not (0 <= props["sorting"] <= 100000000):
+                    raise ValueError(
+                        "The 'sorting' property for '%s' must have a positive integer value (0 – 100,000,000), not %s!"
+                        % (prop, props["sorting"])
+                    )
+            else:
+                raise TypeError(
+                    "The 'sorting' property for '%s' must have an integer value!"
+                    % (prop)
+                )
+        else:
             props["sorting"] = 10000
+
+        if "alias" in props:
+            if not isinstance(props["alias"], str):
+                raise TypeError("The 'alias' property must have a string value!")
+
+        if "canonical" in props:
+            if not isinstance(props["canonical"], str):
+                raise TypeError("The 'canonical' property must have a string value!")
 
         return props
 
     @classmethod
-    def extend(cls, subclass, properties: dict = None, typed: bool = True):
+    def extend(
+        cls,
+        subclass: Model,
+        properties: dict = None,
+        context: str = None,
+        globals: dict = None,
+        typed: bool = True,
+    ) -> None:
         """Class method to support extending the factory-generated model with additional
         model subclasses, and optionally, additional model-wide properties"""
 
         if not issubclass(subclass, Model):
             raise TypeError(
-                "The `subclass` property must reference a subclass of Model!"
+                "The 'subclass' property must reference a subclass of Model!"
             )
+
+        name: str = subclass.__name__
+
+        if not (globals is None or isinstance(globals, dict)):
+            raise TypeError(
+                "The 'globals' argument must be None or reference a dictionary!"
+            )
+
+        glo: dict[str, object] = globals if globals else cls._globals
 
         # If any model-wide properties have been defined, apply them to each model entity
         if not properties is None:
             if not isinstance(properties, dict):
-                raise TypeError("The `properties` property must be a dictionary!")
+                raise TypeError("The 'properties' property must be a dictionary!")
+
+            # If any subclass-level properties have been defined, apply them to the subclass
+            if hasattr(subclass, "_property"):
+                if subclass._property is None:
+                    subclass._property: list[str] = []
+                elif not isinstance(subclass._property, list):
+                    raise TypeError("The '_property' attribute must be a list type")
+            else:
+                subclass._property: list[str] = []
 
             for prop, props in properties.items():
-                props = cls._validate_properties(props)
+                props: dict[str, object] = cls._validate_properties(props, prop)
+
+                subclass._property.append(prop)
+
+                if alias := props.get("alias"):
+                    subclass._property.append(alias)
+
+                if canonical := props.get("canonical"):
+                    pass
 
                 for class_name, entity in cls._entities.items():
-                    entity._properties[prop] = cls._validate_properties(props)
+                    entity._properties[prop] = cls._validate_properties(props, prop)
 
                     # If a property supports being specified via an alias, map that here
                     if alias := props.get("alias"):
@@ -281,10 +503,10 @@ class Model(Node):
         # If any subclass-level properties have been defined, apply them to the subclass
         if hasattr(subclass, "_properties"):
             if not isinstance(subclass._properties, dict):
-                raise TypeError("The `_properties` attribute must be a dictionary!")
+                raise TypeError("The '_properties' attribute must be a dictionary!")
 
             for prop, props in subclass._properties.items():
-                props = cls._validate_properties(props)
+                props = cls._validate_properties(props, prop)
 
                 if props.get("hidden") is True:
                     subclass._hidden.append(prop)
@@ -294,25 +516,54 @@ class Model(Node):
         else:
             subclass._properties = {}
 
+        if isinstance(context, str):
+            subclass._context = context
+
         # If this class is a special case that will be serialized without a "type", mark
         # its "type" property as hidden, so when serialized, "type" will be skipped
         if typed is False:
             subclass._hidden.append("type")
 
-        # Merge any superclass properties into the subclass's property list
+        # Merge any superclass properties into the subclass' property list
         for superclass in subclass.__bases__:
-            for prop, props in superclass._properties.items():
-                if not prop in subclass._properties:
-                    subclass._properties[prop] = props
+            if hasattr(superclass, "_properties"):
+                if isinstance(superclass._properties, dict):
+                    for prop, props in superclass._properties.items():
+                        if not prop in subclass._properties:
+                            subclass._properties[prop] = props
+
+        if not name in cls._entities:
+            # raise RuntimeError(
+            #     "The extended entity '%s' has the same name as an existing entity!" % (subclass.__name__)
+            # )
+
+            # setattr(cls, name, class_type)
+            cls._entities[name] = subclass
+
+            if isinstance(glo, dict):
+                # Add the class to global namespace so that it can be accessed elsewhere
+                glo[name] = subclass
 
     @classmethod
-    def entity(cls, name: str) -> Model | None:
-        """Helper method to return the named entity type from the model"""
+    def entity(cls, name: str = None, property: str = None) -> Model | None:
+        """Helper method to return the referenced entity type from the model"""
 
-        if name in cls._entities:
-            return cls._entities[name]
+        if isinstance(name, str):
+            if name in cls._entities:
+                return cls._entities[name]
+        elif isinstance(property, str):
+            for name, entity in cls._entities.items():
+                if isinstance(entity._property, list):
+                    if property in entity._property:
+                        return entity
+        else:
+            raise ValueError(
+                "An entity name or entity-assignable property name must be provided!"
+            )
 
     def __new__(cls, **kwargs):
+        # _special is defined in the base class
+
         cls._special += [
             attr
             for attr in [
@@ -322,7 +573,7 @@ class Model(Node):
                 "_cloned",
             ]
             if attr not in cls._special
-        ]  # defined in the base class
+        ]
 
         return super().__new__(cls)
 
@@ -330,12 +581,17 @@ class Model(Node):
         self,
         ident: str = None,
         label: str = None,
-        data: dict = None,
+        data: dict[str, object] = None,
         **kwargs,
     ):
-        super().__init__(data=data)
+        super().__init__(
+            # TODO: Determine if setting data via the superclass' constructor is optimal
+            # data=data,
+        )
 
-        self._annotations = {}
+        self.type: str = self.__class__.__name__
+
+        self._annotations: dict[str, object] = {}
 
         # Ensure support for essential properties
         for prop in ["id", "type", "_label"]:
@@ -346,30 +602,136 @@ class Model(Node):
                     "range": "xsd:string",
                 }
 
-        self.id = ident or None
+        if isinstance(data, dict):
+            if "id" in data and ident is None:
+                ident = data.get("id")
 
-        self.type = self.__class__.__name__
+            if "_label" in data and label is None:
+                label = data.get("_label")
 
-        self._label = label or None
+        if ident is None:
+            pass
+        elif not isinstance(ident, str):
+            raise TypeError(
+                "The 'ident' argument, if specified, must have a string value!"
+            )
 
-        for kwarg in kwargs:
-            self.__setattr__(kwarg, kwargs[kwarg])
+        self.id: str = ident or None
 
-    def __getstate__(self):
+        if label is None:
+            pass
+        elif not isinstance(label, str):
+            raise TypeError(
+                "The 'label' argument, if specified, must have a string value!"
+            )
+
+        self._label: str = label or None
+
+        if not (jsons := kwargs.pop("json", None)) is None:
+            if not isinstance(jsons, str):
+                raise TypeError(
+                    "The 'json' parameter must be a string containing the JSON-LD of the record to load!"
+                )
+
+            if data is None:
+                try:
+                    data = json.loads(jsons)
+                except Exception as exception:
+                    raise ValueError(
+                        "The 'json' paramater does not contain a valid JSON string: %s!"
+                        % (str(exception))
+                    )
+            else:
+                raise ValueError(
+                    "The 'json' and 'data' parameters cannot be specified at the same time; please provide data as a dictionary via the 'data' parameter or as a serialized JSON string via the 'json' parameter!"
+                )
+
+        if not data is None:
+            if not isinstance(data, dict):
+                raise TypeError("The 'data' parameter must be None or a dictionary!")
+
+            self.load(data=data, model=self)
+
+        for key, value in kwargs.items():
+            self.__setattr__(key, value)
+
+    # TODO: Should 'create' be a "private" method?
+    @classmethod
+    def create(cls, data: dict, property: str = None) -> Model:
+        """Support creating a model entity from its data (dictionary) representation"""
+
+        if not isinstance(data, dict):
+            raise TypeError("The 'data' argument must have a dictionary value!")
+
+        # Attempt to determine the entity type from the assigned 'type' string value
+        if isinstance(typed := data.get("type"), str):
+            if not isinstance(entity := cls.entity(name=typed), type):
+                raise ValueError(
+                    "The '%s' entity type cannot be mapped to a model entity!" % (typed)
+                )
+
+            if not isinstance(model := entity(data=data), Model):
+                raise ValueError(
+                    "The '%s' entity type could not be instantiated!" % (typed)
+                )
+
+        # Alternatively, for untyped model extensions, attempt to determine the entity
+        # type from the property name that the entity has been assigned to in data
+        elif isinstance(entity := cls.entity(property=property), type):
+            if not isinstance(model := entity(data=data), Model):
+                raise ValueError(
+                    "The '%s' entity type could not be instantiated!" % (typed)
+                )
+
+        # If no entity type can be determined, raise an exception as the current data
+        # node cannot be loaded into the data model; ensure the model has been defined
+        # completely and in accordance with the provided data, including any extensions
+        else:
+            raise ValueError(
+                "The entity type cannot be determined for the provided data dictionary; it must contain a valid 'type' property or be an extended model entity assigned to an expected named property!"
+            )
+
+        return model
+
+    # TODO: Should 'load' be a "private" method?
+    def load(self, data: dict, model: Model) -> None:
+        if not isinstance(data, dict):
+            raise ValueError("The 'data' argument must be provided as a dictionary!")
+
+        if not isinstance(model, self.__class__):
+            raise TypeError(
+                "The 'model' argument must be a subclass of %s!"
+                % (self.__class__.__name__)
+            )
+
+        for property, value in data.items():
+            if isinstance(value, dict):
+                setattr(model, property, self.create(data=value, property=property))
+            elif isinstance(value, list):
+                for index, item in enumerate(value):
+                    # if not isinstance(item, dict):
+                    #     raise TypeError(
+                    #         "The list item at index %d is not a dictionary, but rather %s!" % (index, type(item))
+                    #     )
+                    setattr(model, property, self.create(data=item, property=property))
+            else:
+                setattr(model, property, value)
+
+    def __getstate__(self) -> dict:
         """Support serializing deep copies of instances of this class"""
-        state = self.__dict__.copy()
 
-        return state
+        return self.__dict__.copy()
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: dict) -> None:
         """Support restoring from deep copies of instances of this class"""
+
         self.__dict__.update(state)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__repr__()
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}(ident = {self.id}, label = {self._label})"
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}(ident = {self.id}, label = {self._label})>"
 
     def _find_type(self, name: str, prop: str = None) -> type | tuple[type]:
         for key, entity in self._entities.items():
@@ -388,23 +750,25 @@ class Model(Node):
             raise RuntimeError(f"Cannot find a match for the '{name}' range type!")
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__class__.__name__
 
     @property
-    def ident(self):
+    def ident(self) -> str | None:
         return self.id
 
     @property
-    def label(self):
+    def label(self) -> str | None:
         return self._label
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: object) -> None:
         # logger.debug("%s.%s(name: %s, value: %s) called" % (self.__class__.__name__, self.__setattr__.__name__, name, value))
 
-        prop = self._properties.get(name) or {}
+        prop: dict[str, object] = self._properties.get(name) or {}
 
-        if alias := prop.get("alias"):
+        if canonical := prop.get("canonical"):
+            name = canonical
+        elif alias := prop.get("alias"):
             name = alias
 
         if not (
@@ -433,7 +797,7 @@ class Model(Node):
             return super().__delattr__(name)
         else:
             if range := prop.get("range"):
-                types = ()
+                types: tuple = ()
 
                 if isinstance(range, str):
                     ranges = [range]
@@ -464,8 +828,14 @@ class Model(Node):
 
         return super().__setattr__(name, value)
 
-    def _serialize(self, variable=None, sorting: list[str] | dict[str, int] = None):
-        data = super()._serialize(variable=variable, sorting=sorting)
+    def _serialize(
+        self,
+        source=None,
+        sorting: list[str] | dict[str, int] = None,
+    ) -> str:
+        """Support serializing the current model instance into JSON-LD."""
+
+        data: str = super()._serialize(source=source, sorting=sorting)
 
         if self._hidden and isinstance(data, dict):
             for prop in self._hidden:
@@ -476,13 +846,16 @@ class Model(Node):
 
     @property
     def is_blank(self) -> bool:
-        """Determine if a node is a blank node (i.e. that it does not have an id)"""
+        """Determine if a node is a blank node (i.e. that it does not have an id)."""
+
         return self.id is None
 
     def clone(self, properties: bool = True, reference: bool = False) -> Model:
-        cloned = self.__class__(ident=self.id, label=self._label)
+        """Support cloning a Model instance."""
 
-        special = ["ident", "label", "data", "name", "type"]
+        cloned: Model = self.__class__(ident=self.id, label=self._label)
+
+        special: list[str] = ["ident", "label", "data", "name", "type"]
 
         for prop in dir(self):
             if prop.startswith("_") or properties is False:
@@ -501,11 +874,14 @@ class Model(Node):
 
     @property
     def is_cloned(self) -> bool:
-        """Determine if a node has been cloned"""
+        """Determine if a node has been cloned."""
+
         return hasattr(self, "_cloned") and isinstance(self._cloned, Model)
 
     def reference(self) -> Model:
-        cloned = self.clone(properties=False, reference=True)
+        """Support creating a reference to another Model instance."""
+
+        cloned: Model = self.clone(properties=False, reference=True)
 
         # Create a reference to the current node for later access
         cloned._reference = self
@@ -522,12 +898,14 @@ class Model(Node):
 
     @property
     def is_reference(self) -> bool:
-        """Determine if a node is reference to another node"""
+        """Determine if a node is reference to another node."""
+
         return hasattr(self, "_reference") and isinstance(self._reference, Model)
 
     @property
     def was_referenced(self) -> bool:
-        """Determine if a node was referenced by another node at least once"""
+        """Determine if a node was referenced by another node at least once."""
+
         return self._referenced is True
 
     def properties(
@@ -535,8 +913,11 @@ class Model(Node):
         sorting: list[str] | dict[str, int] = None,
         callback: callable = None,
         attribute: str | int = None,
-    ):
-        properties = (
+    ) -> dict[str, object]:
+        """Support obtaining a dictionary representation of the properties assigned to
+        the current model instance."""
+
+        properties: dict[str, object] = (
             super().properties(
                 sorting=sorting,
                 callback=callback,
@@ -551,11 +932,15 @@ class Model(Node):
 
         return properties
 
-    def property(self, name: str = None) -> dict | None:
+    def property(self, name: str = None, default: object = None) -> dict | None:
+        """Support obtaining a copy of the value assigned to a model property"""
+
         if name is None:
             return copy.copy(self._properties)
         elif info := self._properties.get(name):
             return copy.copy(info)
+        else:
+            return default
 
     def documents(
         self,
@@ -592,7 +977,7 @@ class Model(Node):
             logger.debug("> is_reference:   %s" % (node.is_reference))
             logger.debug("> was_referenced: %s" % (node.was_referenced))
 
-            included = True
+            included: bool = True
 
             if node is parent and not self is parent:
                 logger.debug(">>> node is parent: %s" % (node.id))
@@ -647,6 +1032,15 @@ class Model(Node):
 
             return nodes
 
-        nodes = _nodes(self, nodes=[], parent=self)
+        nodes: list[Model] = _nodes(self, nodes=[], parent=self)
+
+        if callable(filter):
+            temp: list[Model] = []
+
+            for node in nodes:
+                if filter(node, self) is True:
+                    temp.append(node)
+
+            nodes = temp
 
         return nodes

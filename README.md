@@ -2,6 +2,8 @@
 
 The SemanticPy library for Python provides a simplified and consistent way to create JSON-LD documents from Python source code constructs such as classes and properties. In addition to simplifying the creation of JSON-LD documents, the library validates the model as it is being created, ensuring that properties can only be assigned valid values that are of the type or within the expected range defined in the model profile.
 
+The SemanticPy library also supports loading JSON-LD documents from disk or the web, with support for automatically dereferencing linked documents, and enables these documents and the data they contain to be parsed and used.
+
 ### Example
 
 ```python
@@ -58,7 +60,7 @@ identifier.content = "1982.A.39"
 # Then serialise the model into a JSON string, in this case optionally specifying an
 # indent of 2 spaces per level of nesting to make the JSON easier to read; by default
 # the `json()` method will not use any indentation, compacting the JSON, which is great
-# for saving storage, but can make longer JSON strings harder for people to read:
+# for saving storage, but can make longer JSON strings harder to read:
 serialised = hmo.json(indent = 2)
 
 # Then for the purposes of this example, we print out the JSON for review; the JSON
@@ -146,4 +148,4 @@ The `Model` class offers the following named properties in addition to the metho
 
 ### License and Copyright Information
 
-Licensed under the MIT License; Copyright © Daniel Sissman 2022-2024.
+Licensed under the MIT License; Copyright © Daniel Sissman 2022-2025. All rights reserved.
