@@ -758,21 +758,24 @@ class Model(Node):
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__}(ident = {self.id}, label = {self._label})>"
 
-    def _find_type(self, name: str, prop: str = None) -> type | tuple[type]:
-        for key, entity in self._entities.items():
-            if entity._name == name:
-                return entity
+    def _find_type(self, range: str | Model) -> type | tuple[type] | None:
+        if isinstance(range, str):
+            if range == "rdfs:Literal":
+                return (str, int, float)
+            elif range == "rdfs:Class":
+                return str
+            elif range == "xsd:string":
+                return str
+            elif range == "xsd:dateTime":
+                return (str, datetime.datetime)
 
-        if name == "rdfs:Literal":
-            return (str, int, float)
-        elif name == "rdfs:Class":
-            return str
-        elif name == "xsd:string":
-            return str
-        elif name == "xsd:dateTime":
-            return (str, datetime.datetime)
-        else:
-            raise RuntimeError(f"Cannot find a match for the '{name}' range type!")
+        for key, entity in self._entities.items():
+            if isinstance(range, str):
+                if entity._name == range:
+                    return entity
+            elif issubclass(range, Model):
+                if entity is range:
+                    return entity
 
     @property
     def name(self) -> str:
@@ -828,10 +831,26 @@ class Model(Node):
                     ranges = [range]
                 elif isinstance(range, list):
                     ranges = range
+                elif issubclass(range, Model):
+                    ranges = [range]
+                else:
+                    raise TypeError(
+                        "The 'range' property must be defined as a string, list, or a Model class type, not %s!" % (range)
+                    )
 
                 for range in ranges:
-                    if typed := self._find_type(range, name):
+                    if not (isinstance(range, str) or issubclass(range, Model)):
+                        raise TypeError(
+                            "The 'range' property can only contain valid type names or Model class types!"
+                        )
+
+                    if typed := self._find_type(range=range):
                         types += (typed,)
+                    else:
+                        raise ValueError(
+                            "The '%s' range for the '%s' property cannot be reconciled to a known range type!"
+                            % (range, name)
+                        )
 
                 if len(types) == 0:
                     raise RuntimeError(
