@@ -20,39 +20,39 @@ Model.factory(profile="linked-art", globals=globals())
 
 # Create a HumanMadeObject (HMO) model instance
 hmo = HumanMadeObject(
-	ident = "https://example.org/object/1",
-	label = "Example Object #1",
+    ident = "https://example.org/object/1",
+    label = "Example Object #1",
 )
 
 # Assign a classification of "Works of Art" to the HMO as per the Linked.Art model
 hmo.classified_as = Type(
-	ident = "http://vocab.getty.edu/aat/300133025",
-	label = "Works of Art",
+    ident = "http://vocab.getty.edu/aat/300133025",
+    label = "Works of Art",
 )
 
 # As this example HMO represents a painting, add a classification of "Paintings" as per
 # the Linked.Art model to specify the type of artwork that this HMO represents:
 hmo.classified_as = typed = Type(
-	ident = "http://vocab.getty.edu/aat/300033618",
-	label = "Paintings (Visual Works)",
+    ident = "http://vocab.getty.edu/aat/300033618",
+    label = "Paintings (Visual Works)",
 )
 
 # Then classify the type classification above as the "type of work" as per the model:
 typed.classified_as = Type(
-	ident = "http://vocab.getty.edu/aat/300435443",
-	label = "Type of Work",
+    ident = "http://vocab.getty.edu/aat/300435443",
+    label = "Type of Work",
 )
 
 # Include a Name node on the HMO to carry a name of the artwork
 hmo.identified_by = name = Name(
-	label = "Name of Artwork",
+    label = "Name of Artwork",
 )
 
 name.content = "A Painting"
 
 # Include an Identifier node on the HMO to carry an identifier of the artwork
 hmo.identified_by = identifier = Identifier(
-	label = "Accession Number for Artwork",
+    label = "Accession Number for Artwork",
 )
 
 identifier.content = "1982.A.39"
@@ -112,7 +112,7 @@ The above code example will produce the following printed JSON output:
 
 ### Requirements
 
-The SemanticPy library has been tested with Python 3.10 and 3.11, but should work with some earlier Python versions such as 3.9, 3.8, and possibly 3.7, but has not been tested against these versions. It was not designed to work with Python 2 or earlier.
+The SemanticPy library has been tested with Python 3.10, 3.11, 3.12 and 3.13, but should work with some earlier Python versions such as 3.9, 3.8, and possibly 3.7, but has not been tested against these versions. It was not designed to work with Python 2 or earlier.
 
 ### Installation
 
@@ -129,7 +129,7 @@ The primary interface to the SemanticPy library is its `Model` class which offer
  * `extend` – the `extend` method is used to support extending the factory-generated model with additional model subclasses, and optionally, additional model-wide properties.
  * `entity` – the `entity` method may be used to obtain the `type` reference for a named model entity, from which a new instance of that named model entity may be created.
  * `clone` – the `clone` method may be used to clone the current model instance, creating a separate copy of the instance in memory which may be used or modified without affecting the original.
- * `reference` – the `reference` method may be used to create a reference to a model instance – useful for referencing a model entity from a property on another model instance without incorporating and nesting all of the properties of the model instance.
+ * `reference` – the `reference` method may be used to create a reference to a model instance – useful for referencing a model entity from a property on another model instance without incorporating and nesting all of the properties of the referenced model instance.
  * `properties` – the `properties` method may be used to obtain a dictionary representation of the current model instance, containing all of its properties as dictionary keys and property values as dictionary values.
  * `property` – the `property` method may be used to obtain a single named property from the current model instance, or if no property name is specified, a full clone of the current model instance.
  * `documents` – the `documents` method may be used to obtain a list of model entity documents from the current model instance.
