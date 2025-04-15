@@ -273,7 +273,8 @@ class Model(Node):
     @classmethod
     def teardown(cls, globals: dict = None):
         """This method will clear the dynamically created model classes from the globals
-        dictionary, reversing the work of the factory method used during initialization."""
+        dictionary, reversing the work of the factory method used during initialization.
+        """
 
         if not (globals is None or isinstance(globals, dict)):
             raise TypeError(
