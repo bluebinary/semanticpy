@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "semanticpy"
+description = "Simplifies the creation of linked data documents using Python classes and properties."
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "MIT"
+keywords = ["semantic", "linked data", "LOD", "JSON-LD", "RDF"]
+authors = [{name = "Daniel Sissman"}]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+requires-python = ">=3.10"
+dynamic = [
+  "version",
+  "dependencies",
+  "optional-dependencies",
+]
+
+[project.urls]
+documentation = "https://github.com/bluebinary/semanticpy/blob/main/README.md"
+changelog = "https://github.com/bluebinary/semanticpy/blob/main/CHANGELOG.md"
+repository = "https://github.com/bluebinary/semanticpy"
+issues = "https://github.com/bluebinary/semanticpy/issues"
+homepage = "https://github.com/bluebinary/semanticpy"
+
+[tool.setuptools]
+zip-safe = true
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {file = "source/semanticpy/version.txt"}
+dependencies = {file = "requirements.txt"}
+
+[tool.setuptools.dynamic.optional-dependencies]
+development = {file = "requirements.development.txt"}
+distribution = {file = "requirements.distribution.txt"}
+
+[tool.setuptools.packages.find]
+where = ["source", "."]
+exclude = ["resources*", "*#*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.tsv", "*.csv"]
+tests = ["*.json", "*.tsv", "*.csv"]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["*#*", "#*", "@*"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests"
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  | blib2to3
+  | tests/data
+  | profiling
+)/
+'''

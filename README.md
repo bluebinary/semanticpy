@@ -112,7 +112,7 @@ The above code example will produce the following printed JSON output:
 
 ### Requirements
 
-The SemanticPy library has been tested with Python 3.10, 3.11, 3.12 and 3.13, but should work with some earlier Python versions such as 3.9, 3.8, and possibly 3.7, but has not been tested against these versions. It was not designed to work with Python 2 or earlier.
+The SemanticPy library has been tested to work with Python 3.10, 3.11, 3.12 and 3.13, but is not compatible with earlier Python 3 versions such as 3.9, 3.8, or 3.7. It was not designed to work with Python 2 or earlier.
 
 ### Installation
 
@@ -148,4 +148,4 @@ The `Model` class offers the following named properties in addition to the metho
 
 ### License and Copyright Information
 
-Licensed under the MIT License; Copyright © Daniel Sissman 2022-2025. All rights reserved.
+Copyright © 2022–2025 Daniel Sissman; licensed under the MIT License.

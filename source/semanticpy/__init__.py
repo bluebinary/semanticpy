@@ -273,7 +273,8 @@ class Model(Node):
     @classmethod
     def teardown(cls, globals: dict = None):
         """This method will clear the dynamically created model classes from the globals
-        dictionary, reversing the work of the factory method used during initialization."""
+        dictionary, reversing the work of the factory method used during initialization.
+        """
 
         if not (globals is None or isinstance(globals, dict)):
             raise TypeError(
@@ -386,7 +387,8 @@ class Model(Node):
 
         if not isinstance(properties, dict):
             raise TypeError(
-                "The 'properties' argument provided for the '%s' property must have a dictionary value!" % (property)
+                "The 'properties' argument provided for the '%s' property must have a dictionary value!"
+                % (property)
             )
 
         if "accepted" in properties:
@@ -835,7 +837,8 @@ class Model(Node):
                     ranges = [range]
                 else:
                     raise TypeError(
-                        "The 'range' property must be defined as a string, list, or a Model class type, not %s!" % (range)
+                        "The 'range' property must be defined as a string, list, or a Model class type, not %s!"
+                        % (range)
                     )
 
                 for range in ranges:

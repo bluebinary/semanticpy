@@ -1,6 +1,11 @@
 import pytest
-import semanticpy
 import os
+import sys
+
+# Add the library source path to sys.path so that the library can be imported
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "source"))
+
+import semanticpy
 
 
 @pytest.fixture(scope="module")

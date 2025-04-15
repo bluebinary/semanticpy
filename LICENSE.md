@@ -1,6 +1,6 @@
 MIT License
 
-Copyright © 2022-2025 Daniel Sissman. All rights reserved.
+Copyright © 2022-2025 Daniel Sissman.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
