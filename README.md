@@ -148,4 +148,4 @@ The `Model` class offers the following named properties in addition to the metho
 
 ### License and Copyright Information
 
-Licensed under the MIT License; Copyright © Daniel Sissman 2022-2025. All rights reserved.
+Copyright © 2022–2025 Daniel Sissman; licensed under the MIT License.

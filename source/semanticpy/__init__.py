@@ -386,7 +386,8 @@ class Model(Node):
 
         if not isinstance(properties, dict):
             raise TypeError(
-                "The 'properties' argument provided for the '%s' property must have a dictionary value!" % (property)
+                "The 'properties' argument provided for the '%s' property must have a dictionary value!"
+                % (property)
             )
 
         if "accepted" in properties:
@@ -835,7 +836,8 @@ class Model(Node):
                     ranges = [range]
                 else:
                     raise TypeError(
-                        "The 'range' property must be defined as a string, list, or a Model class type, not %s!" % (range)
+                        "The 'range' property must be defined as a string, list, or a Model class type, not %s!"
+                        % (range)
                     )
 
                 for range in ranges:
