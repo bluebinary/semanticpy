@@ -43,7 +43,7 @@ development = {file = "requirements.development.txt"}
 distribution = {file = "requirements.distribution.txt"}
 
 [tool.setuptools.packages.find]
-where = ["source", "."]
+where = ["source"]
 exclude = ["resources*", "*#*"]
 
 [tool.setuptools.package-data]
