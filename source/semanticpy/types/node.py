@@ -38,10 +38,14 @@ class Node(object):
             raise TypeError("The `data` property must be provided as a dictionary!")
 
         if not self._canonical:
-            self._canonical = self._settings.get("properties", {}).get("canonical") or {}
+            self._canonical = (
+                self._settings.get("properties", {}).get("canonical") or {}
+            )
 
         if not self._namespace:
-            self._namespace = self._settings.get("properties", {}).get("namespace") or {}
+            self._namespace = (
+                self._settings.get("properties", {}).get("namespace") or {}
+            )
 
         if not self._multiple:
             self._multiple = self._settings.get("properties", {}).get("multiple") or []

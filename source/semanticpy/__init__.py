@@ -1025,13 +1025,13 @@ class Model(Node):
         flags note which nodes within the current document should be returned separately
         as part of the returned list; these nodes are not removed from the parent rather
         if specified, they will be returned as additional entries in the returned list.
-        
+
         To return any blank nodes within the current document, set the `blank` argument
         to `True`; to return any embedded nodes within the current document, set the
         `embedded` argument to `True`, and to return any referenced documents within the
         current document, set the `referenced` argument to `True`. To omit any of these
         subgroups of nodes from the returned list, set the relevant argument to `False`.
-        
+
         Furthermore, to perform custom filtering of nodes pass a method via the `filter`
         argument which must take a reference to the current document, and its containing
         entity, and must return a `bool` value each time it is called; to include a node
@@ -1041,7 +1041,11 @@ class Model(Node):
 
         logger.debug(
             "%s.documents(blank: %s, embedded: %s, referenced: %s, filter: %s)",
-            self.__class__.__name__, blank, embedded, referenced, filter,
+            self.__class__.__name__,
+            blank,
+            embedded,
+            referenced,
+            filter,
         )
 
         def _nodes(
@@ -1078,7 +1082,10 @@ class Model(Node):
 
             if included is True and blank is False:
                 if node.is_blank is True:
-                    logger.debug(">>> node is blank (blank nodes excluded by arguments): %s" % (node))
+                    logger.debug(
+                        ">>> node is blank (blank nodes excluded by arguments): %s"
+                        % (node)
+                    )
                     included = False
 
             if included is True and embedded is False:
@@ -1093,7 +1100,8 @@ class Model(Node):
             if included is True and referenced is False:
                 if node.was_referenced is True:
                     logger.debug(
-                        ">>> node was referenced by another node (references excluded by arguments): %s" % (node.id)
+                        ">>> node was referenced by another node (references excluded by arguments): %s"
+                        % (node.id)
                     )
                     included = False
 
