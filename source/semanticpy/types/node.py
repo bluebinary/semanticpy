@@ -8,22 +8,26 @@ class Node(object):
     """Node data type class supporting the creation of node tree structures"""
 
     _type = None
-    _name = None
-    _data = None
-    _settings = {}
-    _multiple = []
-    _sorting = {}
-    _special = [
+    _name: str = None
+    _data: dict[str, object] = None
+    _settings: dict[str, object] = {}
+    _canonical: dict[str, str] = {}
+    _namespace: dict[str, str] = {}
+    _multiple: list[str] = []
+    _sorting: dict[str, int] = {}
+    _special: list[str] = [
         "_type",
         "_name",
         "_data",
         "_settings",
+        "_canonical",
+        "_namespace",
         "_multiple",
         "_sorting",
         "_annotations",
     ]
 
-    def __init__(self, data: dict = None, **kwargs):
+    def __init__(self, data: dict[str, object] = None, **kwargs):
         # logger.debug("%s.__init__(data: %s)" % (self.__class__.__name__, data))
 
         if data is None:
@@ -33,6 +37,12 @@ class Node(object):
         else:
             raise TypeError("The `data` property must be provided as a dictionary!")
 
+        if not self._canonical:
+            self._canonical = self._settings.get("properties", {}).get("canonical") or {}
+
+        if not self._namespace:
+            self._namespace = self._settings.get("properties", {}).get("namespace") or {}
+
         if not self._multiple:
             self._multiple = self._settings.get("properties", {}).get("multiple") or []
 
@@ -41,58 +51,62 @@ class Node(object):
 
         self._annotations = {}
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__repr__()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}()"
 
     @property
-    def type(self):
+    def type(self) -> str:
         return self._type
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @property
-    def data(self):
+    def data(self) -> dict[str, object]:
         return copy.copy(self._data)
 
     @data.setter
-    def data(self, data):
+    def data(self, data: dict[str, object]):
         if not isinstance(data, dict):
             raise RuntimeError("The data must be defined as a dictionary!")
 
         self._data = data
 
     @property
-    def settings(self):
+    def settings(self) -> dict[str, object]:
         return self._settings
 
     @settings.setter
-    def settings(self, settings):
+    def settings(self, settings: dict[str, object]):
         if not isinstace(settings, dict):
             raise RuntimeError("The settings must be defined as a dictionary!")
 
         self._settings = settings
 
-    def annotate(self, name: str, value):
+    def annotate(self, name: str, value: object):
         """Support adding arbitrary named 'annotations' to a node for later retrieval"""
+
         self._annotations[name] = value
 
-    def annotation(self, name: str, default=None):
+    def annotation(self, name: str, default: object = None):
         """Support retrieving a named annotation if available or returning the default"""
+
         if name in self._annotations:
             return self._annotations[name]
+
         return default
 
-    def annotations(self) -> dict:
+    def annotations(self) -> dict[str, object]:
         """Support retrieving a copy of all named annotations associated with the node"""
+
         return dict(self._annotations)
 
     def __getattr__(self, name: str) -> object | None:
-        value = None
+        value: object = None
 
         if isinstance(name, str) and name.startswith("_") and name in self._special:
             if name in self.__dict__:
@@ -139,6 +153,17 @@ class Node(object):
     def __setitem__(self, name: str, value: object):
         return self.__setattr__(name, value)
 
+    def _canonicalize(self, name: str) -> str:
+        """Given a property name, return the canonical version of the property name."""
+
+        if name in self._canonical:
+            if name in self._namespace:
+                return self._namespace[name] + ":" + self._canonical[name]
+            else:
+                return self._canonical[name]
+        else:
+            return name
+
     def _serialize(self, source=None, sorting: list[str] | dict[str, int] = None):
         data = None
 
@@ -159,7 +184,7 @@ class Node(object):
                 if value is None:
                     continue
 
-                data[key] = self._serialize(value, sorting=sorting)
+                data[self._canonicalize(key)] = self._serialize(value, sorting=sorting)
 
             data = self._sort(data, sorting=sorting) if data else data
         elif isinstance(source, list):
@@ -187,6 +212,8 @@ class Node(object):
             raise TypeError(
                 "The `sorting` parameter must be provided as a list or dictionary!"
             )
+
+        keys = {self._canonicalize(key): index for key, index in keys.items()}
 
         sort = {}
 

@@ -124,15 +124,37 @@ The SemanticPy library is available from the PyPi repository, so may be added to
 
 The primary interface to the SemanticPy library is its `Model` class which offers the following methods:
 
- * `factory` – the `factory` method is used to initialise the model for use.
- * `teardown` – the `teardown` method is used to de-initialise the model, reversing the setup performed by the `factory` method.
- * `extend` – the `extend` method is used to support extending the factory-generated model with additional model subclasses, and optionally, additional model-wide properties.
- * `entity` – the `entity` method may be used to obtain the `type` reference for a named model entity, from which a new instance of that named model entity may be created.
- * `clone` – the `clone` method may be used to clone the current model instance, creating a separate copy of the instance in memory which may be used or modified without affecting the original.
- * `reference` – the `reference` method may be used to create a reference to a model instance – useful for referencing a model entity from a property on another model instance without incorporating and nesting all of the properties of the referenced model instance.
- * `properties` – the `properties` method may be used to obtain a dictionary representation of the current model instance, containing all of its properties as dictionary keys and property values as dictionary values.
- * `property` – the `property` method may be used to obtain a single named property from the current model instance, or if no property name is specified, a full clone of the current model instance.
- * `documents` – the `documents` method may be used to obtain a list of model entity documents from the current model instance.
+ * `factory()` – the `factory()` method is used to initialise the model for use.
+
+ * `teardown()` – the `teardown()` method is used to de-initialise the model, reversing the setup performed by the `factory()` method.
+
+ * `extend()` – the `extend()` method is used to support extending the factory-generated model with additional model subclasses, and optionally, additional model-wide properties.
+
+ * `entity()` – the `entity()` method may be used to obtain the `type` reference for a named model entity, from which a new instance of that named model entity may be created.
+
+ * `clone()` – the `clone()` method may be used to clone the current model instance, creating a separate copy of the instance in memory which may be used or modified without affecting the original.
+
+ * `reference()` – the `reference()` method may be used to create a reference to a model instance – useful for referencing a model entity from a property on another model instance without incorporating and nesting all of the properties of the referenced model instance.
+
+ * `properties()` (`dict[str, object]`) – the `properties()` method may be used to obtain a dictionary representation of the current model instance, containing all of its properties as dictionary keys and property values as dictionary values. The `properties()` method accepts the following arguments:
+   * `sorting` (`list[str]` | `dict[str, int]`) – (optional) the `sorting` argument may be used to specify a sort order that should be applied to the returned property data; sorting may be specified as a `list` of `str` values, where the list comprises the names of the properties in the order that they should be sorted into; alternatively, the `sorting` may be specified as a `dict` that comprise a list of property names associated with a sort order ranking specified as an integer where higher values integer sort later in the results.
+   * `callback` (`callable`) – (optional) the `callback` argument may be used to specify a callback method that can be used to modify the value that is included in the returned container. The callback method must accept three arguments: the `key` (the name of the property as a `str` value), its `value` (an `object` value), and a reference to the current `container` (which will be either a `dict` or `list` reference). The callback must return the value to include in the container, either returning the `value` it was provided to leave the value as-is or to return a different value to change the value that will be included.
+   * `attribute` (`str` | `int`) – (optional) the `attribute` argument may be used to control if the `callback` method should only be called for the named/indexed property/attribute, or to if the `callback` should be called for all properties. To limit calls to the `callback`, use the `attribute` argument to specify the name of the property or the index position that would need to match in order to call the `callback` method.
+
+ * `property()` – the `property()` method may be used to obtain a single named property from the current model instance, or if no property name is specified, a full clone of the current model instance. The `property()` method will accepts the following arguments:
+   * `name` (`str`) – (optional) the `name` argument is used to specify the property to attempt to obtain from the model entity; if the named property exists, it will be returned, otherwise the value assigned to the `default` argument, which defaults to `None` will be returned instead; if no `name` is specified, then all current properties associated with the model entity will be returned;
+   * `default` (`object`) - (optional) the `default` argument may be used to set an alternative return value for a call to the `property()` method if the method is unable to find and return the named property.
+
+ * `documents()` – the `documents()` method may be used to obtain a list of model entity
+ documents from the current model instance; the `documents()` method accepts the following
+ arguments, which control whether nodes of the following types will be including in the resulting list:
+   * `blank` (`bool`) – (optional) to return any blank nodes within the current document, leave the
+  `blank` argument set to its default value of `True` or to omit blank nodes, set to `False`;
+   * `embedded` (`bool`) – (optional) to return any embedded nodes within the current document, leave the
+ `embedded` argument set to its default value of `True` or to omit embedded nodes, set to `False`;
+   * `referenced` (`bool`) – (optional) to return any referenced documents within the current document,
+  leave the `referenced` argument to its default value of `True` or to omit any referenced nodes, set to `False`;
+   * `filter` (`callable`) – (optional) to achieve finer-grained control over whether nodes are include in the resulting list, a callback method can be provided to the method via the `filter` argument; the callback method must take a reference to the current document, and its containing entity, and must return a `bool` value each time it is called; to include a node in the returned list via custom filtering, the method must return `True` and to omit the node, the method must return `False`.
 
 ### Properties
 
@@ -143,7 +165,7 @@ The `Model` class offers the following named properties in addition to the metho
  * `ident` – the `ident` (`str` | `None`) property provides access to the model instance's assigned identifier, if any.
  * `is_blank` – the `is_blank` (`bool`) property may be used to determine if the current model instance is considered a blank node or not – a blank node is a model node without an assigned identifier. The `is_blank` property will be `True` if the node is blank (lacks an identifier) or `False` otherwise.
  * `is_cloned` – the `is_cloned` (`bool`) property may be used to determine if the current model instance is a clone of another node or not. The `is_cloned` property will be `True` if the current model instance is a clone of another or will be `False` otherwise.
- * `is_reference` – the `is_reference` (`bool`) property may be used to determine if the current model instance is a reference to another node or not. The `is_reference` property will be `True` if the current model instance is a clone of another or will be `False` otherwise.
+ * `is_reference` – the `is_reference` (`bool`) property may be used to determine if the current model instance is a reference to another node or not. The `is_reference` property will be `True` if the current model instance is a reference to another or will be `False` otherwise.
  * `was_referenced` – the `was_referenced` (`bool`) property may be used to determine if one or more references have been created to the current model instance or not, via the `reference` method. The `was_referenced` property will be `True` if at least one reference has previously been generated for the current model instance via the `reference` method or will be `False` otherwise.
 
 ### License and Copyright Information
