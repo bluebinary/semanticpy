@@ -451,7 +451,7 @@ class Model(Node):
         typed: bool = True,
     ) -> None:
         """Class method to support extending the factory-generated model with additional
-        model subclasses, and optionally, additional model-wide properties"""
+        model subclasses, and optionally, additional model-wide properties."""
 
         if not issubclass(subclass, Model):
             raise TypeError(
@@ -487,23 +487,40 @@ class Model(Node):
             for prop, props in properties.items():
                 props: dict[str, object] = cls._validate_properties(props, prop)
 
+                if isinstance(canonical := props.get("canonical"), str):
+                    subclass._canonical[prop] = canonical
+
+                if isinstance(namespace := props.get("namespace"), str):
+                    subclass._namespace[prop] = namespace
+
                 subclass._property.append(prop)
 
-                if alias := props.get("alias"):
+                if isinstance(alias := props.get("alias"), str):
                     subclass._property.append(alias)
 
-                if canonical := props.get("canonical"):
-                    pass
+                if isinstance(individual := props.get("individual"), bool):
+                    if individual is False and not prop in subclass._multiple:
+                        subclass._multiple.append(prop)
 
                 for class_name, entity in cls._entities.items():
                     entity._properties[prop] = cls._validate_properties(props, prop)
 
+                    if isinstance(canonical := props.get("canonical"), str):
+                        entity._canonical[prop] = canonical
+
+                    if isinstance(namespace := props.get("namespace"), str):
+                        entity._namespace[prop] = namespace
+
                     # If a property supports being specified via an alias, map that here
-                    if alias := props.get("alias"):
+                    if isinstance(alias := props.get("alias"), str):
                         entity._properties[alias] = {**props, **{"alias": prop}}
 
-                    if sorting := props.get("sorting"):
+                    if isinstance(sorting := props.get("sorting"), int):
                         entity._sorting[prop] = sorting
+
+                    if isinstance(individual := props.get("individual"), bool):
+                        if individual is False and not prop in entity._multiple:
+                            entity._multiple.append(prop)
 
         # If any subclass-level properties have been defined, apply them to the subclass
         if hasattr(subclass, "_properties"):
@@ -513,11 +530,19 @@ class Model(Node):
             for prop, props in subclass._properties.items():
                 props = cls._validate_properties(props, prop)
 
-                if props.get("hidden") is True:
-                    subclass._hidden.append(prop)
+                if isinstance(canonical := props.get("canonical"), str):
+                    subclass._canonical[canonical] = prop
 
-                if sorting := props.get("sorting"):
+                if isinstance(hidden := props.get("hidden"), bool):
+                    if hidden is True:
+                        subclass._hidden.append(prop)
+
+                if isinstance(sorting := props.get("sorting"), int):
                     subclass._sorting[prop] = sorting
+
+                if isinstance(individual := props.get("individual"), bool):
+                    if individual is False and not prop in subclass._multiple:
+                        subclass._multiple.append(prop)
         else:
             subclass._properties = {}
 
@@ -996,7 +1021,32 @@ class Model(Node):
         referenced: bool = True,
         filter: callable = None,
     ) -> list[Model]:
-        """Support assembling a list of documents from the current node structure"""
+        """Support assembling a list of documents from the current node structure; the
+        flags note which nodes within the current document should be returned separately
+        as part of the returned list; these nodes are not removed from the parent rather
+        if specified, they will be returned as additional entries in the returned list.
+
+        To return any blank nodes within the current document, set the `blank` argument
+        to `True`; to return any embedded nodes within the current document, set the
+        `embedded` argument to `True`, and to return any referenced documents within the
+        current document, set the `referenced` argument to `True`. To omit any of these
+        subgroups of nodes from the returned list, set the relevant argument to `False`.
+
+        Furthermore, to perform custom filtering of nodes pass a method via the `filter`
+        argument which must take a reference to the current document, and its containing
+        entity, and must return a `bool` value each time it is called; to include a node
+        in the returned list via custom filtering, the method must return `True` and to
+        omit the node, the method must return `False`.
+        """
+
+        logger.debug(
+            "%s.documents(blank: %s, embedded: %s, referenced: %s, filter: %s)",
+            self.__class__.__name__,
+            blank,
+            embedded,
+            referenced,
+            filter,
+        )
 
         def _nodes(
             node: Model, nodes: list, parent: Model, ancestor: Model = None
@@ -1032,14 +1082,17 @@ class Model(Node):
 
             if included is True and blank is False:
                 if node.is_blank is True:
-                    logger.debug(">>> node is blank: %s" % (node))
+                    logger.debug(
+                        ">>> node is blank (blank nodes excluded by arguments): %s"
+                        % (node)
+                    )
                     included = False
 
             if included is True and embedded is False:
                 if node.id and parent.id:
                     if len(node.id) > len(parent.id) and node.id.startswith(parent.id):
                         logger.debug(
-                            ">>> node is embedded (starts with parent.id): %s"
+                            ">>> node is embedded (starts with parent.id; embedded excluded by arguments): %s"
                             % (node.id)
                         )
                         included = False
@@ -1047,7 +1100,8 @@ class Model(Node):
             if included is True and referenced is False:
                 if node.was_referenced is True:
                     logger.debug(
-                        ">>> node was referenced by another node: %s" % (node.id)
+                        ">>> node was referenced by another node (references excluded by arguments): %s"
+                        % (node.id)
                     )
                     included = False
 
