@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.2.2] - 2025-09-18
+## [1.2.2] - 2025-10-07
 ### Added
 - Improved support for aliases, canonical property names and namespaced property names.
 
