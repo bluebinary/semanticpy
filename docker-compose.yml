@@ -1,3 +1,9 @@
+x-volumes: &volumes
+  - ./source/semanticpy:/source/semanticpy
+  - ./source/semanticpy:/usr/local/lib/python/site-packages/semanticpy
+  - ./tests:/tests
+  - ./README.md:/README.md
+
 services:
 
   black:
@@ -8,9 +14,17 @@ services:
       - SERVICE=black
     command: black --check /source /tests
     volumes:
-      - ./source/semanticpy:/source/semanticpy
-      - ./source/semanticpy:/usr/local/lib/python3.11/site-packages/semanticpy
-      - ./tests:/tests
+      *volumes
+
+  flakes:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    environment:
+      - SERVICE=flakes
+    command: pyflakes /source /tests
+    volumes:
+      *volumes
 
   tests:
     build:
@@ -20,6 +34,4 @@ services:
       - SERVICE=tests
     command: pytest /tests
     volumes:
-      - ./source/semanticpy:/source/semanticpy
-      - ./source/semanticpy:/usr/local/lib/python3.11/site-packages/semanticpy
-      - ./tests:/tests
+      *volumes
