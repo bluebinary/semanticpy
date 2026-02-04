@@ -18,6 +18,10 @@ from semanticpy import Model
 # argument making the class types available for use just by referencing their names:
 Model.factory(profile="linked-art", globals=globals())
 
+# Register one or more identifier prefixes that take the form "<prefix>:" when used in
+# an identifier and are replaced with the specified URIs during document serialization:
+Model.prefix("aat", "http://vocab.getty.edu/aat/")
+
 # Create a HumanMadeObject (HMO) model instance
 hmo = HumanMadeObject(
     ident = "https://example.org/object/1",
@@ -26,14 +30,14 @@ hmo = HumanMadeObject(
 
 # Assign a classification of "Works of Art" to the HMO as per the Linked.Art model
 hmo.classified_as = Type(
-    ident = "http://vocab.getty.edu/aat/300133025",
+    ident = "aat:300133025",
     label = "Works of Art",
 )
 
 # As this example HMO represents a painting, add a classification of "Paintings" as per
 # the Linked.Art model to specify the type of artwork that this HMO represents:
 hmo.classified_as = typed = Type(
-    ident = "http://vocab.getty.edu/aat/300033618",
+    ident = "aat:300033618",
     label = "Paintings (Visual Works)",
 )
 
@@ -124,11 +128,13 @@ The SemanticPy library is available from the PyPi repository, so may be added to
 
 The primary interface to the SemanticPy library is its `Model` class which offers the following methods:
 
- * `factory()` – the `factory()` method is used to initialise the model for use.
+ * `factory()` – the `factory()` class method is used to initialise the model for use.
 
- * `teardown()` – the `teardown()` method is used to de-initialise the model, reversing the setup performed by the `factory()` method.
+ * `teardown()` – the `teardown()` class method is used to de-initialise the model, reversing the setup performed by the `factory()` method.
 
- * `extend()` – the `extend()` method is used to support extending the factory-generated model with additional model subclasses, and optionally, additional model-wide properties.
+ * `extend()` – the `extend()` class method is used to support extending the factory-generated model with additional model subclasses, and optionally, additional model-wide properties.
+
+ * `prefix(prefix: str, uri: str)` – the `prefix()` class method can be used to register one or more identifier prefixes with the library that will be replaced with the specified URI during document serialization.
 
  * `entity()` – the `entity()` method may be used to obtain the `type` reference for a named model entity, from which a new instance of that named model entity may be created.
 
@@ -148,12 +154,16 @@ The primary interface to the SemanticPy library is its `Model` class which offer
  * `documents()` – the `documents()` method may be used to obtain a list of model entity
  documents from the current model instance; the `documents()` method accepts the following
  arguments, which control whether nodes of the following types will be including in the resulting list:
+
    * `blank` (`bool`) – (optional) to return any blank nodes within the current document, leave the
   `blank` argument set to its default value of `True` or to omit blank nodes, set to `False`;
+
    * `embedded` (`bool`) – (optional) to return any embedded nodes within the current document, leave the
  `embedded` argument set to its default value of `True` or to omit embedded nodes, set to `False`;
+
    * `referenced` (`bool`) – (optional) to return any referenced documents within the current document,
   leave the `referenced` argument to its default value of `True` or to omit any referenced nodes, set to `False`;
+
    * `filter` (`callable`) – (optional) to achieve finer-grained control over whether nodes are include in the resulting list, a callback method can be provided to the method via the `filter` argument; the callback method must take a reference to the current document, and its containing entity, and must return a `bool` value each time it is called; to include a node in the returned list via custom filtering, the method must return `True` and to omit the node, the method must return `False`.
 
 ### Properties
@@ -161,13 +171,19 @@ The primary interface to the SemanticPy library is its `Model` class which offer
 The `Model` class offers the following named properties in addition to the methods defined above:
 
  * `name` – the `name` (`str`) property provides access to the model instance's class name.
+
  * `label` – the `label` (`str` | `None`) property provides access to the model instance's assigned label, if any.
+
  * `ident` – the `ident` (`str` | `None`) property provides access to the model instance's assigned identifier, if any.
+
  * `is_blank` – the `is_blank` (`bool`) property may be used to determine if the current model instance is considered a blank node or not – a blank node is a model node without an assigned identifier. The `is_blank` property will be `True` if the node is blank (lacks an identifier) or `False` otherwise.
+
  * `is_cloned` – the `is_cloned` (`bool`) property may be used to determine if the current model instance is a clone of another node or not. The `is_cloned` property will be `True` if the current model instance is a clone of another or will be `False` otherwise.
+
  * `is_reference` – the `is_reference` (`bool`) property may be used to determine if the current model instance is a reference to another node or not. The `is_reference` property will be `True` if the current model instance is a reference to another or will be `False` otherwise.
+
  * `was_referenced` – the `was_referenced` (`bool`) property may be used to determine if one or more references have been created to the current model instance or not, via the `reference` method. The `was_referenced` property will be `True` if at least one reference has previously been generated for the current model instance via the `reference` method or will be `False` otherwise.
 
 ### License and Copyright Information
 
-Copyright © 2022–2025 Daniel Sissman; licensed under the MIT License.
+Copyright © 2022–2026 Daniel Sissman; licensed under the MIT License.

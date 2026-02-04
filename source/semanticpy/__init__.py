@@ -28,6 +28,7 @@ class Model(Node):
     _properties: dict[str, dict] = {}
     _hidden: list[str] = []
     _globals: dict[str, object] = None
+    _prefixes: dict[str, str] = {}
 
     @classmethod
     def factory(
@@ -120,8 +121,6 @@ class Model(Node):
             )
 
         def _class_factory(name: str) -> type:
-            nonlocal cls, glo, entities
-
             # If the named class already exists, return immediately
             if isinstance(class_type := cls._entities.get(name, default=None), type):
                 if issubclass(class_type, Model):
@@ -320,7 +319,7 @@ class Model(Node):
             or filepath.startswith("//")
         ):
             try:
-                if isinstance(response := requests.get(url), object):
+                if isinstance(response := requests.get(filepath), object):
                     if response.status_code == 200:
                         if not isinstance(data := response.json(), dict):
                             raise ValueError(
@@ -357,7 +356,14 @@ class Model(Node):
             raise ValueError("The specified filepath (%s) is unsupported!" % (filepath))
 
         if isinstance(data, dict):
-            if context := data.get("@context"):
+            if isinstance(context := data.get("@context"), (str, dict, list)):
+                logger.debug(
+                    "%s.open(filepath: %s) context => %s",
+                    cls.__name__,
+                    filepath,
+                    context,
+                )
+
                 if typed := data.get("type"):
                     if entity := cls.entity(typed):
                         if instance := entity(data=readonlydict(data)):
@@ -589,6 +595,30 @@ class Model(Node):
             if isinstance(glo, dict):
                 # Add the class to global namespace so that it can be accessed elsewhere
                 glo[name] = subclass
+
+    @classmethod
+    def prefix(cls, prefix: str, uri: str) -> None:
+        if not isinstance(prefix, str):
+            raise TypeError("The 'prefix' argument must have a string value!")
+        elif ":" in prefix:
+            if prefix.endswith(":"):
+                prefix = prefix[0:-1]
+            else:
+                raise ValueError(
+                    "The 'prefix' value may only contain at most one semi-colon at the end of the string!"
+                )
+
+        if not isinstance(uri, str):
+            raise TypeError("The 'uri' argument must have a string value!")
+        elif not (uri.startswith("http://") or uri.startswith("https://")):
+            raise ValueError("The 'uri' value must start with 'http://' or 'https://'!")
+
+        if prefix in cls._prefixes:
+            raise ValueError(
+                f"The '{prefix}' prefix has already been registered to '{cls._prefixes[prefix]}'!"
+            )
+
+        cls._prefixes[prefix] = uri
 
     @classmethod
     def entity(cls, name: str = None, property: str = None) -> Model | None:
@@ -895,26 +925,16 @@ class Model(Node):
                         )
                     )
 
-            if domain := prop.get("domain"):
-                pass
+            if isinstance(domain := prop.get("domain"), str):
+                logger.debug(
+                    "%s.__setattr__(name: %s, value: %s) domain => %s",
+                    self.__class__.__name__,
+                    name,
+                    value,
+                    domain,
+                )
 
         return super().__setattr__(name, value)
-
-    def _serialize(
-        self,
-        source=None,
-        sorting: list[str] | dict[str, int] = None,
-    ) -> str:
-        """Support serializing the current model instance into JSON-LD."""
-
-        data: str = super()._serialize(source=source, sorting=sorting)
-
-        if self._hidden and isinstance(data, dict):
-            for prop in self._hidden:
-                if prop in data:
-                    del data[prop]
-
-        return data
 
     @property
     def is_blank(self) -> bool:
@@ -979,6 +999,30 @@ class Model(Node):
         """Determine if a node was referenced by another node at least once."""
 
         return self._referenced is True
+
+    def _serialize(
+        self,
+        source: object = None,
+        sorting: list[str] | dict[str, int] = None,
+    ) -> object:
+        """Support serializing the current model instance into JSON-LD."""
+
+        if isinstance(source, dict):
+            source = dict(source)
+
+            if isinstance(identifier := source.get("id"), str):
+                for prefix, uri in self.__class__._prefixes.items():
+                    if identifier.startswith(prefix + ":"):
+                        source["id"] = identifier.replace(prefix + ":", uri)
+
+        data: object = super()._serialize(source=source, sorting=sorting)
+
+        if isinstance(self._hidden, list) and isinstance(data, dict):
+            for prop in self._hidden:
+                if prop in data:
+                    del data[prop]
+
+        return data
 
     def properties(
         self,

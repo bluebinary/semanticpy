@@ -134,7 +134,7 @@ class Node(object):
 
     @settings.setter
     def settings(self, settings: dict[str, object]):
-        if not isinstace(settings, dict):
+        if not isinstance(settings, dict):
             raise RuntimeError("The settings must be defined as a dictionary!")
 
         self._settings = settings
