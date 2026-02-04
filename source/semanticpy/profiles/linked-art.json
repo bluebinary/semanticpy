@@ -4612,6 +4612,19 @@
                     "scope_note": "Inverse of P183",
                     "sorting": 10000
                 },
+                "before": {
+                    "name": "crm:P183_ends_before_the_start_of",
+                    "label": "ends before the start of",
+                    "inverse": "crm:P183i_starts_after_the_end_of",
+                    "subclasses": "crm:P182_ends_before_of_at_the_start_of",
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E2_Temporal_Entity",
+                    "domain": "crm:E2_Temporal_Entity",
+                    "scope_note": "This property specifies that the temporal extent of the domain instance A of E2 Temporal Entity ends definitely before\\nthe start of the temporal extent of the range instance B of E2 Temporal Entity. In other words, if A = [Astart, Aend] and B = [Bstart, Bend], we mean Aend < Bstart is true. This property is part of the set of temporal primitives P173 – P176, P182 – P185. This property corresponds to a disjunction (logical OR) of the following Allen temporal relations [Allen, 1983]: {before}",
+                    "sorting": 10000
+                },
                 "ends_after_or_with_the_start_of": {
                     "name": "crm:P173i_ends_after_or_with_the_start_of",
                     "label": "ends after or with the start of",
