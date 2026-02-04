@@ -4314,6 +4314,19 @@
                     "scope_note": null,
                     "sorting": 10000
                 },
+                "members_exemplified_by": {
+                    "name": "la:members_exemplified_by",
+                    "label": "members exemplified by",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E1_CRM_Entity",
+                    "domain": "la:Set",
+                    "scope_note": null,
+                    "sorting": 10000
+                },
                 "removed_from_by": {
                     "name": "la:removed_from_by",
                     "label": "removed from by",
