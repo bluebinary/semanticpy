@@ -4301,6 +4301,19 @@
                     "scope_note": null,
                     "sorting": 10001
                 },
+                "members_contained_by": {
+                    "name": "la:members_contained_by",
+                    "label": "members contained by",
+                    "inverse": "la:contains_members_of",
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E18_Physical_Thing",
+                    "domain": "la:Set",
+                    "scope_note": null,
+                    "sorting": 10000
+                },
                 "removed_from_by": {
                     "name": "la:removed_from_by",
                     "label": "removed from by",
