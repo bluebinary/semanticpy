@@ -267,6 +267,19 @@
                     "scope_note": null,
                     "sorting": 10000
                 },
+                "notation": {
+                    "name": "skos:notation",
+                    "label": "notation",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": true,
+                    "range": "xsd:string",
+                    "domain": "crm:E1_CRM_Entity",
+                    "scope_note": "Identifying string for the resource ; note that Linked Art does not apply a specific data type to the value and everything is just a string.",
+                    "sorting": 10000
+                },
                 "note": {
                     "name": "crm:P3_has_note",
                     "label": "has note",
