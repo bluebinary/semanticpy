@@ -2259,7 +2259,7 @@
             "id": "crm:E86_Leaving",
             "name": "E86_Leaving",
             "class": "Leaving",
-            "superclasses": "Activity",
+            "superclasses": "Removal",
             "properties": {
                 "separated": {
                     "name": "crm:P145_separated",
