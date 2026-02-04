@@ -5348,19 +5348,6 @@
                     "scope_note": null,
                     "sorting": 10000
                 },
-                "topConceptOf": {
-                    "name": "skos:topConceptOf",
-                    "label": "is top concept of",
-                    "inverse": "skos:hasTopConcept",
-                    "subclasses": null,
-                    "accepted": true,
-                    "hidden": false,
-                    "individual": false,
-                    "range": "crm:E32_Authority_Document",
-                    "domain": "crm:E55_Type",
-                    "scope_note": null,
-                    "sorting": 10000
-                },
                 "type_assigned_by": {
                     "name": "crm:P42i_was_assigned_by",
                     "label": "was assigned by",
