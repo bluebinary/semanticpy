@@ -61,54 +61,6 @@ class Node(object):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}()"
 
-    @property
-    def type(self) -> str:
-        return self._type
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @property
-    def data(self) -> dict[str, object]:
-        return copy.copy(self._data)
-
-    @data.setter
-    def data(self, data: dict[str, object]):
-        if not isinstance(data, dict):
-            raise RuntimeError("The data must be defined as a dictionary!")
-
-        self._data = data
-
-    @property
-    def settings(self) -> dict[str, object]:
-        return self._settings
-
-    @settings.setter
-    def settings(self, settings: dict[str, object]):
-        if not isinstace(settings, dict):
-            raise RuntimeError("The settings must be defined as a dictionary!")
-
-        self._settings = settings
-
-    def annotate(self, name: str, value: object):
-        """Support adding arbitrary named 'annotations' to a node for later retrieval"""
-
-        self._annotations[name] = value
-
-    def annotation(self, name: str, default: object = None):
-        """Support retrieving a named annotation if available or returning the default"""
-
-        if name in self._annotations:
-            return self._annotations[name]
-
-        return default
-
-    def annotations(self) -> dict[str, object]:
-        """Support retrieving a copy of all named annotations associated with the node"""
-
-        return dict(self._annotations)
-
     def __getattr__(self, name: str) -> object | None:
         value: object = None
 
@@ -157,6 +109,54 @@ class Node(object):
     def __setitem__(self, name: str, value: object):
         return self.__setattr__(name, value)
 
+    @property
+    def type(self) -> str:
+        return self._type
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def data(self) -> dict[str, object]:
+        return copy.copy(self._data)
+
+    @data.setter
+    def data(self, data: dict[str, object]):
+        if not isinstance(data, dict):
+            raise RuntimeError("The data must be defined as a dictionary!")
+
+        self._data = data
+
+    @property
+    def settings(self) -> dict[str, object]:
+        return self._settings
+
+    @settings.setter
+    def settings(self, settings: dict[str, object]):
+        if not isinstace(settings, dict):
+            raise RuntimeError("The settings must be defined as a dictionary!")
+
+        self._settings = settings
+
+    def annotate(self, name: str, value: object):
+        """Support adding arbitrary named 'annotations' to a node for later retrieval"""
+
+        self._annotations[name] = value
+
+    def annotation(self, name: str, default: object = None):
+        """Support retrieving a named annotation if available or returning the default"""
+
+        if name in self._annotations:
+            return self._annotations[name]
+
+        return default
+
+    def annotations(self) -> dict[str, object]:
+        """Support retrieving a copy of all named annotations associated with the node"""
+
+        return dict(self._annotations)
+
     def _canonicalize(self, name: str) -> str:
         """Given a property name, return the canonical version of the property name."""
 
@@ -168,8 +168,12 @@ class Node(object):
         else:
             return name
 
-    def _serialize(self, source=None, sorting: list[str] | dict[str, int] = None):
-        data = None
+    def _serialize(
+        self,
+        source: object = None,
+        sorting: list[str] | dict[str, int] = None,
+    ) -> object:
+        data: object = None
 
         if source is None:
             source = self
@@ -204,7 +208,11 @@ class Node(object):
 
         return data
 
-    def _sort(self, dictionary: dict, sorting: list[str] | dict[str, int] = None):
+    def _sort(
+        self,
+        dictionary: dict,
+        sorting: list[str] | dict[str, int] = None,
+    ) -> dict[str, object]:
         if sorting is None:
             sorting = self._sorting
 
@@ -219,7 +227,7 @@ class Node(object):
 
         keys = {self._canonicalize(key): index for key, index in keys.items()}
 
-        sort = {}
+        sort: dict[str, object] = {}
 
         for key, value in sorted(dictionary.items(), key=lambda x: keys.get(x[0], -1)):
             sort[key] = value
