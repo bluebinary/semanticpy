@@ -404,7 +404,7 @@
             "id": "crm:E8_Acquisition",
             "name": "E8_Acquisition",
             "class": "Acquisition",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "transferred_title_from": {
                     "name": "crm:P23_transferred_title_from",
@@ -2560,7 +2560,7 @@
             "id": "crm:E9_Move",
             "name": "E9_Move",
             "class": "Move",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "moved": {
                     "name": "crm:P25_moved",
@@ -2689,7 +2689,7 @@
             "id": "la:Payment",
             "name": "la:Payment",
             "class": "Payment",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "paid_amount": {
                     "name": "la:paid_amount",
@@ -4235,7 +4235,7 @@
             "id": "la:RightAcquisition",
             "name": "la:RightAcquisition",
             "class": "RightAcquisition",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "establishes": {
                     "name": "la:establishes",
@@ -5151,12 +5151,60 @@
                 }
             }
         },
+        "Transfer": {
+            "type": "la:Transfer",
+            "id": "la:Transfer",
+            "name": "la:Transfer",
+            "class": "Transfer",
+            "superclasses": "Activity",
+            "properties": {
+                "transferred": {
+                    "name": "la:transferred",
+                    "label": "transferred",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E1_CRM_Entity",
+                    "domain": "la:Transfer",
+                    "scope_note": "What was transferred",
+                    "sorting": 10000
+                },
+                "transferred_from": {
+                    "name": "la:transferred_from",
+                    "label": "transferred from",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E1_CRM_Entity",
+                    "domain": "la:Transfer",
+                    "scope_note": "Where or with whom did it start",
+                    "sorting": 10000
+                },
+                "transferred_to": {
+                    "name": "la:transferred_to",
+                    "label": "transferred to",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E1_CRM_Entity",
+                    "domain": "la:Transfer",
+                    "scope_note": "Where or with whom did it end",
+                    "sorting": 10000
+                }
+            }
+        },
         "TransferOfCustody": {
             "type": "E10",
             "id": "crm:E10_Transfer_of_Custody",
             "name": "E10_Transfer_of_Custody",
             "class": "TransferOfCustody",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "transferred_custody_from": {
                     "name": "crm:P28_custody_surrendered_by",
