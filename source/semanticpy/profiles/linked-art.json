@@ -1219,6 +1219,7 @@
                     "sorting": 10000
                 },
                 "sub_state": {
+                    "alias": "subState",
                     "name": "crm:P5_consists_of",
                     "label": "consists of",
                     "inverse": "crm:P5i_forms_part_of",
@@ -1232,6 +1233,7 @@
                     "sorting": 10000
                 },
                 "sub_state_of": {
+                    "alias": "subState_of",
                     "name": "crm:P5i_forms_part_of",
                     "label": "forms part of",
                     "inverse": "crm:P5_consists_of",
@@ -4072,6 +4074,7 @@
                     "sorting": 18
                 },
                 "conceptual_part": {
+                    "alias": "c_part",
                     "name": "crm:P148_has_component",
                     "label": "has component",
                     "inverse": "crm:P148i_is_component_of",
@@ -4085,6 +4088,7 @@
                     "sorting": 10000
                 },
                 "conceptually_part_of": {
+                    "alias": "c_part_of",
                     "name": "crm:P148i_is_component_of",
                     "label": "is component of",
                     "inverse": "crm:P148_has_component",
@@ -4244,7 +4248,7 @@
                     "subclasses": null,
                     "accepted": true,
                     "hidden": false,
-                    "individual": true,
+                    "individual": false,
                     "range": "crm:E30_Right",
                     "domain": "la:RightAcquisition",
                     "scope_note": "The right established by a RightAcquisition",
@@ -4384,6 +4388,7 @@
                     "sorting": 10000
                 },
                 "during": {
+                    "alias": "falls_within",
                     "name": "crm:P10_falls_within",
                     "label": "falls within",
                     "inverse": "crm:P10i_contains",
