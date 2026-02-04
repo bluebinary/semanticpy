@@ -4383,12 +4383,12 @@
                     "scope_note": "This symmetric property associates two instances of E92 Spacetime Volume that have no extent in\\ncommon.",
                     "sorting": 10000
                 },
-                "falls_within": {
+                "during": {
                     "name": "crm:P10_falls_within",
                     "label": "falls within",
                     "inverse": "crm:P10i_contains",
                     "subclasses": null,
-                    "accepted": false,
+                    "accepted": true,
                     "hidden": false,
                     "individual": false,
                     "range": "crm:E92_Spacetime_Volume",
