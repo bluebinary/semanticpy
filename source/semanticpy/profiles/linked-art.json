@@ -1897,7 +1897,10 @@
             "id": "crm:E74_Group",
             "name": "E74_Group",
             "class": "Group",
-            "superclasses": "Actor",
+            "superclasses": [
+                "Set",
+                "Actor"
+            ],
             "properties": {
                 "dissolved_by": {
                     "name": "crm:P99i_was_dissolved_by",
