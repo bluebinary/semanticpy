@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 with the library and be used in constructing a document, with the library replacing the
 prefixes with their associated URIs during document serialization.
 
+### Updated
+- Updated the Linked.Art profile document to support migration to the Linked.Art 1.0
+specification and model standard.
+
 ## [1.2.2] - 2025-10-07
 ### Added
 - Improved support for aliases, canonical property names and namespaced property names.
