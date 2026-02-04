@@ -14,7 +14,6 @@ from semanticpy.types import (
     readonlydict,
 )
 
-
 logger.debug("semanticpy library imported from: %s" % (__file__))
 
 
