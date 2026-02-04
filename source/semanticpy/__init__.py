@@ -179,6 +179,8 @@ class Model(Node):
             #     properties_sorted[key] = properties[key]
             # properties = properties_sorted
 
+            aliases: dict[str, dict[str, object]] = {}
+
             for prop, props in properties.items():
                 # determine if at least one property on the model is marked as accepted
                 if props.get("accepted", True) is True:
@@ -194,6 +196,16 @@ class Model(Node):
                     if not prop in hidden:
                         hidden.append(prop)
 
+                # if the property has an alias, map the alias name to the property data
+                if isinstance(alias := props.get("alias"), str):
+                    if alias in aliases:
+                        if not aliases[alias] is props:
+                            raise SemanticPyError(
+                                f"An alias for '{alias}' already exists for the '{name}' entity!"
+                            )
+                    else:
+                        aliases[alias] = props
+
                 sorting[prop] = props.get("sorting") or 10000
 
             if accepted is False:
@@ -204,6 +216,9 @@ class Model(Node):
                         name,
                     ),
                 )
+
+            if len(aliases) > 0:
+                properties.update(aliases)
 
             attributes = {
                 "_context": context,

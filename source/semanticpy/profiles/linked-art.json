@@ -267,6 +267,19 @@
                     "scope_note": null,
                     "sorting": 10000
                 },
+                "notation": {
+                    "name": "skos:notation",
+                    "label": "notation",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": true,
+                    "range": "xsd:string",
+                    "domain": "crm:E1_CRM_Entity",
+                    "scope_note": "Identifying string for the resource ; note that Linked Art does not apply a specific data type to the value and everything is just a string.",
+                    "sorting": 10000
+                },
                 "note": {
                     "name": "crm:P3_has_note",
                     "label": "has note",
@@ -391,7 +404,7 @@
             "id": "crm:E8_Acquisition",
             "name": "E8_Acquisition",
             "class": "Acquisition",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "transferred_title_from": {
                     "name": "crm:P23_transferred_title_from",
@@ -1022,19 +1035,6 @@
             "class": "AuthorityDocument",
             "superclasses": "Document",
             "properties": {
-                "hasTopConcept": {
-                    "name": "skos:hasTopConcept",
-                    "label": "has top concept",
-                    "inverse": "skos:topConceptOf",
-                    "subclasses": null,
-                    "accepted": true,
-                    "hidden": false,
-                    "individual": false,
-                    "range": "crm:E55_Type",
-                    "domain": "crm:E32_Authority_Document",
-                    "scope_note": null,
-                    "sorting": 10000
-                },
                 "lists": {
                     "name": "crm:P71_lists",
                     "label": "lists",
@@ -1218,7 +1218,8 @@
                     "scope_note": null,
                     "sorting": 10000
                 },
-                "subState": {
+                "sub_state": {
+                    "alias": "subState",
                     "name": "crm:P5_consists_of",
                     "label": "consists of",
                     "inverse": "crm:P5i_forms_part_of",
@@ -1231,7 +1232,8 @@
                     "scope_note": "This property describes the decomposition of an E3 Condition State into discrete, subsidiary states. \\nIt is assumed that the sub-states into which the condition state is analysed form a logical whole - although the entire story may not be completely known – and that the sub-states are in fact constitutive of the general condition state. For example, a general condition state of “in ruins” may be decomposed into the individual stages of decay",
                     "sorting": 10000
                 },
-                "subState_of": {
+                "sub_state_of": {
+                    "alias": "subState_of",
                     "name": "crm:P5i_forms_part_of",
                     "label": "forms part of",
                     "inverse": "crm:P5_consists_of",
@@ -1884,7 +1886,10 @@
             "id": "crm:E74_Group",
             "name": "E74_Group",
             "class": "Group",
-            "superclasses": "Actor",
+            "superclasses": [
+                "Set",
+                "Actor"
+            ],
             "properties": {
                 "dissolved_by": {
                     "name": "crm:P99i_was_dissolved_by",
@@ -2199,7 +2204,7 @@
             "id": "crm:E85_Joining",
             "name": "E85_Joining",
             "class": "Joining",
-            "superclasses": "Activity",
+            "superclasses": "Addition",
             "properties": {
                 "joined": {
                     "name": "crm:P143_joined",
@@ -2256,7 +2261,7 @@
             "id": "crm:E86_Leaving",
             "name": "E86_Leaving",
             "class": "Leaving",
-            "superclasses": "Activity",
+            "superclasses": "Removal",
             "properties": {
                 "separated": {
                     "name": "crm:P145_separated",
@@ -2557,7 +2562,7 @@
             "id": "crm:E9_Move",
             "name": "E9_Move",
             "class": "Move",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "moved": {
                     "name": "crm:P25_moved",
@@ -2686,7 +2691,7 @@
             "id": "la:Payment",
             "name": "la:Payment",
             "class": "Payment",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "paid_amount": {
                     "name": "la:paid_amount",
@@ -2698,7 +2703,7 @@
                     "individual": true,
                     "range": "crm:E97_Monetary_Amount",
                     "domain": "la:Payment",
-                    "scope_note": "The amount paid.",
+                    "scope_note": "The amount paid",
                     "sorting": 50
                 },
                 "paid_from": {
@@ -3146,7 +3151,7 @@
                     "hidden": false,
                     "individual": true,
                     "range": "crm:E53_Place",
-                    "domain": "crm:E19_Physical_Object",
+                    "domain": "crm:E18_Physical_Thing",
                     "scope_note": "This property records the location of an E19 Physical Object at the time of validity of the record or database containing the statement that uses this property. \\n This property is a specialisation of P53 has former or current location (is former or current location of). It indicates that the E53 Place associated with the E19 Physical Object is the current location of the object. The property does not allow any indication of how long the Object has been at the current location. \\nP55 has current location (currently holds) is a shortcut. A more detailed representation can make use of the fully developed (i.e. indirect) path from E19 Physical Object through P25 moved (moved by), E9 Move P26 moved to (was destination of) to E53 Place if and only if this Move is the most recent.",
                     "sorting": 10000
                 },
@@ -3168,11 +3173,11 @@
                     "label": "has current permanent location",
                     "inverse": "crm:P54i_is_current_permanent_location_of",
                     "subclasses": null,
-                    "accepted": false,
+                    "accepted": true,
                     "hidden": false,
-                    "individual": false,
+                    "individual": true,
                     "range": "crm:E53_Place",
-                    "domain": "crm:E19_Physical_Object",
+                    "domain": "crm:E18_Physical_Thing",
                     "scope_note": "This property records the foreseen permanent location of an instance of E19 Physical Object at the time of validity of the record or database containing the statement that uses this property.\\nP54 has current permanent location (is current permanent location of) is similar to P55 has current location (currently holds). However, it indicates the E53 Place currently reserved for an object, such as the permanent storage location or a permanent exhibit location. The object may be temporarily removed from the permanent location, for example when used in temporary exhibitions or loaned to another institution. The object may never actually be located at its permanent location.",
                     "sorting": 10000
                 },
@@ -3316,6 +3321,19 @@
                     "range": "crm:E39_Actor",
                     "domain": "crm:E18_Physical_Thing",
                     "scope_note": "This property identifies the E39 Actor or Actors who had custody of an instance of E18 Physical Thing at the time of validity of the record or database containing the statement that uses this property.\\n P50 has current keeper (is current keeper of) is a shortcut for the more detailed path from E18 Physical Thing through P30 transferred custody of (custody transferred through), E10 Transfer of Custody, P29 custody received by (received custody through) to E39 Actor.",
+                    "sorting": 10000
+                },
+                "contains_members_of": {
+                    "name": "la:contains_members_of",
+                    "label": "contains members of",
+                    "inverse": "la:members_contained_by",
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "la:Set",
+                    "domain": "crm:E18_Physical_Thing",
+                    "scope_note": null,
                     "sorting": 10000
                 },
                 "current_owner": {
@@ -3686,7 +3704,7 @@
                     "accepted": false,
                     "hidden": false,
                     "individual": false,
-                    "range": "crm:E19_Physical_Object",
+                    "range": "crm:E18_Physical_Thing",
                     "domain": "crm:E53_Place",
                     "scope_note": null,
                     "sorting": 10000
@@ -3699,7 +3717,7 @@
                     "accepted": true,
                     "hidden": false,
                     "individual": false,
-                    "range": "crm:E19_Physical_Object",
+                    "range": "crm:E18_Physical_Thing",
                     "domain": "crm:E53_Place",
                     "scope_note": null,
                     "sorting": 10000
@@ -4055,7 +4073,8 @@
                     "scope_note": "This property documents that an E89 Propositional Object has as subject an instance of E1 CRM Entity.",
                     "sorting": 18
                 },
-                "c_part": {
+                "conceptual_part": {
+                    "alias": "c_part",
                     "name": "crm:P148_has_component",
                     "label": "has component",
                     "inverse": "crm:P148i_is_component_of",
@@ -4068,7 +4087,8 @@
                     "scope_note": "This property associates an instance of E89 Propositional Object with a structural part of it that is by itself an instance of E89 Propositional Object.",
                     "sorting": 10000
                 },
-                "c_part_of": {
+                "conceptually_part_of": {
+                    "alias": "c_part_of",
                     "name": "crm:P148i_is_component_of",
                     "label": "is component of",
                     "inverse": "crm:P148_has_component",
@@ -4219,7 +4239,7 @@
             "id": "la:RightAcquisition",
             "name": "la:RightAcquisition",
             "class": "RightAcquisition",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "establishes": {
                     "name": "la:establishes",
@@ -4228,7 +4248,7 @@
                     "subclasses": null,
                     "accepted": true,
                     "hidden": false,
-                    "individual": true,
+                    "individual": false,
                     "range": "crm:E30_Right",
                     "domain": "la:RightAcquisition",
                     "scope_note": "The right established by a RightAcquisition",
@@ -4284,6 +4304,32 @@
                     "domain": "la:Set",
                     "scope_note": null,
                     "sorting": 10001
+                },
+                "members_contained_by": {
+                    "name": "la:members_contained_by",
+                    "label": "members contained by",
+                    "inverse": "la:contains_members_of",
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E18_Physical_Thing",
+                    "domain": "la:Set",
+                    "scope_note": null,
+                    "sorting": 10000
+                },
+                "members_exemplified_by": {
+                    "name": "la:members_exemplified_by",
+                    "label": "members exemplified by",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E1_CRM_Entity",
+                    "domain": "la:Set",
+                    "scope_note": null,
+                    "sorting": 10000
                 },
                 "removed_from_by": {
                     "name": "la:removed_from_by",
@@ -4341,17 +4387,31 @@
                     "scope_note": "This symmetric property associates two instances of E92 Spacetime Volume that have no extent in\\ncommon.",
                     "sorting": 10000
                 },
-                "falls_within": {
+                "during": {
+                    "alias": "falls_within",
                     "name": "crm:P10_falls_within",
                     "label": "falls within",
                     "inverse": "crm:P10i_contains",
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E92_Spacetime_Volume",
+                    "domain": "crm:E92_Spacetime_Volume",
+                    "scope_note": "This property associates an instance of E92 Spacetime Volume with another instance of E92 Spacetime Volume that falls within the latter. In other words, all points in the former are also points in the latter.",
+                    "sorting": 10000
+                },
+                "includes": {
+                    "name": "crm:P10i_contains",
+                    "label": "contains",
+                    "inverse": "crm:P10_falls_within",
                     "subclasses": null,
                     "accepted": false,
                     "hidden": false,
                     "individual": false,
                     "range": "crm:E92_Spacetime_Volume",
                     "domain": "crm:E92_Spacetime_Volume",
-                    "scope_note": "This property associates an instance of E92 Spacetime Volume with another instance of E92 Spacetime Volume that falls within the latter. In other words, all points in the former are also points in the latter.",
+                    "scope_note": null,
                     "sorting": 10000
                 },
                 "presence": {
@@ -4555,6 +4615,32 @@
                     "range": "crm:E2_Temporal_Entity",
                     "domain": "crm:E2_Temporal_Entity",
                     "scope_note": "This property identifies a situation in which the entire instance of the E52 Time-Span of an instance of E2 Temporal Entity is within the instance of the E52 Time-Span of another instance of E2 Temporal Entity that starts before and ends after the included temporal entity.",
+                    "sorting": 10000
+                },
+                "after": {
+                    "name": "crm:P183i_starts_after_the_end_of",
+                    "label": "starts after the end of",
+                    "inverse": "crm:P183_ends_before_the_start_of",
+                    "subclasses": "crm:P182i_starts_with_or_after_the_end_of",
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E2_Temporal_Entity",
+                    "domain": "crm:E2_Temporal_Entity",
+                    "scope_note": "Inverse of P183",
+                    "sorting": 10000
+                },
+                "before": {
+                    "name": "crm:P183_ends_before_the_start_of",
+                    "label": "ends before the start of",
+                    "inverse": "crm:P183i_starts_after_the_end_of",
+                    "subclasses": "crm:P182_ends_before_of_at_the_start_of",
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E2_Temporal_Entity",
+                    "domain": "crm:E2_Temporal_Entity",
+                    "scope_note": "This property specifies that the temporal extent of the domain instance A of E2 Temporal Entity ends definitely before\\nthe start of the temporal extent of the range instance B of E2 Temporal Entity. In other words, if A = [Astart, Aend] and B = [Bstart, Bend], we mean Aend < Bstart is true. This property is part of the set of temporal primitives P173 – P176, P182 – P185. This property corresponds to a disjunction (logical OR) of the following Allen temporal relations [Allen, 1983]: {before}",
                     "sorting": 10000
                 },
                 "ends_after_or_with_the_start_of": {
@@ -5070,12 +5156,60 @@
                 }
             }
         },
+        "Transfer": {
+            "type": "la:Transfer",
+            "id": "la:Transfer",
+            "name": "la:Transfer",
+            "class": "Transfer",
+            "superclasses": "Activity",
+            "properties": {
+                "transferred": {
+                    "name": "la:transferred",
+                    "label": "transferred",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E1_CRM_Entity",
+                    "domain": "la:Transfer",
+                    "scope_note": "What was transferred",
+                    "sorting": 10000
+                },
+                "transferred_from": {
+                    "name": "la:transferred_from",
+                    "label": "transferred from",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E1_CRM_Entity",
+                    "domain": "la:Transfer",
+                    "scope_note": "Where or with whom did it start",
+                    "sorting": 10000
+                },
+                "transferred_to": {
+                    "name": "la:transferred_to",
+                    "label": "transferred to",
+                    "inverse": null,
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E1_CRM_Entity",
+                    "domain": "la:Transfer",
+                    "scope_note": "Where or with whom did it end",
+                    "sorting": 10000
+                }
+            }
+        },
         "TransferOfCustody": {
             "type": "E10",
             "id": "crm:E10_Transfer_of_Custody",
             "name": "E10_Transfer_of_Custody",
             "class": "TransferOfCustody",
-            "superclasses": "Activity",
+            "superclasses": "Transfer",
             "properties": {
                 "transferred_custody_from": {
                     "name": "crm:P28_custody_surrendered_by",
@@ -5215,19 +5349,6 @@
                     "scope_note": null,
                     "sorting": 10000
                 },
-                "inScheme": {
-                    "name": "skos:inScheme",
-                    "label": "is in scheme",
-                    "inverse": null,
-                    "subclasses": null,
-                    "accepted": true,
-                    "hidden": false,
-                    "individual": false,
-                    "range": "crm:E32_Authority_Document",
-                    "domain": "crm:E55_Type",
-                    "scope_note": "Relates a resource (for example a concept) to a concept scheme in which it is included.",
-                    "sorting": 10000
-                },
                 "instance_represented_by": {
                     "name": "crm:P199i_has_instance_represented_by",
                     "label": "has instance represented by",
@@ -5315,19 +5436,6 @@
                     "hidden": false,
                     "individual": false,
                     "range": "crm:E7_Activity",
-                    "domain": "crm:E55_Type",
-                    "scope_note": null,
-                    "sorting": 10000
-                },
-                "topConceptOf": {
-                    "name": "skos:topConceptOf",
-                    "label": "is top concept of",
-                    "inverse": "skos:hasTopConcept",
-                    "subclasses": null,
-                    "accepted": true,
-                    "hidden": false,
-                    "individual": false,
-                    "range": "crm:E32_Authority_Document",
                     "domain": "crm:E55_Type",
                     "scope_note": null,
                     "sorting": 10000
