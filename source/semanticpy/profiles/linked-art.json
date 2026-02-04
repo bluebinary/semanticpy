@@ -3702,7 +3702,7 @@
                     "accepted": true,
                     "hidden": false,
                     "individual": false,
-                    "range": "crm:E19_Physical_Object",
+                    "range": "crm:E18_Physical_Thing",
                     "domain": "crm:E53_Place",
                     "scope_note": null,
                     "sorting": 10000
