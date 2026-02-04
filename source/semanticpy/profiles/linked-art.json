@@ -4396,6 +4396,19 @@
                     "scope_note": "This property associates an instance of E92 Spacetime Volume with another instance of E92 Spacetime Volume that falls within the latter. In other words, all points in the former are also points in the latter.",
                     "sorting": 10000
                 },
+                "includes": {
+                    "name": "crm:P10i_contains",
+                    "label": "contains",
+                    "inverse": "crm:P10_falls_within",
+                    "subclasses": null,
+                    "accepted": false,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E92_Spacetime_Volume",
+                    "domain": "crm:E92_Spacetime_Volume",
+                    "scope_note": null,
+                    "sorting": 10000
+                },
                 "presence": {
                     "name": "crm:P166i_had_presence",
                     "label": "had presence",
