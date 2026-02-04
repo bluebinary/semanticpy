@@ -2202,7 +2202,7 @@
             "id": "crm:E85_Joining",
             "name": "E85_Joining",
             "class": "Joining",
-            "superclasses": "Activity",
+            "superclasses": "Addition",
             "properties": {
                 "joined": {
                     "name": "crm:P143_joined",
