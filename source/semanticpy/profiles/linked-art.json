@@ -5257,19 +5257,6 @@
                     "scope_note": null,
                     "sorting": 10000
                 },
-                "inScheme": {
-                    "name": "skos:inScheme",
-                    "label": "is in scheme",
-                    "inverse": null,
-                    "subclasses": null,
-                    "accepted": true,
-                    "hidden": false,
-                    "individual": false,
-                    "range": "crm:E32_Authority_Document",
-                    "domain": "crm:E55_Type",
-                    "scope_note": "Relates a resource (for example a concept) to a concept scheme in which it is included.",
-                    "sorting": 10000
-                },
                 "instance_represented_by": {
                     "name": "crm:P199i_has_instance_represented_by",
                     "label": "has instance represented by",
