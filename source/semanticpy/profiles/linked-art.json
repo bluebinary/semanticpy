@@ -1244,7 +1244,7 @@
                     "scope_note": "This property describes the decomposition of an E3 Condition State into discrete, subsidiary states. \\nIt is assumed that the sub-states into which the condition state is analysed form a logical whole - although the entire story may not be completely known – and that the sub-states are in fact constitutive of the general condition state. For example, a general condition state of “in ruins” may be decomposed into the individual stages of decay",
                     "sorting": 10000
                 },
-                "subState_of": {
+                "sub_state_of": {
                     "name": "crm:P5i_forms_part_of",
                     "label": "forms part of",
                     "inverse": "crm:P5_consists_of",
