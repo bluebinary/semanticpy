@@ -1035,19 +1035,6 @@
             "class": "AuthorityDocument",
             "superclasses": "Document",
             "properties": {
-                "hasTopConcept": {
-                    "name": "skos:hasTopConcept",
-                    "label": "has top concept",
-                    "inverse": "skos:topConceptOf",
-                    "subclasses": null,
-                    "accepted": true,
-                    "hidden": false,
-                    "individual": false,
-                    "range": "crm:E55_Type",
-                    "domain": "crm:E32_Authority_Document",
-                    "scope_note": null,
-                    "sorting": 10000
-                },
                 "lists": {
                     "name": "crm:P71_lists",
                     "label": "lists",
