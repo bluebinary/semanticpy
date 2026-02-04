@@ -4084,7 +4084,7 @@
                     "scope_note": "This property associates an instance of E89 Propositional Object with a structural part of it that is by itself an instance of E89 Propositional Object.",
                     "sorting": 10000
                 },
-                "c_part_of": {
+                "conceptually_part_of": {
                     "name": "crm:P148i_is_component_of",
                     "label": "is component of",
                     "inverse": "crm:P148_has_component",
