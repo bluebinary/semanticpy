@@ -3321,6 +3321,19 @@
                     "scope_note": "This property identifies the E39 Actor or Actors who had custody of an instance of E18 Physical Thing at the time of validity of the record or database containing the statement that uses this property.\\n P50 has current keeper (is current keeper of) is a shortcut for the more detailed path from E18 Physical Thing through P30 transferred custody of (custody transferred through), E10 Transfer of Custody, P29 custody received by (received custody through) to E39 Actor.",
                     "sorting": 10000
                 },
+                "contains_members_of": {
+                    "name": "la:contains_members_of",
+                    "label": "contains members of",
+                    "inverse": "la:members_contained_by",
+                    "subclasses": null,
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "la:Set",
+                    "domain": "crm:E18_Physical_Thing",
+                    "scope_note": null,
+                    "sorting": 10000
+                },
                 "current_owner": {
                     "name": "crm:P52_has_current_owner",
                     "label": "has current owner",
