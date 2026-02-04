@@ -1,7 +1,6 @@
-import copy
-import json
-
 from semanticpy.logging import logger
+
+logger = logger.getChild(__name__)
 
 
 class readonlydict(dict):

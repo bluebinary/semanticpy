@@ -1,0 +1,45 @@
+{
+  "@context": "https://linked.art/ns/v1/linked-art.json",
+  "id": "https://example.org/object/1",
+  "type": "HumanMadeObject",
+  "_label": "Example Object #1",
+  "classified_as": [
+    {
+      "id": "http://vocab.getty.edu/aat/300133025",
+      "type": "Type",
+      "_label": "Works of Art"
+    },
+    {
+      "id": "http://vocab.getty.edu/aat/300033618",
+      "type": "Type",
+      "_label": "Paintings (Visual Works)",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300435443",
+          "type": "Type",
+          "_label": "Type of Work"
+        }
+      ]
+    }
+  ],
+  "identified_by": [
+    {
+      "type": "Name",
+      "_label": "Name of Artwork",
+      "content": "A Painting"
+    },
+    {
+      "type": "Identifier",
+      "_label": "Accession Number for Artwork",
+      "content": "1982.A.39"
+    }
+  ],
+  "produced_by": {
+    "type": "Production",
+    "timespan": {
+      "type": "TimeSpan",
+      "begin_of_the_begin": "2026-01-01T00:00:00",
+      "end_of_the_end": "2026-12-31T23:59:59"
+    }
+  }
+}

@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.3] - 2025-01-12
+### Added
+- Added support for namespaced identifiers, where one or more prefixes can be registered
+with the library and be used in constructing a document, with the library replacing the
+prefixes with their associated URIs during document serialization.
+
 ## [1.2.2] - 2025-10-07
 ### Added
 - Improved support for aliases, canonical property names and namespaced property names.

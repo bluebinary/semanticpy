@@ -2,7 +2,6 @@ import pytest
 import logging
 import semanticpy
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -53,6 +52,8 @@ def test_teardown():
     # This should succeed as the model class name has been added to globals()
     obj = HumanMadeObject()
 
+    assert isinstance(obj, HumanMadeObject)
+
     # Now tear the model down, restoring globals() to its prior state
     semanticpy.Model.teardown(globals=globals())
 
@@ -60,5 +61,7 @@ def test_teardown():
     # successful, and if the restoration of globals() to its prior state succeeded
     try:
         obj = HumanMadeObject()
+
+        assert isinstance(obj, HumanMadeObject)
     except NameError as exception:
         assert str(exception) == "name 'HumanMadeObject' is not defined"

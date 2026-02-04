@@ -1,6 +1,3 @@
-import copy
-import json
-
 from semanticpy.logging import logger
 
 
@@ -64,4 +61,5 @@ class Attributed(object):
         try:
             return self.__getattr__(key)
         except AttributeError as exception:
+            logger.debug(str(exception))
             return default

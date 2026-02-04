@@ -1,12 +1,10 @@
-import pytest
 import logging
 import semanticpy
-
 
 logger = logging.getLogger(__name__)
 
 
-def test_record_create(factory):
+def test_record_create(factory: callable, data: callable):
     # Initialise the Model using a named profile; in this case specify the "linked-art"
     # profile which is provided with the library so only needs specifying by its name.
     # Other profiles may be used to create models of other types; see the *Profiles*
@@ -15,9 +13,12 @@ def test_record_create(factory):
     # argument making the class types available for use just by referencing their names:
     model = factory(profile="linked-art", globals=globals())
 
-    assert getattr(model, "HumanMadeObject")
+    # Register a URI prefix and its corresponding URI; prefixes can be registered with
+    # or without the ":" suffix, but a ":" must be used when the prefix is used in place
+    # of the URI in identifiers referenced elsewhere when assembling documents.
+    semanticpy.Model.prefix("aat", "http://vocab.getty.edu/aat/")
 
-    logger.debug(model.HumanMadeObject.type)
+    assert getattr(model, "HumanMadeObject")
 
     # Create a HumanMadeObject (HMO) model instance
     hmo = HumanMadeObject(
@@ -25,9 +26,11 @@ def test_record_create(factory):
         label="Example Object #1",
     )
 
+    assert isinstance(hmo, HumanMadeObject)
+
     # Assign a classification of "Works of Art" to the HMO as per the Linked.Art model
     hmo.classified_as = Type(
-        ident="http://vocab.getty.edu/aat/300133025",
+        ident="aat:300133025",
         label="Works of Art",
     )
 
@@ -62,11 +65,21 @@ def test_record_create(factory):
 
     production.timespan = timespan = TimeSpan()
 
+    timespan.begin_of_the_begin = "2026-01-01T00:00:00"
+
+    timespan.end_of_the_end = "2026-12-31T23:59:59"
+
     # Serialise the model into JSON, in this case optionally specifying an indent of two
     # spaces per level of nesting to make the JSON easier to read; by default the method
     # will not indent, compacting the JSON to save storage and transmission overhead:
     serialised = hmo.json(indent=2)
 
+    assert isinstance(serialised, str)
+
     # For the purposes of this example, print the JSON for review; the JSON could also
     # be saved to a file, stored in a database, or used in some other way:
-    print(serialised)
+    content: str = data("examples/object.json")
+
+    assert isinstance(content, str)
+
+    assert content == serialised

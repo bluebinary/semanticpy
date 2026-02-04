@@ -1,5 +1,5 @@
 # SemanticPy Dependencies: Development
-black==24.3.0
+black==26.1.0
 pytest==8.3.0
 pytest-cov==4.1.0
 pytest-codeblocks==0.17.0
