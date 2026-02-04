@@ -4599,6 +4599,19 @@
                     "scope_note": "This property identifies a situation in which the entire instance of the E52 Time-Span of an instance of E2 Temporal Entity is within the instance of the E52 Time-Span of another instance of E2 Temporal Entity that starts before and ends after the included temporal entity.",
                     "sorting": 10000
                 },
+                "after": {
+                    "name": "crm:P183i_starts_after_the_end_of",
+                    "label": "starts after the end of",
+                    "inverse": "crm:P183_ends_before_the_start_of",
+                    "subclasses": "crm:P182i_starts_with_or_after_the_end_of",
+                    "accepted": true,
+                    "hidden": false,
+                    "individual": false,
+                    "range": "crm:E2_Temporal_Entity",
+                    "domain": "crm:E2_Temporal_Entity",
+                    "scope_note": "Inverse of P183",
+                    "sorting": 10000
+                },
                 "ends_after_or_with_the_start_of": {
                     "name": "crm:P173i_ends_after_or_with_the_start_of",
                     "label": "ends after or with the start of",
