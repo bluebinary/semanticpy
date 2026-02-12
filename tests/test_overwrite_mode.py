@@ -99,7 +99,7 @@ def test_overwrite_mode_prevent(caplog):
 
     # Ensure that the expected warning message was captured
     assert (
-        "The 'Identifier' entity's 'content' property has already been assigned to '123', and current library configuration, prevents it from being overwritten!"
+        "The 'Identifier' entity's 'content' property has already been assigned to '123', and current library configuration prevents it from being overwritten!"
         in caplog.text.strip()
     )
 
@@ -138,7 +138,7 @@ def test_overwrite_mode_error():
         # Ensure that the expected exception message was captured
         assert (
             str(exception)
-            == "The 'Identifier' entity's 'content' property has already been assigned to '123', and current library configuration, prevents it from being overwritten!"
+            == "The 'Identifier' entity's 'content' property has already been assigned to '123', and current library configuration prevents it from being overwritten!"
         )
 
     # As we captured the exception above, and as the property was not overwritten, the
