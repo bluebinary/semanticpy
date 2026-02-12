@@ -13,6 +13,7 @@ from semanticpy.types import (
     Namespace,
     readonlydict,
 )
+from semanticpy.enumerations import OverwriteMode
 
 logger.debug("semanticpy library imported from: %s" % (__file__))
 
@@ -307,6 +308,9 @@ class Model(Node):
             if isinstance(glo, dict):
                 del glo[key]
 
+        # Reset the overwrite mode to the default
+        cls._overwrite = OverwriteMode.Allow
+
     @classmethod
     def open(cls, filepath: str) -> Model:
         """Support opening and loading model instances from stored JSON-LD files"""
@@ -465,7 +469,7 @@ class Model(Node):
     def extend(
         cls,
         subclass: Model,
-        properties: dict = None,
+        properties: dict[str, dict[str, object]] = None,
         context: str = None,
         globals: dict = None,
         typed: bool = True,
@@ -1203,3 +1207,15 @@ class Model(Node):
             nodes = temp
 
         return nodes
+
+
+__all__ = [
+    # Classes
+    "Node",
+    "Namespace",
+    "Model",
+    # Enumerations
+    "OverwriteMode",
+    # Exceptions
+    "SemanticPyError",
+]

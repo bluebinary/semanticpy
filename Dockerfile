@@ -68,8 +68,8 @@ if [[ "${SERVICE}" == "black" ]]; then
 		black --check ${ARGS[@]:1} /source /tests;
 	fi
 elif [[ "${SERVICE}" == "flakes" ]]; then
-	echo -e "pyflakes ${ARGS[@]:1}";
-	pyflakes ${ARGS[@]:1}
+	echo -e "pyflakes /source /tests ${ARGS[@]:1}";
+	pyflakes /source /tests ${ARGS[@]:1}
 elif [[ "${SERVICE}" == "tests" ]]; then
 	echo -e "pytest /tests ${ARGS[@]}";
 	pytest /tests ${ARGS[@]};

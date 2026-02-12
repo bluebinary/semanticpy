@@ -12,7 +12,6 @@ services:
       context: ./
     environment:
       - SERVICE=black
-    command: black --check /source /tests
     volumes:
       *volumes
 
@@ -22,7 +21,6 @@ services:
       context: ./
     environment:
       - SERVICE=flakes
-    command: pyflakes /source /tests
     volumes:
       *volumes
 
@@ -32,6 +30,5 @@ services:
       context: ./
     environment:
       - SERVICE=tests
-    command: pytest /tests
     volumes:
       *volumes

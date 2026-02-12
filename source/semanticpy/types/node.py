@@ -2,6 +2,8 @@ import copy
 import json
 
 from semanticpy.logging import logger
+from semanticpy.enumerations import OverwriteMode
+from semanticpy.errors import SemanticPyError
 
 
 class Node(object):
@@ -26,6 +28,15 @@ class Node(object):
         "_sorting",
         "_annotations",
     ]
+    _overwrite: OverwriteMode = OverwriteMode.Allow
+
+    @classmethod
+    def overwrite(cls, mode: OverwriteMode | str):
+        if isinstance(mode, str):
+            mode = OverwriteMode.reconcile(name=mode, caseless=True)
+
+        if isinstance(mode, OverwriteMode):
+            cls._overwrite = mode
 
     def __init__(self, data: dict[str, object] = None, **kwargs):
         # logger.debug("%s.__init__(data: %s)" % (self.__class__.__name__, data))
@@ -88,7 +99,22 @@ class Node(object):
             if name in self._multiple:
                 self._data[name].append(value)
             else:
-                self._data[name] = value
+                if self.__class__._overwrite is OverwriteMode.Warning:
+                    logger.warning(
+                        f"The '{self.__class__.__name__}' entity's '{name}' property has already been assigned to '{self._data[name]}', and will be overwritten with the newly provided value: '{value}'!"
+                    )
+
+                    self._data[name] = value
+                elif self.__class__._overwrite is OverwriteMode.Prevent:
+                    logger.warning(
+                        f"The '{self.__class__.__name__}' entity's '{name}' property has already been assigned to '{self._data[name]}', and current library configuration, prevents it from being overwritten!"
+                    )
+                elif self.__class__._overwrite is OverwriteMode.Error:
+                    raise SemanticPyError(
+                        f"The '{self.__class__.__name__}' entity's '{name}' property has already been assigned to '{self._data[name]}', and current library configuration does not allow singular property values to be overwritten!"
+                    )
+                else:
+                    self._data[name] = value
         else:
             if name in self._multiple:
                 self._data[name] = [value]
