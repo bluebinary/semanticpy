@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.4] - 2026-02-11
+### Added
+- Added support for controlling overwrite behaviour for single-value properties.
+- Added support for Python 3.14.
+
 ## [1.2.3] - 2026-02-03
 ### Added
 - Added support for namespaced identifiers, where one or more prefixes can be registered
