@@ -183,22 +183,25 @@ class Model(Node):
             aliases: dict[str, dict[str, object]] = {}
 
             for prop, props in properties.items():
-                # determine if at least one property on the model is marked as accepted
+                # Copy the props dictionary so that it can be modified in isolation
+                properties[prop] = dict(props)
+
+                # Determine if at least one property on the model is marked as accepted
                 if props.get("accepted", True) is True:
                     accepted = True
 
-                # assemble the list of properties on the model that accept multiple values
+                # Assemble the list of properties on the model that accept multiple values
                 if props.get("individual", False) is False:
                     if not prop in multiple:
                         multiple.append(prop)
 
-                # assemble the list of properties on the model that are hidden
+                # Assemble the list of properties on the model that are hidden
                 if props.get("hidden", False) is True:
                     if not prop in hidden:
                         hidden.append(prop)
 
-                # if the property has an alias, map the alias name to the property data
-                if isinstance(alias := props.get("alias"), str):
+                # If the property has an alias, map the alias name to the property data
+                if isinstance(alias := props.pop("alias", None), str):
                     if alias in aliases:
                         if not aliases[alias] is props:
                             raise SemanticPyError(

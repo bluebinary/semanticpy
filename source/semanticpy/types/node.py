@@ -107,7 +107,7 @@ class Node(object):
                     self._data[name] = value
                 elif self.__class__._overwrite is OverwriteMode.Prevent:
                     logger.warning(
-                        f"The '{self.__class__.__name__}' entity's '{name}' property has already been assigned to '{self._data[name]}', and current library configuration, prevents it from being overwritten!"
+                        f"The '{self.__class__.__name__}' entity's '{name}' property has already been assigned to '{self._data[name]}', and current library configuration prevents it from being overwritten!"
                     )
                 elif self.__class__._overwrite is OverwriteMode.Error:
                     raise SemanticPyError(
