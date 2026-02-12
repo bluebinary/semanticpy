@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.5] - 2026-02-12
+### Added
+- Improved support for aliasing properties.
+
 ## [1.2.4] - 2026-02-11
 ### Added
 - Added support for controlling overwrite behaviour for single-value properties.
