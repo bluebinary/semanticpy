@@ -2,7 +2,7 @@ import copy
 import json
 
 from semanticpy.logging import logger
-from semanticpy.enumerations import OverwriteMode
+from semanticpy.enumerations import OverwriteMode, AppendingMode
 from semanticpy.errors import SemanticPyError
 
 
@@ -28,15 +28,43 @@ class Node(object):
         "_sorting",
         "_annotations",
     ]
-    _overwrite: OverwriteMode = OverwriteMode.Allow
+
+    _overwrite_mode: OverwriteMode = None
+    _appending_mode: AppendingMode = None
 
     @classmethod
-    def overwrite(cls, mode: OverwriteMode | str):
-        if isinstance(mode, str):
-            mode = OverwriteMode.reconcile(name=mode, caseless=True)
+    def configure(
+        cls,
+        overwrite: OverwriteMode | str = None,
+        appending: AppendingMode | str = None,
+    ):
+        """Supports configuring the Node and its subclasses with runtime options."""
 
-        if isinstance(mode, OverwriteMode):
-            cls._overwrite = mode
+        if overwrite is None:
+            pass
+        else:
+            if isinstance(overwrite, str):
+                overwrite = OverwriteMode.reconcile(name=overwrite, caselessly=True)
+
+            if isinstance(overwrite, OverwriteMode):
+                cls._overwrite_mode = overwrite
+            else:
+                raise TypeError(
+                    "The 'overwrite' argument, if specified, must reference an OverwriteMode enumeration option or the string name of the desired option!"
+                )
+
+        if appending is None:
+            pass
+        else:
+            if isinstance(appending, str):
+                appending = AppendingMode.reconcile(name=appending, caselessly=True)
+
+            if isinstance(appending, AppendingMode):
+                cls._appending_mode = appending
+            else:
+                raise TypeError(
+                    "The 'appending' argument, if specified, must reference an AppendingMode enumeration option or the string name of the desired option!"
+                )
 
     def __init__(self, data: dict[str, object] = None, **kwargs):
         # logger.debug("%s.__init__(data: %s)" % (self.__class__.__name__, data))
@@ -97,19 +125,25 @@ class Node(object):
 
         if name in self._data:
             if name in self._multiple:
-                self._data[name].append(value)
+                if self.__class__._appending_mode is AppendingMode.Unique:
+                    if not value in self._data[name]:
+                        self._data[name].append(value)
+                else:
+                    self._data[name].append(value)
             else:
-                if self.__class__._overwrite is OverwriteMode.Warning:
+                if self.__class__._overwrite_mode is OverwriteMode.Warning:
                     logger.warning(
                         f"The '{self.__class__.__name__}' entity's '{name}' property has already been assigned to '{self._data[name]}', and will be overwritten with the newly provided value: '{value}'!"
                     )
 
                     self._data[name] = value
-                elif self.__class__._overwrite is OverwriteMode.Prevent:
+                elif self.__class__._overwrite_mode is OverwriteMode.Prevent:
                     logger.warning(
                         f"The '{self.__class__.__name__}' entity's '{name}' property has already been assigned to '{self._data[name]}', and current library configuration prevents it from being overwritten!"
                     )
-                elif self.__class__._overwrite is OverwriteMode.Error:
+                elif self.__class__._overwrite_mode is OverwriteMode.PreventQuietly:
+                    pass
+                elif self.__class__._overwrite_mode is OverwriteMode.Error:
                     raise SemanticPyError(
                         f"The '{self.__class__.__name__}' entity's '{name}' property has already been assigned to '{self._data[name]}', and current library configuration does not allow singular property values to be overwritten!"
                     )

@@ -13,7 +13,7 @@ from semanticpy.types import (
     Namespace,
     readonlydict,
 )
-from semanticpy.enumerations import OverwriteMode
+from semanticpy.enumerations import OverwriteMode, AppendingMode
 
 logger.debug("semanticpy library imported from: %s" % (__file__))
 
@@ -311,8 +311,9 @@ class Model(Node):
             if isinstance(glo, dict):
                 del glo[key]
 
-        # Reset the overwrite mode to the default
-        cls._overwrite = OverwriteMode.Allow
+        # Reset the configuration to the defaults
+        cls._overwrite_mode = None
+        cls._appending_mode = None
 
     @classmethod
     def open(cls, filepath: str) -> Model:
@@ -1219,6 +1220,7 @@ __all__ = [
     "Model",
     # Enumerations
     "OverwriteMode",
+    "AppendingMode",
     # Exceptions
     "SemanticPyError",
 ]

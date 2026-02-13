@@ -1,18 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.6] - 2026-02-12
+### Added
+- Support for controlling appending behaviour for multiple-value properties.
+- Support for quietly preventing overwrites of single-value properties, with no logging.
+
 ## [1.2.5] - 2026-02-12
 ### Added
 - Improved support for aliasing properties.
 
 ## [1.2.4] - 2026-02-11
 ### Added
-- Added support for controlling overwrite behaviour for single-value properties.
-- Added support for Python 3.14.
+- Support for controlling overwrite behaviour for single-value properties.
+- Support for Python 3.14.
 
 ## [1.2.3] - 2026-02-03
 ### Added
-- Added support for namespaced identifiers, where one or more prefixes can be registered
+- Support for namespaced identifiers, where one or more prefixes can be registered
 with the library and be used in constructing a document, with the library replacing the
 prefixes with their associated URIs during document serialization.
 
