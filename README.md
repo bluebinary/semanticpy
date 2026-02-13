@@ -156,10 +156,17 @@ The primary interface to the SemanticPy library is its `Model` class which offer
 
    * `globals` (`dict`) – (optional) the `globals` argument can be used to specify a reference to the `globals()` scope from which the `teardown()` method should remove the references to the model entities provided by the model as specified in the profile.
 
- * `overwrite()` – the `overwrite()` class method may be used to change the overwrite behaviour of single-value properties from the library's default behaviour of simply overwriting the property's value with the new value during a later assignment to another behaviour mode if desired. The `overwrite()` method accepts the following arguments:
+ * `configure()` – the `configure()` class method may be used to configure certain aspects of the library's behaviour:
+
+   * the overwrite behaviour of single-value properties
+  
+   * the appending behaviour of multiple-value properties
+
+   The `configure()` method accepts the following arguments:
  
-   * `mode` (`OverwriteMode` | `str`) – the `mode` argument is used to specify the desired overwrite behaviour mode, either via reference to an `OverwriteMode` enumeration option, or the string name
-   of the `OverwriteMode` enumeration option. See the [**Overwrite Modes**](#overwrite-modes) section below for more information.
+   * `overwrite` (`OverwriteMode` | `str`) – the `overwrite` argument is used to specify the desired overwrite behaviour mode, either via reference to an `OverwriteMode` enumeration option, or the string name of the `OverwriteMode` enumeration option. See the [**Overwrite Modes**](#overwrite-modes) section below for more information.
+
+   * `appending` (`AppendingMode` | `str`) – the `appending` argument is used to specify the desired appending behaviour mode, either via reference to an `AppendingMode` enumeration option, or the string name of the `AppendingMode` enumeration option. See the [**Appending Modes**](#appending-modes) section below for more information.
 
  * `extend()` – the `extend()` class method is used to support extending the factory-generated model with additional model subclasses, and optionally, additional model-wide properties. The `extend()` method accepts the following arguments:
 
@@ -238,17 +245,18 @@ The `Model` class offers the following named properties in addition to the metho
 The overwrite behaviour mode for single-value properties can be changed from the default
 behaviour of overwriting the value of single-value properties, to one of the following:
 
-| Overwrite Mode | Description                                                       |
-|----------------|-------------------------------------------------------------------|
-| `Allow`        | Default behaviour allows property values to be overwritten.       |
-| `Warning`      | Warning emitted on value reassignment; value is overwritten.      |
-| `Prevent`      | Warning emitted on attempted reassignment; value not overwritten. |
-| `Error`        | Error raised on attempted reassignment; value not overwritten.    |
+| Overwrite Mode   | Description                                                       |
+|------------------|-------------------------------------------------------------------|
+| `Allow`          | Default behaviour allows property values to be overwritten.       |
+| `Warning`        | Warning emitted on value reassignment; value is overwritten.      |
+| `Prevent`        | Warning emitted on attempted reassignment; value not overwritten. |
+| `PreventQuietly` | No warning on attempted reassignment; value not overwritten.      |
+| `Error`          | Error raised on attempted reassignment; value not overwritten.    |
 
 The overwrite behaviour mode can be changed as shown below; changes to behaviour mode
 will be remembered and applied to all `Model` classes until changed again or until the
 models are torn-down via a call to `Model.teardown()`. The overwrite behaviour mode is
-set via the `Model` class' `overwrite()` method by passing the desired `OverwriteMode`
+set via the `Model` class' `overwrite()` method by specifying the desired `OverwriteMode`
 enumeration option, or its option name equivalent:
 
 ```python
@@ -266,8 +274,8 @@ identifier.content = "123"
 assert identifier.content == "123"
 
 # Change the overwrite mode to "Allow"
-Model.overwrite(mode="Allow")
-Model.overwrite(mode=OverwriteMode.Allow)
+Model.configure(overwrite="Allow")
+Model.configure(overwrite=OverwriteMode.Allow)
 
 # Overwrite the value; the overwrite is allowed based on mode; no warning or error
 identifier.content = "456"
@@ -275,8 +283,8 @@ identifier.content = "456"
 assert identifier.content == "456"  # Note that the value change was allowed
 
 # Change the overwrite mode to "Warning"
-Model.overwrite(mode="Warning")
-Model.overwrite(mode=OverwriteMode.Warning)
+Model.configure(overwrite="Warning")
+Model.configure(overwrite=OverwriteMode.Warning)
 
 # Overwrite the value; the overwrite is allowed based on mode; a warning is emitted
 identifier.content = "789"
@@ -284,17 +292,26 @@ identifier.content = "789"
 assert identifier.content == "789"  # Note that the value change was allowed
 
 # Change the overwrite mode to "Prevent"
-Model.overwrite(mode="Prevent")
-Model.overwrite(mode=OverwriteMode.Prevent)
+Model.configure(overwrite="Prevent")
+Model.configure(overwrite=OverwriteMode.Prevent)
 
 # Overwrite the value; the overwrite is prevented based on mode; a warning is emitted
 identifier.content = "321"
 
 assert identifier.content == "789"  # Note that the value change was prevented
 
+# Change the overwrite mode to "PreventQuietly"
+Model.configure(overwrite="PreventQuietly")
+Model.configure(overwrite=OverwriteMode.PreventQuietly)
+
+# Overwrite the value; the overwrite is prevented based on mode; no warning is emitted
+identifier.content = "321"
+
+assert identifier.content == "789"  # Note that the value change was prevented
+
 # Change the overwrite mode to "Error"
-Model.overwrite(mode="Error")
-Model.overwrite(mode=OverwriteMode.Error)
+Model.configure(overwrite="Error")
+Model.configure(overwrite=OverwriteMode.Error)
 
 # Attempt to overwrite; the overwrite is prevented based on mode; an error is raised
 try:
@@ -311,6 +328,100 @@ Model.teardown()
 multiple values; in the case of multi-value properties, all assignments result in the
 assigned value being added to the list of values held by the property; any later value
 assignment simply appends the value to the list, rather than overwriting earlier values.
+
+<a name="appending-modes"></a>
+### Appending Modes
+
+The appending behaviour mode for multiple-value properties can be changed from the default
+behaviour of always appending the value to the multiple-value properties' list:
+
+| Appending Mode | Description                                                       |
+|----------------|-------------------------------------------------------------------|
+| `Always`       | The default behaviour always appends values to the list.          |
+| `Unique`       | Appends only unique values to the list, preventing duplicates.    |
+
+The appending behaviour mode can be changed as shown below; changes to behaviour mode
+will be remembered and applied to all `Model` classes until changed again or until the
+models are torn-down via a call to `Model.teardown()`. The appending behaviour mode is
+set via the `Model` class' `configure()` method by specifying the desired `AppendingMode`
+enumeration option, or its option name equivalent.
+
+An example of the "Always" appending mode (the default) is shown below, where when a value
+is assigned to a multiple-value property, that it is appended to the list of values held
+by the property regardless of whether that value has already been assigned previously to
+the property or not:
+
+```python
+from semanticpy import Model, AppendingMode
+
+# Instantiate the model with the desired profile
+model = Model.factory(profile="linked-art")
+
+# Configure the appending mode to "Always" (this is the default value, so doesn't need
+# to be set unless the appending mode has been changed and you want to change it back)
+# The option can be set via name or enumeration option; all of these ways are valid:
+Model.configure(appending="Always")
+Model.configure(appending="always")
+Model.configure(appending="ALWAYS")
+Model.configure(appending=AppendingMode.Always)
+
+# Create an instance to demonstrate the various multiple-value property appending modes
+object = model.HumanMadeObject()
+
+# Create an instance to demonstrate the various multiple-value property appending modes
+identifier = model.Identifier(content="123")
+
+assert identifier.content == "123"
+
+object.identified_by = identifier
+
+assert len(object.identified_by) == 1
+assert object.identified_by[0] is identifier
+
+object.identified_by = identifier
+
+assert len(object.identified_by) == 2
+assert object.identified_by[1] is identifier
+```
+
+An example of the "Unique" appending mode is shown below, where when a value is assigned
+to a multiple-value property, it will only be appended to the list of values held by the
+property if the value has not been assigned previously to the property; if the value has
+already been assigned, the duplicate assignment is silently ignored and is not appended:
+
+```python
+from semanticpy import Model, AppendingMode
+
+# Instantiate the model with the desired profile
+model = Model.factory(profile="linked-art")
+
+# Configure the append mode to "Unique" to only allow unique values to be appended
+# The option can be set via name or enumeration option; all of these ways are valid:
+Model.configure(appending="Unique")
+Model.configure(appending="unique")
+Model.configure(appending="UNIQUE")
+Model.configure(appending=AppendingMode.Unique)
+
+# Create an instance to demonstrate the various multiple-value property appending modes
+object = model.HumanMadeObject()
+
+# Create an instance to demonstrate the various multiple-value property appending modes
+identifier = model.Identifier(content="123")
+
+assert identifier.content == "123"
+
+object.identified_by = identifier
+
+assert len(object.identified_by) == 1
+assert object.identified_by[0] is identifier
+
+object.identified_by = identifier
+
+assert len(object.identified_by) == 1
+assert object.identified_by[0] is identifier
+
+Model.teardown()
+```
 
 <a name="code-formatting"></a>
 ### Code Formatting

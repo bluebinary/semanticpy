@@ -11,7 +11,7 @@ def test_overwrite_mode_allow():
     Model.factory(profile="linked-art", globals=globals())
 
     # By default the library is in overwrite allowed mode, but demonstrate setting here
-    Model.overwrite(mode=OverwriteMode.Allow)
+    Model.configure(overwrite=OverwriteMode.Allow)
 
     # Create a new model instance to test with
     identifier = Identifier()
@@ -30,7 +30,7 @@ def test_overwrite_mode_allow():
     # Ensure that the overwritten value was set
     assert identifier.content == "456"
 
-    # Tear down the model, removing it from the current scope and reset overwrite mode
+    # Tear down the model, removing it from the current scope and reset configuration
     Model.teardown(globals=globals())
 
 
@@ -43,7 +43,7 @@ def test_overwrite_mode_warning(caplog):
     Model.factory(profile="linked-art", globals=globals())
 
     # Set the singular property value overwrite mode
-    Model.overwrite(mode=OverwriteMode.Warning)
+    Model.configure(overwrite=OverwriteMode.Warning)
 
     # Create a new model instance to test with
     identifier = Identifier()
@@ -68,7 +68,7 @@ def test_overwrite_mode_warning(caplog):
     # Ensure that the overwritten value was set
     assert identifier.content == "456"
 
-    # Tear down the model, removing it from the current scope and reset overwrite mode
+    # Tear down the model, removing it from the current scope and reset configuration
     Model.teardown(globals=globals())
 
 
@@ -81,7 +81,7 @@ def test_overwrite_mode_prevent(caplog):
     Model.factory(profile="linked-art", globals=globals())
 
     # Set the singular property value overwrite mode
-    Model.overwrite(mode=OverwriteMode.Prevent)
+    Model.configure(overwrite=OverwriteMode.Prevent)
 
     # Create a new model instance to test with
     identifier = Identifier()
@@ -103,10 +103,45 @@ def test_overwrite_mode_prevent(caplog):
         in caplog.text.strip()
     )
 
-    # As we captured the exception above, and as prevent mode
+    # As the model is in prevention mode, ensure that the value was not changed
     assert identifier.content == "123"
 
-    # Tear down the model, removing it from the current scope and reset overwrite mode
+    # Tear down the model, removing it from the current scope and reset configuration
+    Model.teardown(globals=globals())
+
+
+def test_overwrite_mode_prevent_quietly(caplog):
+    """Test the library's singular property value overwrite quiet prevention mode."""
+
+    caplog.set_level(logging.WARNING, logger="semanticpy")
+
+    # Set up the model using the Linked.Art profile
+    Model.factory(profile="linked-art", globals=globals())
+
+    # Set the singular property value overwrite mode
+    Model.configure(overwrite=OverwriteMode.PreventQuietly)
+
+    # Create a new model instance to test with
+    identifier = Identifier()
+
+    assert isinstance(identifier, Identifier)
+
+    # Assign its initial value
+    identifier.content = "123"
+
+    # Ensure that the initial value was set
+    assert identifier.content == "123"
+
+    # Attempt to overwrite the initial value
+    identifier.content = "456"
+
+    # Ensure that no warning message was generated or captured in quiet prevention mode
+    assert caplog.text.strip() == ""
+
+    # As the model is in prevention mode, ensure that the value was not changed
+    assert identifier.content == "123"
+
+    # Tear down the model, removing it from the current scope and reset configuration
     Model.teardown(globals=globals())
 
 
@@ -117,7 +152,7 @@ def test_overwrite_mode_error():
     Model.factory(profile="linked-art", globals=globals())
 
     # Set the singular property value overwrite mode
-    Model.overwrite(mode=OverwriteMode.Error)
+    Model.configure(overwrite=OverwriteMode.Error)
 
     # Create a new model instance to test with
     identifier = Identifier()
@@ -145,5 +180,5 @@ def test_overwrite_mode_error():
     # property value should be the same as it was before the overwrite attempt was made
     assert identifier.content == "123"
 
-    # Tear down the model, removing it from the current scope and reset overwrite mode
+    # Tear down the model, removing it from the current scope and reset configuration
     Model.teardown(globals=globals())
