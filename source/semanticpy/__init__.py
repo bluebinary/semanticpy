@@ -634,6 +634,11 @@ class Model(Node):
             raise TypeError("The 'uri' argument must have a string value!")
         elif not (uri.startswith("http://") or uri.startswith("https://")):
             raise ValueError("The 'uri' value must start with 'http://' or 'https://'!")
+        else:
+            uri = uri.strip()
+
+            if not uri.endswith("/"):
+                uri += "/"
 
         if prefix in cls._prefixes:
             raise ValueError(
@@ -658,6 +663,68 @@ class Model(Node):
             raise ValueError(
                 "An entity name or entity-assignable property name must be provided!"
             )
+
+    # TODO: Should 'create' be a "private" method?
+    @classmethod
+    def create(cls, data: dict, property: str = None) -> Model:
+        """Support creating a model entity from its data (dictionary) representation"""
+
+        if not isinstance(data, dict):
+            raise TypeError("The 'data' argument must have a dictionary value!")
+
+        # Attempt to determine the entity type from the assigned 'type' string value
+        if isinstance(typed := data.get("type"), str):
+            if not isinstance(entity := cls.entity(name=typed), type):
+                raise ValueError(
+                    "The '%s' entity type cannot be mapped to a model entity!" % (typed)
+                )
+
+            if not isinstance(model := entity(data=data), Model):
+                raise ValueError(
+                    "The '%s' entity type could not be instantiated!" % (typed)
+                )
+
+        # Alternatively, for untyped model extensions, attempt to determine the entity
+        # type from the property name that the entity has been assigned to in data
+        elif isinstance(entity := cls.entity(property=property), type):
+            if not isinstance(model := entity(data=data), Model):
+                raise ValueError(
+                    "The '%s' entity type could not be instantiated!" % (typed)
+                )
+
+        # If no entity type can be determined, raise an exception as the current data
+        # node cannot be loaded into the data model; ensure the model has been defined
+        # completely and in accordance with the provided data, including any extensions
+        else:
+            raise ValueError(
+                "The entity type cannot be determined for the provided data dictionary; the dictionary must contain a valid 'type' property, or be an extended model entity assigned to an expected named property!"
+            )
+
+        return model
+
+    # TODO: Should 'load' be a "private" method?
+    def load(self, data: dict, model: Model) -> None:
+        if not isinstance(data, dict):
+            raise ValueError("The 'data' argument must be provided as a dictionary!")
+
+        if not isinstance(model, self.__class__):
+            raise TypeError(
+                "The 'model' argument must be a subclass of %s!"
+                % (self.__class__.__name__)
+            )
+
+        for property, value in data.items():
+            if isinstance(value, dict):
+                setattr(model, property, self.create(data=value, property=property))
+            elif isinstance(value, list):
+                for index, item in enumerate(value):
+                    # if not isinstance(item, dict):
+                    #     raise TypeError(
+                    #         "The list item at index %d is not a dictionary, but rather %s!" % (index, type(item))
+                    #     )
+                    setattr(model, property, self.create(data=item, property=property))
+            else:
+                setattr(model, property, value)
 
     def __new__(cls, *args, **kwargs):
         # The '_special' list variable is defined in the base class and holds a list of
@@ -759,67 +826,16 @@ class Model(Node):
         for key, value in kwargs.items():
             self.__setattr__(key, value)
 
-    # TODO: Should 'create' be a "private" method?
-    @classmethod
-    def create(cls, data: dict, property: str = None) -> Model:
-        """Support creating a model entity from its data (dictionary) representation"""
+    def __dir__(self) -> list[str]:
+        """Return a list of attributes provided by the current model instance."""
 
-        if not isinstance(data, dict):
-            raise TypeError("The 'data' argument must have a dictionary value!")
+        return super().__dir__() + list([key for key in self.properties()])
 
-        # Attempt to determine the entity type from the assigned 'type' string value
-        if isinstance(typed := data.get("type"), str):
-            if not isinstance(entity := cls.entity(name=typed), type):
-                raise ValueError(
-                    "The '%s' entity type cannot be mapped to a model entity!" % (typed)
-                )
+    def __str__(self) -> str:
+        return self.__repr__()
 
-            if not isinstance(model := entity(data=data), Model):
-                raise ValueError(
-                    "The '%s' entity type could not be instantiated!" % (typed)
-                )
-
-        # Alternatively, for untyped model extensions, attempt to determine the entity
-        # type from the property name that the entity has been assigned to in data
-        elif isinstance(entity := cls.entity(property=property), type):
-            if not isinstance(model := entity(data=data), Model):
-                raise ValueError(
-                    "The '%s' entity type could not be instantiated!" % (typed)
-                )
-
-        # If no entity type can be determined, raise an exception as the current data
-        # node cannot be loaded into the data model; ensure the model has been defined
-        # completely and in accordance with the provided data, including any extensions
-        else:
-            raise ValueError(
-                "The entity type cannot be determined for the provided data dictionary; the dictionary must contain a valid 'type' property, or be an extended model entity assigned to an expected named property!"
-            )
-
-        return model
-
-    # TODO: Should 'load' be a "private" method?
-    def load(self, data: dict, model: Model) -> None:
-        if not isinstance(data, dict):
-            raise ValueError("The 'data' argument must be provided as a dictionary!")
-
-        if not isinstance(model, self.__class__):
-            raise TypeError(
-                "The 'model' argument must be a subclass of %s!"
-                % (self.__class__.__name__)
-            )
-
-        for property, value in data.items():
-            if isinstance(value, dict):
-                setattr(model, property, self.create(data=value, property=property))
-            elif isinstance(value, list):
-                for index, item in enumerate(value):
-                    # if not isinstance(item, dict):
-                    #     raise TypeError(
-                    #         "The list item at index %d is not a dictionary, but rather %s!" % (index, type(item))
-                    #     )
-                    setattr(model, property, self.create(data=item, property=property))
-            else:
-                setattr(model, property, value)
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}(ident = {self.id}, label = {self._label})>"
 
     def __getstate__(self) -> dict:
         """Support serializing deep copies of instances of this class"""
@@ -830,43 +846,6 @@ class Model(Node):
         """Support restoring from deep copies of instances of this class"""
 
         self.__dict__.update(state)
-
-    def __str__(self) -> str:
-        return self.__repr__()
-
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__}(ident = {self.id}, label = {self._label})>"
-
-    def _find_type(self, range: str | Model) -> type | tuple[type] | None:
-        if isinstance(range, str):
-            if range == "rdfs:Literal":
-                return (str, int, float)
-            elif range == "rdfs:Class":
-                return str
-            elif range == "xsd:string":
-                return str
-            elif range == "xsd:dateTime":
-                return (str, datetime.datetime)
-
-        for key, entity in self._entities.items():
-            if isinstance(range, str):
-                if entity._name == range:
-                    return entity
-            elif issubclass(range, Model):
-                if entity is range:
-                    return entity
-
-    @property
-    def name(self) -> str:
-        return self.__class__.__name__
-
-    @property
-    def ident(self) -> str | None:
-        return self.id
-
-    @property
-    def label(self) -> str | None:
-        return self._label
 
     def __setattr__(self, name: str, value: object) -> None:
         # logger.debug("%s.%s(name: %s, value: %s) called" % (self.__class__.__name__, self.__setattr__.__name__, name, value))
@@ -958,6 +937,37 @@ class Model(Node):
 
         return super().__setattr__(name, value)
 
+    def _find_type(self, range: str | Model) -> type | tuple[type] | None:
+        if isinstance(range, str):
+            if range == "rdfs:Literal":
+                return (str, int, float)
+            elif range == "rdfs:Class":
+                return str
+            elif range == "xsd:string":
+                return str
+            elif range == "xsd:dateTime":
+                return (str, datetime.datetime)
+
+        for key, entity in self._entities.items():
+            if isinstance(range, str):
+                if entity._name == range:
+                    return entity
+            elif issubclass(range, Model):
+                if entity is range:
+                    return entity
+
+    @property
+    def name(self) -> str:
+        return self.__class__.__name__
+
+    @property
+    def ident(self) -> str | None:
+        return self.id
+
+    @property
+    def label(self) -> str | None:
+        return self._label
+
     @property
     def is_blank(self) -> bool:
         """Determine if a node is a blank node (i.e. that it does not have an id)."""
@@ -985,6 +995,66 @@ class Model(Node):
             cloned._cloned = self
 
         return cloned
+
+    def merge(self, model: Model, properties: list[str] = None) -> Model:
+        """Support merging the property values of another Model instance into the current Model."""
+
+        if not isinstance(model, Model):
+            raise TypeError(
+                "The 'model' argument must reference an instance of the Model class!"
+            )
+
+        if not isinstance(model, self.__class__):
+            raise SemanticPyError(
+                "The 'model' argument must reference an instance of the %s class!"
+                % (self.__class__.__name__,)
+            )
+
+        if properties is None:
+            pass
+        elif isinstance(properties, list):
+            for prop in properties:
+                if not isinstance(prop, str):
+                    raise TypeError(
+                        "Each value in the 'properties' argument must be a string!"
+                    )
+        else:
+            raise TypeError(
+                "The 'properties' argument, if specified, must reference a list!"
+            )
+
+        special: list[str] = [
+            "ident",
+            "label",
+            "data",
+            "name",
+            "type",
+            "is_blank",
+            "is_cloned",
+            "is_reference",
+            "was_referenced",
+        ]
+
+        for prop in dir(model):
+            if prop.startswith("_") or prop in special:
+                continue
+            elif properties is None:
+                pass
+            elif not prop in properties:
+                continue
+
+            if attr := getattr(model, prop):
+                if callable(attr):
+                    continue
+
+                if isinstance(attr, list):
+                    for value in attr:
+                        if not value is None:
+                            setattr(self, prop, value)
+                else:
+                    setattr(self, prop, attr)
+
+        return self
 
     @property
     def is_cloned(self) -> bool:

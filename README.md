@@ -190,6 +190,16 @@ The primary interface to the SemanticPy library is its `Model` class which offer
 
  * `clone()` (`Model`) – the `clone()` method may be used to clone the current model instance, creating a separate copy of the instance in memory which may be used or modified without affecting the original.
 
+   * `properties` (`bool`) – (optional) the `properties` argument may be used to specify if the clone operation should also clone the properties of the current model instance into the clone or not. By default the properties are cloned; if the `properties` argument is specified and set to `False`, they will be skipped.
+
+   * `reference` (`bool`) – (optional) the `reference` argument may be used to specify if the clone operation will create a reference in the cloned instance to its source instance. By default a reference will be created; if the `reference` argument is specified and set to `True`, the reference to its source instance will be omitted.
+
+ * `merge()` (`Model`) – the `merge()` method may be used to merge properties from another model instance, into the current model instance, updating the current instance with the properties and property values of the other instance. The `merge()` method accepts the following arguments:
+
+   * `model` (`Model`) – (required) the `model` argument must be used to specify the source model from which to merge the properties into the current model. The `model` must be of the same model instance type as the model that the properties and property values will be merged into, otherwise a `SemanticPyError` exception will be raised.
+
+   * `properties` (`list[str]`) – (optional) the `properties` argument may be used to specify which properties should be merged from the source model instance into the current model instance. If the argument is not specified then all properties will be merged. Properties must be specified by their property names.
+
  * `reference()` (`Model`) – the `reference()` method may be used to create a reference to a model instance – useful for referencing a model entity from a property on another model instance without incorporating and nesting all of the properties of the referenced model instance.
 
  * `properties()` (`dict[str, object]`) – the `properties()` method may be used to obtain a dictionary representation of the current model instance, containing all of its properties as dictionary keys and property values as dictionary values. The `properties()` method accepts the following arguments:
@@ -326,8 +336,10 @@ Model.teardown()
 
 ⚠️ Note: The overwrite behaviour mode does not affect model properties which accept
 multiple values; in the case of multi-value properties, all assignments result in the
-assigned value being added to the list of values held by the property; any later value
-assignment simply appends the value to the list, rather than overwriting earlier values.
+assigned value being added to the list of values held by the property according to the
+default behaviour; any later value assignment simply appends the value to the list,
+rather than overwriting earlier values. To adjust the behavior of appending values to
+multi-value properties, see the [Appending Modes](#appending-modes) section below.
 
 <a name="appending-modes"></a>
 ### Appending Modes
