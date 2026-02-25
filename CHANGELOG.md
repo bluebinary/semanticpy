@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.7] - 2026-02-24
+### Added
+- Support for merging the properties of one model into another.
+
 ## [1.2.6] - 2026-02-12
 ### Added
 - Support for controlling appending behaviour for multiple-value properties.
