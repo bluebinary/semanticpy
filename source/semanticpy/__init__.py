@@ -987,7 +987,11 @@ class Model(Node):
 
             if attr := getattr(self, prop):
                 if not callable(attr) and not prop in special:
-                    setattr(cloned, prop, attr)
+                    if isinstance(attr, list):
+                        for value in attr:
+                            setattr(cloned, prop, value)
+                    else:
+                        setattr(cloned, prop, attr)
 
         # if not "_cloned" in self._special: self._special.append("_cloned")
 
