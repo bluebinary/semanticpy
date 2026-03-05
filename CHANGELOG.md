@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.8] - 2026-03-05
+### Added
+- Improved support for cloning mutli-value properties.
+
 ## [1.2.7] - 2026-02-24
 ### Added
 - Support for merging the properties of one model into another.
