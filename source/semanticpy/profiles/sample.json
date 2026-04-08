@@ -1,0 +1,63 @@
+{
+  "context": "https://schemas.example.org/v1/sample.json",
+  "properties": {
+      "id": {
+          "individual": true,
+          "sorting": 1
+      },
+      "type": {
+          "individual": true,
+          "sorting": 2
+      }
+  },
+  "entities": {
+      "Entity": {
+          "type": "E1",
+          "id": "example:E1_EX_Entity",
+          "name": "E1_EX_Entity",
+          "class": "Entity",
+          "superclasses": null,
+          "properties": {
+              "_label": {
+                  "name": "rdfs:label",
+                  "label": "label",
+                  "individual": true,
+                  "range": "xsd:string",
+                  "domain": "example:E1_EX_Entity",
+                  "scope_note": "A human-readable name for the entity.",
+                  "sorting": 3
+              },
+              "classified_as": {
+                  "name": "example:P2_has_type",
+                  "label": "has type",
+                  "inverse": "example:P2i_is_type_of",
+                  "individual": false,
+                  "range": "example:E2_EX_Type",
+                  "domain": "example:E1_EX_Entity",
+                  "scope_note": "Types used to classify the entity.",
+                  "sorting": 4
+              },
+              "related_to": {
+                  "name": "example:P1_related_to",
+                  "label": "related to",
+                  "inverse": "example:P1i_relates_to",
+                  "individual": false,
+                  "range": "example:E1_EX_Entity",
+                  "domain": "example:E1_EX_Entity",
+                  "scope_note": "Relationships to other related entities.",
+                  "sorting": 5
+              }
+          }
+      },
+      "Type": {
+          "type": "E2",
+          "id": "example:E2_EX_Type",
+          "name": "E1_EX_Type",
+          "class": "Type",
+          "superclasses": "Entity",
+          "properties": {
+              
+          }
+      }
+  }
+}
