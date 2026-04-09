@@ -30,7 +30,7 @@ the Linked.Art JSON-LD model:
 # Import the SemanticPy base Model from the library
 from semanticpy import Model
 
-# Initialize the Model using a named profile; in this case we specify the "linked-art"
+# Initialise the Model using a named profile; in this case we specify the "linked-art"
 # profile which is packaged with the library so only needs to be specified by its name.
 # Other model profiles may be used to create models of other types; see the *Profiles*
 # section in the README for more information. The factory method will dynamically create
@@ -39,7 +39,7 @@ from semanticpy import Model
 Model.factory(profile="linked-art", globals=globals())
 
 # Register one or more identifier prefixes that take the form "<prefix>:" when used in
-# an identifier and are replaced with the specified URIs during document serialization:
+# an identifier and are replaced with the specified URIs during document serialisation:
 Model.prefix("aat", "http://vocab.getty.edu/aat/")
 
 # Register one or more identifier prefixes that take the form "<prefix>:" when used in
@@ -49,7 +49,7 @@ Model.prefix("tgn", "http://vocab.getty.edu/tgn/")
 # Create a HumanMadeObject (HMO) model instance
 hmo = HumanMadeObject(
     ident = "https://example.org/object/1",
-    label = "Example Object #1",
+    label = "Example Object #1: A Painting (1982.A.39)",
 )
 
 # Assign a classification of "Works of Art" to the HMO as per the Linked.Art model
@@ -76,11 +76,21 @@ hmo.identified_by = name = Name(
     label = "Name of Artwork",
 )
 
+name.classified_as = Type(
+	ident="aat:300417193",
+	label="Title (General, Names)",
+)
+
 name.content = "A Painting"
 
 # Include an Identifier node on the HMO to carry an identifier of the artwork
 hmo.identified_by = identifier = Identifier(
     label = "Accession Number for Artwork",
+)
+
+identifier.classified_as = Type(
+	ident="aat:300312355",
+	label="Accession Number",
 )
 
 identifier.content = "1982.A.39"
@@ -103,7 +113,7 @@ The above code example will produce the following printed JSON output:
   "@context": "https://linked.art/ns/v1/linked-art.json",
   "id": "https://example.org/object/1",
   "type": "HumanMadeObject",
-  "_label": "Example Object #1",
+  "_label": "Example Object #1: A Painting (1982.A.39)",
   "classified_as": [
     {
       "id": "http://vocab.getty.edu/aat/300133025",
@@ -127,11 +137,25 @@ The above code example will produce the following printed JSON output:
     {
       "type": "Name",
       "_label": "Name of Artwork",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300417193",
+          "type": "Type",
+          "_label": "Title (General, Names)"
+        }
+      ],
       "content": "A Painting"
     },
     {
       "type": "Identifier",
       "_label": "Accession Number for Artwork",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300312355",
+          "type": "Type",
+          "_label": "Accession Numbers"
+        }
+      ],
       "content": "1982.A.39"
     }
   ]
@@ -338,7 +362,7 @@ Model.teardown()
 multiple values; in the case of multi-value properties, all assignments result in the
 assigned value being added to the list of values held by the property according to the
 default behaviour; any later value assignment simply appends the value to the list,
-rather than overwriting earlier values. To adjust the behavior of appending values to
+rather than overwriting earlier values. To adjust the behaviour of appending values to
 multi-value properties, see the [Appending Modes](#appending-modes) section below.
 
 <a name="appending-modes"></a>
@@ -433,6 +457,215 @@ assert len(object.identified_by) == 1
 assert object.identified_by[0] is identifier
 
 Model.teardown()
+```
+
+<a name="model-profiles"></a>
+### Model Profiles
+
+The SemanticPy library supports the concept of model profiles, which are used to define
+a metadata model, including its available entity type classes and properties. Profiles are stored as JSON documents, with sections to specify top-level properties, available model entity classes, as well as any class-level properties. Profiles support specifying the cardinality, domain and range of each of the properties, where this information is used to validate a model document as it is being assembled by ensuring that only values which are valid for a given property, can be set on that property.
+
+#### Included Model Profiles
+
+The [Linked.Art](https://linked.art) profile is included with the SemanticPy library. It also acts as an example of how to specify a SemanticPy model profile file. Profiles can be developed for any valid JSON-LD metadata model. Additional profiles may be added to the library over time.
+
+Model profiles which are included with the library, may be specified by their name alone,
+so for the Linked.Art profile, it may be specified by its short name, `linked-art` or
+just the file name `linked-art.json`, without the file path. Profiles included with the library can be found in the `source/semanticpy/profiles` directory.
+
+<!--pytest.mark.skip-->
+```python
+Model.factory(profile="linked-art")
+```
+
+Model profiles which exist outside the library, must be specified by their absolute file
+path, including the `.json` file extension:
+
+<!--pytest.mark.skip-->
+```python
+Model.factory(profile="/absolute/path/to/model/profile.json")
+```
+
+#### Model Profile Structure
+
+Each model profile is described within a JSON document; the document contains a dictionary
+with the following top-level keys: `properties` and `entities` – the `properties` key is
+used to specify the top-level properties supported by the model, which are available for
+use on any of the model's entity classes. The `entities` key is used to specify the model
+classes, and any class-level properties supported by those classes. Classes inherit the
+properties defined on their superclasses, as well as any top-level properties.
+
+Metadata model profiles accept the following keywords:
+
+| Property       | Purpose                                                | Type           |
+|----------------|--------------------------------------------------------|----------------|
+| `context`      | References the model's JSON-LD context document        | string         |
+| `properties`   | Describes top-level and class-level properties         | dictionary     |
+| `entities`     | Describes model classes and their attributes           | dictionary     |
+| `type`         | Specifies a model class' short type name               | string         |
+| `id`           | Specifies a model class' full type identifier          | string         |
+| `name`         | Specifies a model class' full name                     | string         |
+| `class`        | Specifies a model class' name as used in code          | string         |
+| `label`        | Optionally specifies a class or property's label       | string         |
+| `superclasses` | Specifies a model class' super class or classes        | list or string |
+| `inverse`      | Specifies a property's inverse property, if any        | string         |
+| `domain`       | Specifies a property's supported domain                | string         |
+| `range`        | Specifies a property's supported range                 | string         |
+| `accepted`     | Specifies if a property is accepted (enabled)          | boolean        |
+| `hidden`       | Specifies if a property is hidden (not serialised)     | boolean        |
+| `individual`   | Specified if a property accepts one or multiple values | boolean        |
+| `scope_note`   | Specifies a property's scope note for documentation    | string         |
+| `sorting`      | Optionally specifies a property's serialised sorting   | integer        |
+
+#### Top-Level Properties
+
+Properties, whether they are top-level or class-level, are referenced by name, and are defined through a key in a `properties` dictionary either at the top-level of the profile
+for top-level properties, or through a `properties` key on a model class entry under the
+top-level `entities` key.
+
+Each model property dictionary entry then defines the property's attributes, including
+its cardinality (can the property store one value or possibly multiple values?), its supported domain and range (what types of value does the property accept, including primitive types such as strings, integers, floating point numbers, dates, or class types defined in the model), and an optional sort ordering that is used to sort the properties used in a model document when it is serialised into JSON-LD. Sorting properties into a desired order is optional, but can help improve the readability of serialised JSON-LD, and navigation of the data within a document by outputting the JSON-LD dictionary keys in a consistent order.
+
+#### Model Entity Classes and Class-Level Properties
+
+Model entity classes are referenced by the name that is used for the class in code, and
+are defined through a key in the top-level `entities` dictionary of the profile.
+
+Each model entity class dictionary entry then defines the class' attributes, including
+its identifier, model type name, model names, and class code name, its superclass or superclasses, and any class-level properties (and the attributes of those properties).
+
+#### Sample Model Profile
+
+The below sample model profile shows the required structure along with sample properties
+and classes to demonstrate defining a JSON-LD model for the SemanticPy library.
+
+A copy of this sample model profile can be found in the SemanticPy library's repository under the `source/semanticpy/profiles` folder.
+
+```json
+{
+  "context": "https://schemas.example.org/v1/sample.json",
+  "properties": {
+      "id": {
+          "individual": true,
+          "sorting": 1
+      },
+      "type": {
+          "individual": true,
+          "sorting": 2
+      }
+  },
+  "entities": {
+      "Entity": {
+          "type": "E1",
+          "id": "example:E1_EX_Entity",
+          "name": "E1_EX_Entity",
+          "class": "Entity",
+          "superclasses": null,
+          "properties": {
+              "_label": {
+                  "name": "rdfs:label",
+                  "label": "label",
+                  "individual": true,
+                  "range": "xsd:string",
+                  "domain": "example:E1_EX_Entity",
+                  "scope_note": "A human-readable name for the entity.",
+                  "sorting": 3
+              },
+              "classified_as": {
+                  "name": "example:P2_has_type",
+                  "label": "has type",
+                  "inverse": "example:P2i_is_type_of",
+                  "individual": false,
+                  "range": "example:E2_EX_Type",
+                  "domain": "example:E1_EX_Entity",
+                  "scope_note": "Types used to classify the entity.",
+                  "sorting": 4
+              },
+              "related_to": {
+                  "name": "example:P1_related_to",
+                  "label": "related to",
+                  "inverse": "example:P1i_relates_to",
+                  "individual": false,
+                  "range": "example:E1_EX_Entity",
+                  "domain": "example:E1_EX_Entity",
+                  "scope_note": "Relationships to other related entities.",
+                  "sorting": 5
+              }
+          }
+      },
+      "Type": {
+          "type": "E2",
+          "id": "example:E2_EX_Type",
+          "name": "E1_EX_Type",
+          "class": "Type",
+          "superclasses": "Entity",
+          "properties": {
+              
+          }
+      }
+  }
+}
+```
+
+In order to expand the generated JSON-LD to its graph representation, the context document referenced in the model profile must be a valid JSON-LD context and must exist at the URL specified. However, expansion of generated JSON-LD documents to a graph representation is not currently handled by the SemanticPy library, and the library will not currently verify the existence or validity of the referenced JSON-LD context document.
+
+The properties and classes that are referenced in the model profile should be present in the referenced JSON-LD context document in order for those classes and properties to be included when the graph expansion is performed. Additional properties can be specified in the model profile, or at runtime using the `Model.extend()` method documented above, but these additional properties will only be included in the JSON-LD representation of the data, which may be necessary or desirable for some use-cases. Graph expansion libraries like `pyld` or `rdflib` however need access to a definition of each class or property from a context document in order to understand how to translate each JSON-LD class and property to its graph representation.
+
+#### Sample Model Document
+
+A sample model document using the sample model profile specified above can be generated using code similar to the following:
+
+```python
+import semanticpy
+
+model = semanticpy.Model.factory(profile="sample", globals=globals())
+
+entity = Entity(
+	ident="https://data.example.org/entities/123",
+	label="Example 123",
+)
+
+entity.classified_as = Type(
+	ident="https://vocabs.example.org/term/a",
+	label="Term A",
+)
+
+related = Entity(
+	ident="https://data.example.org/entities/456",
+	label="Example 456",
+)
+
+entity.related_to = related.classified_as = Type(
+	ident="https://vocabs.example.org/term/b",
+	label="Term B",
+)
+
+print(entity.json(indent=2))
+```
+
+This code will print the following JSON-LD output:
+
+```json
+{
+  "@context": "https://schemas.example.org/v1/sample.json",
+  "id": "https://data.example.org/entities/123",
+  "type": "Entity",
+  "_label": "Example 123",
+  "classified_as": [
+    {
+      "id": "https://vocabs.example.org/term/a",
+      "type": "Type",
+      "_label": "Term A"
+    }
+  ],
+  "related_to": [
+    {
+      "id": "https://vocabs.example.org/term/b",
+      "type": "Type",
+      "_label": "Term B"
+    }
+  ]
+}
 ```
 
 <a name="code-formatting"></a>

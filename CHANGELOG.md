@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.9] - 2026-04-08
+### Added
+- Improved documentation regarding model profiles and added an example profile.
+
 ## [1.2.8] - 2026-03-05
 ### Added
 - Improved support for cloning mutli-value properties.
