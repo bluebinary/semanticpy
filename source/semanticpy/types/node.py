@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import copy
 import json
 
@@ -169,6 +171,29 @@ class Node(object):
     def __setitem__(self, name: str, value: object):
         return self.__setattr__(name, value)
 
+    def __eq__(self, other: Node) -> bool:
+        """Support comparing Node instances for equality."""
+
+        if not isinstance(other, Node):
+            return NotImplemented
+
+        equal: bool = False
+
+        properties = self.properties()
+
+        for name, value in other.properties(unpack=True):
+            if name in properties:
+                if properties[name] == value:
+                    equal = True
+                else:
+                    equal = False
+                    break
+            else:
+                equal = False
+                break
+
+        return equal
+
     @property
     def type(self) -> str:
         return self._type
@@ -301,13 +326,30 @@ class Node(object):
         sorting: list[str] | dict[str, int] = None,
         callback: callable = None,
         attribute: str = None,
-    ):
-        if properties := self._serialize(self.data, sorting=sorting):
-            if prepend:
-                properties = {**prepend, **properties}
+        unpack: bool = False,
+    ) -> dict[str, object]:
+        properties: dict[str, object] = {}
 
-            if append:
+        if isinstance(serialized := self._serialize(self.data, sorting=sorting), dict):
+            properties = serialized
+
+            if prepend is None:
+                pass
+            elif isinstance(prepend, dict) and len(prepend) > 0:
+                properties = {**prepend, **properties}
+            else:
+                raise TypeError(
+                    "The 'prepend' argument, if specified, must reference a dictionary!"
+                )
+
+            if append is None:
+                pass
+            elif isinstance(append, dict) and len(append) > 0:
                 properties = {**properties, **append}
+            else:
+                raise TypeError(
+                    "The 'prepend' argument, if specified, must reference a dictionary!"
+                )
 
             if callable(callback):
                 properties = self.walkthrough(
@@ -316,7 +358,7 @@ class Node(object):
                     container=properties,
                 )
 
-            return properties
+        return properties.items() if unpack is True else properties
 
     def walkthrough(
         self,
