@@ -64,24 +64,39 @@ def test_appending_mode_unique():
     assert object.identified_by is None
 
     # Create an instance to demonstrate the various multiple-value property appending modes
-    identifier = model.Identifier(content="123")
+    identifier1 = model.Identifier(content="123")
 
     # Assign the identifier to the `object.identified_by` property
-    object.identified_by = identifier
+    object.identified_by = identifier1
 
     # Notice that the list of identifiers has grown to accommodate the new identifier
     assert isinstance(object.identified_by, list)
     assert len(object.identified_by) == 1
-    assert object.identified_by[0] is identifier
+    assert object.identified_by[0] is identifier1
 
-    # Attempt to assign the identifier to the `object.identified_by` property again
-    object.identified_by = identifier
+    # Attempt to assign the identifier to the `object.identified_by` property again;
+    # this is prevented by identity-comparison, as the the same instance is assigned
+    object.identified_by = identifier1
 
     # Notice that the list of identifiers has not grown to accommodate the duplicate
     # due to the Model currently being configured to only append unique values:
     assert isinstance(object.identified_by, list)
     assert len(object.identified_by) == 1
-    assert object.identified_by[0] is identifier
+    assert object.identified_by[0] is identifier1
+
+    # Create another identifier instance, this time to check via equality comparison
+    identifier2 = model.Identifier(content="123")
+
+    # Attempt to assign the identifier to the `object.identified_by` property again;
+    # this is prevented by equality-comparison, for new instances with the same content
+    object.identified_by = identifier2
+
+    # Notice that the list of identifiers has not grown to accommodate the duplicate
+    # due to the Model currently being configured to only append unique values:
+    assert isinstance(object.identified_by, list)
+    assert len(object.identified_by) == 1
+    assert object.identified_by[0] is identifier1
+    assert object.identified_by[0] is not identifier2
 
     # Tear down the model, removing it from the current scope and reset configuration
     Model.teardown()

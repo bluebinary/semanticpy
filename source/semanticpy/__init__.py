@@ -1125,6 +1125,7 @@ class Model(Node):
         sorting: list[str] | dict[str, int] = None,
         callback: callable = None,
         attribute: str | int = None,
+        unpack: bool = False,
     ) -> dict[str, object]:
         """Support obtaining a dictionary representation of the properties assigned to
         the current model instance."""
@@ -1142,7 +1143,7 @@ class Model(Node):
         if context := (self._context or self._profile.get("context")):
             properties = {**{"@context": context}, **properties}
 
-        return properties
+        return properties.items() if unpack is True else properties
 
     def property(self, name: str = None, default: object = None) -> dict | None:
         """Support obtaining a copy of the value assigned to a model property"""
