@@ -102,6 +102,9 @@ class Node(object):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}()"
 
+    def __len__(self) -> int:
+        return len(self._data)
+
     def __getattr__(self, name: str) -> object | None:
         value: object = None
 
@@ -153,7 +156,7 @@ class Node(object):
                     self._data[name] = value
         else:
             if name in self._multiple:
-                self._data[name] = [value]
+                self._data[name] = Nodes([value])
             else:
                 self._data[name] = value
 
@@ -171,7 +174,7 @@ class Node(object):
     def __setitem__(self, name: str, value: object):
         return self.__setattr__(name, value)
 
-    def __eq__(self, other: Node) -> bool:
+    def equals(self, other: Node) -> bool:
         """Support comparing Node instances for equality."""
 
         if not isinstance(other, Node):
@@ -488,3 +491,20 @@ class Node(object):
             for name, value in properties.items():
                 _print(value, name)
             print()
+
+
+class Nodes(list):
+    """The Nodes class holds a list of Node entities and supports filtering."""
+
+    def __contains__(self, item: object) -> bool:
+        """Determines if the list contains the specified item or not."""
+
+        if isinstance(item, Node):
+            for node in self:
+                if node is item:
+                    return True
+                elif node.equals(item):
+                    return True
+            return False
+        else:
+            return super().__contains__(item)
