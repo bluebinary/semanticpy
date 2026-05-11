@@ -10,6 +10,7 @@ from semanticpy.logging import logger
 from semanticpy.errors import SemanticPyError
 from semanticpy.types import (
     Node,
+    Nodes,
     Namespace,
     readonlydict,
 )
@@ -1291,6 +1292,7 @@ class Model(Node):
 __all__ = [
     # Classes
     "Node",
+    "Nodes",
     "Namespace",
     "Model",
     # Enumerations
