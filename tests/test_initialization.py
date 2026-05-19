@@ -43,19 +43,28 @@ def test_initialization_with_invalid_profile():
 
 
 def test_teardown():
+    """Test tearing down the model and removing the model classes from globals."""
+
+    # First create the models through the factory method, and add classes to globals
     semanticpy.Model.factory(
         profile="linked-art",
         globals=globals(),
     )
 
-    # After running the factory method and creating the model, create a model instance
-    # This should succeed as the model class name has been added to globals()
+    # Check that one of the profile's model classes has been added to globals()
+    assert "HumanMadeObject" in globals()
+
+    # After running the factory method and creating the model, create a model instance;
+    # this should succeed as the model class name has been added to globals()
     obj = HumanMadeObject()
 
     assert isinstance(obj, HumanMadeObject)
 
     # Now tear the model down, restoring globals() to its prior state
     semanticpy.Model.teardown(globals=globals())
+
+    # Check that one of the profile's model classes has been removed from globals()
+    assert not "HumanMadeObject" in globals()
 
     # Then try to create a model instance again, which should fail if the teardown was
     # successful, and if the restoration of globals() to its prior state succeeded

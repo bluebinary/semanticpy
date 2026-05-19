@@ -31,7 +31,26 @@
     {
       "type": "Identifier",
       "_label": "Accession Number for Artwork",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300312355",
+          "type": "Type",
+          "_label": "Accession Number"
+        }
+      ],
       "content": "1982.A.39"
+    },
+    {
+      "type": "Identifier",
+      "_label": "Catalog Number for Artwork",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300417447",
+          "type": "Type",
+          "_label": "Catalog Number"
+        }
+      ],
+      "content": "X1290231.A72"
     }
   ],
   "produced_by": {

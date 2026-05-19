@@ -73,7 +73,7 @@ elif [[ "${SERVICE}" == "flakes" ]]; then
 elif [[ "${SERVICE}" == "tests" ]]; then
 	echo -e "pytest /tests ${ARGS[@]}";
 	pytest /tests ${ARGS[@]};
-	pytest --verbose --codeblocks /README.md;
+	pytest --verbose --codeblocks --rootdir=/tests /tests/README.md ${ARGS[@]};
 elif [[ "${SERVICE}" == "all" ]]; then
 	if [[ "${ARGS[0]}" == "--reformat" ]]; then
 		echo -e "black --verbose ${ARGS[@]:1} /source /tests";

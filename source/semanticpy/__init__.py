@@ -309,7 +309,7 @@ class Model(Node):
         for key in removals:
             del cls._entities[key]
 
-            if isinstance(glo, dict):
+            if isinstance(glo, dict) and key in glo:
                 del glo[key]
 
         # Reset the configuration to the defaults
@@ -650,7 +650,7 @@ class Model(Node):
 
     @classmethod
     def entity(cls, name: str = None, property: str = None) -> Model | None:
-        """Helper method to return the referenced entity type from the model"""
+        """Helper method to return the referenced entity type from the model."""
 
         if isinstance(name, str):
             if name in cls._entities:
@@ -668,7 +668,7 @@ class Model(Node):
     # TODO: Should 'create' be a "private" method?
     @classmethod
     def create(cls, data: dict, property: str = None) -> Model:
-        """Support creating a model entity from its data (dictionary) representation"""
+        """Support creating a model entity from its data (dictionary) representation."""
 
         if not isinstance(data, dict):
             raise TypeError("The 'data' argument must have a dictionary value!")
@@ -705,6 +705,8 @@ class Model(Node):
 
     # TODO: Should 'load' be a "private" method?
     def load(self, data: dict, model: Model) -> None:
+        """Support loading data into the model entity from its dictionary representation."""
+
         if not isinstance(data, dict):
             raise ValueError("The 'data' argument must be provided as a dictionary!")
 
@@ -904,8 +906,11 @@ class Model(Node):
                             "The 'range' property can only contain valid type names or Model class types!"
                         )
 
-                    if typed := self._find_type(range=range):
-                        types += (typed,)
+                    if not (typed := self._find_type(range=range)) is None:
+                        if isinstance(typed, tuple):
+                            types += tuple(typed)
+                        else:
+                            types += (typed,)
                     else:
                         raise ValueError(
                             "The '%s' range for the '%s' property cannot be reconciled to a known range type!"
