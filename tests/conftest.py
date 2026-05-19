@@ -1,4 +1,5 @@
 import pytest
+import pytest_codeblocks
 import os
 import sys
 
@@ -74,3 +75,23 @@ def factory() -> callable:
         )
 
     return fixture
+
+
+def pytest_runtest_setup(item: pytest.Item) -> None:
+    """Set up test environment before each test runs.
+
+    :param item: The test item that is about to run.
+    """
+
+
+def pytest_runtest_teardown(item: pytest.Item, nextitem: pytest.Item) -> None:
+    """Tear down test environment after each test ends.
+
+    :param item: The test item that just finished running.
+    :param nextitem: The next test item that will run (or None if this is
+    """
+
+    # For test items run within documentation code blocks, tear down the model to ensure
+    # a clean and consistent runtime state after testing each block of code:
+    if isinstance(item, pytest_codeblocks.plugin.TestBlock):
+        semanticpy.Model.teardown()

@@ -465,7 +465,7 @@ Model.teardown()
 The SemanticPy library supports the concept of model profiles, which are used to define
 a metadata model, including its available entity type classes and properties. Profiles are stored as JSON documents, with sections to specify top-level properties, available model entity classes, as well as any class-level properties. Profiles support specifying the cardinality, domain and range of each of the properties, where this information is used to validate a model document as it is being assembled by ensuring that only values which are valid for a given property, can be set on that property.
 
-#### Included Model Profiles
+### Included Model Profiles
 
 The [Linked.Art](https://linked.art) profile is included with the SemanticPy library. It also acts as an example of how to specify a SemanticPy model profile file. Profiles can be developed for any valid JSON-LD metadata model. Additional profiles may be added to the library over time.
 
@@ -486,7 +486,7 @@ path, including the `.json` file extension:
 Model.factory(profile="/absolute/path/to/model/profile.json")
 ```
 
-#### Model Profile Structure
+### Model Profile Structure
 
 Each model profile is described within a JSON document; the document contains a dictionary
 with the following top-level keys: `properties` and `entities` – the `properties` key is
@@ -517,7 +517,7 @@ Metadata model profiles accept the following keywords:
 | `scope_note`   | Specifies a property's scope note for documentation    | string         |
 | `sorting`      | Optionally specifies a property's serialised sorting   | integer        |
 
-#### Top-Level Properties
+### Top-Level Properties
 
 Properties, whether they are top-level or class-level, are referenced by name, and are defined through a key in a `properties` dictionary either at the top-level of the profile
 for top-level properties, or through a `properties` key on a model class entry under the
@@ -526,7 +526,7 @@ top-level `entities` key.
 Each model property dictionary entry then defines the property's attributes, including
 its cardinality (can the property store one value or possibly multiple values?), its supported domain and range (what types of value does the property accept, including primitive types such as strings, integers, floating point numbers, dates, or class types defined in the model), and an optional sort ordering that is used to sort the properties used in a model document when it is serialised into JSON-LD. Sorting properties into a desired order is optional, but can help improve the readability of serialised JSON-LD, and navigation of the data within a document by outputting the JSON-LD dictionary keys in a consistent order.
 
-#### Model Entity Classes and Class-Level Properties
+### Model Entity Classes and Class-Level Properties
 
 Model entity classes are referenced by the name that is used for the class in code, and
 are defined through a key in the top-level `entities` dictionary of the profile.
@@ -534,7 +534,7 @@ are defined through a key in the top-level `entities` dictionary of the profile.
 Each model entity class dictionary entry then defines the class' attributes, including
 its identifier, model type name, model names, and class code name, its superclass or superclasses, and any class-level properties (and the attributes of those properties).
 
-#### Sample Model Profile
+### Sample Model Profile
 
 The below sample model profile shows the required structure along with sample properties
 and classes to demonstrate defining a JSON-LD model for the SemanticPy library.
@@ -611,14 +611,15 @@ In order to expand the generated JSON-LD to its graph representation, the contex
 
 The properties and classes that are referenced in the model profile should be present in the referenced JSON-LD context document in order for those classes and properties to be included when the graph expansion is performed. Additional properties can be specified in the model profile, or at runtime using the `Model.extend()` method documented above, but these additional properties will only be included in the JSON-LD representation of the data, which may be necessary or desirable for some use-cases. Graph expansion libraries like `pyld` or `rdflib` however need access to a definition of each class or property from a context document in order to understand how to translate each JSON-LD class and property to its graph representation.
 
-#### Sample Model Document
+### Sample Model Document
 
-A sample model document using the sample model profile specified above can be generated using code similar to the following:
+A sample model document using the sample model profile specified above can be generated
+using code similar to the following:
 
 ```python
 import semanticpy
 
-model = semanticpy.Model.factory(profile="sample", globals=globals())
+semanticpy.Model.factory(profile="sample", globals=globals())
 
 entity = Entity(
 	ident="https://data.example.org/entities/123",

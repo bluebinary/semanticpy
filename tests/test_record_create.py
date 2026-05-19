@@ -59,7 +59,24 @@ def test_record_create(factory: callable, data: callable):
         label="Accession Number for Artwork",
     )
 
+    identifier.classified_as = Type(
+        ident="aat:300312355",
+        label="Accession Number",
+    )
+
     identifier.content = "1982.A.39"
+
+    # Include an Identifier node on the HMO to carry an identifier of the artwork
+    hmo.identified_by = identifier = Identifier(
+        label="Catalog Number for Artwork",
+    )
+
+    identifier.classified_as = Type(
+        ident="aat:300417447",
+        label="Catalog Number",
+    )
+
+    identifier.content = "X1290231.A72"
 
     hmo.produced_by = production = Production()
 

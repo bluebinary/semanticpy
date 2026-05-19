@@ -11,6 +11,8 @@ from semanticpy.errors import SemanticPyError
 class Node(object):
     """Node data type class supporting the creation of node tree structures"""
 
+    __iter__ = None  # Mark the class as non-iterable
+
     _type = None
     _name: str = None
     _data: dict[str, object] = None
@@ -30,7 +32,10 @@ class Node(object):
         "_sorting",
         "_annotations",
     ]
-
+    _aliases = {
+        "ident": "id",
+        "label": "_label",
+    }
     _overwrite_mode: OverwriteMode = None
     _appending_mode: AppendingMode = None
 
@@ -74,7 +79,7 @@ class Node(object):
         if data is None:
             self._data = {}
         elif isinstance(data, dict):
-            self._data = data
+            self._data = dict(data)
         else:
             raise TypeError("The `data` property must be provided as a dictionary!")
 
@@ -96,6 +101,9 @@ class Node(object):
 
         self._annotations = {}
 
+        for key, value in kwargs.items():
+            self._data[key] = value
+
     def __str__(self) -> str:
         return self.__repr__()
 
@@ -114,6 +122,8 @@ class Node(object):
         else:
             if name in self._data:
                 value = self._data[name]
+            elif name in self._multiple:
+                self._data[name] = value = Nodes()
 
         # logger.debug("%s.__getattr__(name: %s) called => %s" % (self.__class__.__name__, name, value))
 
@@ -174,7 +184,7 @@ class Node(object):
     def __setitem__(self, name: str, value: object):
         return self.__setattr__(name, value)
 
-    def equals(self, other: Node) -> bool:
+    def equals(self, other: Node, strict: bool = False) -> bool:
         """Support comparing Node instances for equality."""
 
         if not isinstance(other, Node):
@@ -182,24 +192,57 @@ class Node(object):
 
         equal: bool = False
 
-        properties = self.properties()
+        sproperties = self.properties()
+        oproperties = other.properties()
 
-        for name, value in other.properties(unpack=True):
-            if name in properties:
-                if properties[name] == value:
+        for name, value in oproperties.items():
+            if name in sproperties:
+                if sproperties[name] == value:
                     equal = True
                 else:
                     equal = False
                     break
-            else:
+            elif name in self._aliases and self._aliases[name] in sproperties:
+                if sproperties[self._aliases[name]] == value:
+                    equal = True
+                else:
+                    equal = False
+                    break
+            elif strict is True:
                 equal = False
                 break
+
+        if equal is True and strict is True:
+            for name, value in sproperties.items():
+                if name in oproperties:
+                    if oproperties[name] == value:
+                        equal = True
+                    else:
+                        equal = False
+                        break
+                elif name in self._aliases and self._aliases[name] in oproperties:
+                    if oproperties[self._aliases[name]] == value:
+                        equal = True
+                    else:
+                        equal = False
+                        break
+                elif strict is True:
+                    equal = False
+                    break
 
         return equal
 
     @property
     def type(self) -> str:
+        return self.__class__.__name__
+
+    @property
+    def typed(self) -> str:
         return self._type
+
+    @property
+    def context(self) -> str:
+        return self._context
 
     @property
     def name(self) -> str:
@@ -496,15 +539,136 @@ class Node(object):
 class Nodes(list):
     """The Nodes class holds a list of Node entities and supports filtering."""
 
-    def __contains__(self, item: object) -> bool:
+    def __contains__(self, item: object, strict: bool = True) -> bool:
         """Determines if the list contains the specified item or not."""
 
         if isinstance(item, Node):
             for node in self:
                 if node is item:
                     return True
-                elif node.equals(item):
+                elif node.equals(item, strict=strict):
                     return True
             return False
         else:
             return super().__contains__(item)
+
+    def unpack(self, property: str) -> Nodes[Node]:
+        """Unpack a nested property into a new Nodes instance."""
+
+        temp: Nodes[Node] = Nodes()
+
+        if not isinstance(property, str):
+            raise TypeError("The 'property' argument must have a string value!")
+
+        if len(self) == 0:
+            return temp
+
+        for node in self:
+            if isinstance(subnode := getattr(node, property, None), list):
+                for node in subnode:
+                    if isinstance(node, Node):
+                        temp.append(node)
+                    else:
+                        logger.warning(
+                            "All elements in the list must be Node instances!"
+                        )
+            elif isinstance(subnode, Node):
+                temp.append(subnode)
+            else:
+                logger.warning("All elements in the list must be Node instances!")
+
+        return temp
+
+    def filter(self, **filters: dict[str, object]) -> Nodes[Node]:
+        """Return a list of Node elements matching the provided filters."""
+
+        temp: Nodes[Node] = Nodes()
+
+        if len(self) == 0:
+            return self
+
+        if len(filters) == 0:
+            return self
+
+        for node in self:
+            include: bool = False
+
+            for name, value in filters.items():
+                if isinstance(value, dict):
+                    value = Node(data=value)
+
+                if not (nodevalue := getattr(node, name, None)) is None:
+                    if isinstance(valuelist := value, (list, Nodes)):
+                        if isinstance(nodevalue, Nodes):
+                            matches: bool = False
+
+                            for value in valuelist:
+                                if nodevalue.__contains__(value, strict=False):
+                                    matches = True
+                                else:
+                                    matches = False
+                                    break
+
+                            if matches is True:
+                                include = True
+                            else:
+                                include = False
+                                break
+                        else:
+                            logger.warning(
+                                "The '%s' filter is a list, but the node's matching property is not!",
+                                name,
+                            )
+                    elif isinstance(nodevalue, Nodes):
+                        if isinstance(value, (list, set, tuple)):
+                            for val in value:
+                                if nodevalue.__contains__(val, strict=False):
+                                    include = True
+                                else:
+                                    include = False
+                                    break
+                            if not include:
+                                break
+                        elif nodevalue.__contains__(value, strict=False):
+                            include = True
+                        else:
+                            include = False
+                            break
+                    elif nodevalue == value:
+                        include = True
+                    else:
+                        include = False
+                        break
+
+            if include:
+                temp.append(node)
+
+        return temp
+
+    def first(self, **filters: dict[str, object]) -> Node | None:
+        """Return the first matching Node, if one is found, or None otherwise."""
+
+        if len(self) == 0:
+            return None
+
+        if len(filters) == 0:
+            return self[0]
+
+        if len(matches := self.filter(**filters)) == 0:
+            return None
+
+        return matches[0]
+
+    def last(self, **filters: dict[str, object]) -> Node | None:
+        """Return the last matching Node, if one is found, or None otherwise."""
+
+        if len(self) == 0:
+            return None
+
+        if len(filters) == 0:
+            return self[-1]
+
+        if len(matches := self.filter(**filters)) == 0:
+            return None
+
+        return matches[-1]

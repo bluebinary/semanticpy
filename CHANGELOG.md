@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2026-05-19
+### Added
+- Improved assembly and filtering of existing JSON-LD documents.
+
+## [1.3.1] - 2026-05-11
+### Added
+- Improved item comparison.
+
+## [1.3.0] - 2026-05-08
+### Added
+- Item comparison support.
+
 ## [1.2.9] - 2026-04-08
 ### Added
 - Improved documentation regarding model profiles and added an example profile.

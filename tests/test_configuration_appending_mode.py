@@ -1,4 +1,4 @@
-from semanticpy import Model, AppendingMode
+from semanticpy import Model, AppendingMode, Nodes
 
 
 def test_appending_mode_always():
@@ -18,7 +18,10 @@ def test_appending_mode_always():
     object = model.HumanMadeObject()
 
     # Notice that the list of identifiers is initially unset (None)
-    assert object.identified_by is None
+    assert isinstance(object.identified_by, list)
+    assert isinstance(object.identified_by, Nodes)
+    assert len(object.identified_by) == 0
+    assert object.identified_by == []
 
     # Create an instance to demonstrate the various multiple-value property appending modes
     identifier = model.Identifier(content="123")
@@ -60,8 +63,37 @@ def test_appending_mode_unique():
     # Create an instance to demonstrate the various multiple-value property appending modes
     object = model.HumanMadeObject()
 
-    # Notice that the list of identifiers is initially unset (None)
-    assert object.identified_by is None
+    # Notice that the list of identifiers is initially empty
+    assert isinstance(object.classified_as, list)
+    assert isinstance(object.classified_as, Nodes)
+    assert len(object.classified_as) == 0
+    assert object.classified_as == []
+
+    # Create and assign a Type
+    object.classified_as = type1 = model.Type(
+        ident="aat:300133025",
+        label="Works of Art",
+    )
+
+    assert len(object.classified_as) == 1
+
+    # Attempt to create and assign a Type with the same value, as
+    # appending mode is set to unique, this should be ignored
+    object.classified_as = type2 = model.Type(
+        ident="aat:300133025",
+        label="Works of Art",
+    )
+
+    # Check that the duplicate assignment was ignored
+    assert len(object.classified_as) == 1
+    assert object.classified_as[0] is type1
+    assert object.classified_as[0] is not type2
+
+    # Notice that the list of identifiers is initially empty
+    assert isinstance(object.identified_by, list)
+    assert isinstance(object.identified_by, Nodes)
+    assert len(object.identified_by) == 0
+    assert object.identified_by == []
 
     # Create an instance to demonstrate the various multiple-value property appending modes
     identifier1 = model.Identifier(content="123")

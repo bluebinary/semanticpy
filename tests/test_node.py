@@ -78,12 +78,16 @@ def test_node_identity():
     assert not id(node1) == id(node2)
     assert not hash(node1) == hash(node2)
 
+    assert node2 is not node1
+    assert not id(node2) == id(node1)
+    assert not hash(node2) == hash(node1)
+
 
 def test_node_equality():
     """Test Node equality."""
 
     # Create a new Node instance using the attribute properties and values of another
-    node1 = Node(data=dict(one=1, two="two"))
+    node1 = Node(data=dict(one=1, two="two", three="three"))
     node2 = Node(data=dict(one=1, two="two"))
 
     assert isinstance(node1, Node)
@@ -91,6 +95,27 @@ def test_node_equality():
 
     # Ensure the two nodes do not report having the same identity
     assert node1 is not node2
+    assert node2 is not node1
 
     # Ensure the two nodes, report being equal to each other as they have the same data
     assert node1.equals(node2)
+    assert node2.equals(node1)
+
+
+def test_node_equality_strict():
+    """Test Node equality in strict mode."""
+
+    # Create a new Node instance using the attribute properties and values of another
+    node1 = Node(data=dict(one=1, two="two", three="three"))
+    node2 = Node(data=dict(one=1, two="two"))
+
+    assert isinstance(node1, Node)
+    assert isinstance(node2, Node)
+
+    # Ensure the two nodes do not report having the same identity
+    assert node1 is not node2
+    assert node2 is not node1
+
+    # Ensure the two nodes, report being equal to each other as they have the same data
+    assert not node1.equals(node2, strict=True)  # not equal as node1.three cannot match
+    assert not node2.equals(node1, strict=True)  # not equal as node1.three cannot match

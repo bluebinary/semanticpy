@@ -1,4 +1,5 @@
 from semanticpy.logging import logger
+from typing import Iterator
 
 
 class Attributed(object):
@@ -44,7 +45,7 @@ class Attributed(object):
         elif key in self._items:
             del self._items[key]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[tuple[str, object]]:
         for key, value in self._items.items():
             yield key, value
 
@@ -63,3 +64,6 @@ class Attributed(object):
         except AttributeError as exception:
             logger.debug(str(exception))
             return default
+
+    def clear(self) -> None:
+        self._items.clear()
