@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.3] - 2026-05-28
+### Added
+- Support for saving existing Model entities to JSON-LD documents.
+
 ## [1.3.2] - 2026-05-19
 ### Added
 - Improved assembly and filtering of existing JSON-LD documents.

@@ -1,6 +1,6 @@
 {
   "@context": "https://linked.art/ns/v1/linked-art.json",
-  "id": "https://example.org/object/1",
+  "id": "https://data.example.org/object/1",
   "type": "HumanMadeObject",
   "_label": "Example Object #1",
   "classified_as": [
