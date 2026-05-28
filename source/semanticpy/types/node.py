@@ -241,7 +241,7 @@ class Node(object):
         return self._type
 
     @property
-    def context(self) -> str:
+    def context(self) -> object:
         return self._context
 
     @property
@@ -410,10 +410,10 @@ class Node(object):
         self,
         callback: callable,
         attribute: str = None,
-        container: dict | list = None,
-    ):
+        container: dict[str, object] | list[dict[str, object]] = None,
+    ) -> dict[str, object]:
         """Perform a recursive walkthrough of a dictionary/list calling the callback
-        for any matched attribute"""
+        for any matched attribute, returning a dictionary representation of the Node."""
 
         if container is None:
             container = dict(self.properties())

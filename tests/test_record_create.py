@@ -22,7 +22,7 @@ def test_record_create(factory: callable, data: callable):
 
     # Create a HumanMadeObject (HMO) model instance
     hmo = HumanMadeObject(
-        ident="https://example.org/object/1",
+        ident="https://data.example.org/object/1",
         label="Example Object #1",
     )
 

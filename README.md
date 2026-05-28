@@ -43,7 +43,7 @@ Model.factory(profile="linked-art", globals=globals())
 Model.prefix("aat", "http://vocab.getty.edu/aat/")
 
 # Register one or more identifier prefixes that take the form "<prefix>:" when used in
-# an identifier and are replaced with the specified URIs during document serialization:
+# an identifier and are replaced with the specified URIs during document serialisation:
 Model.prefix("tgn", "http://vocab.getty.edu/tgn/")
 
 # Create a HumanMadeObject (HMO) model instance
@@ -58,7 +58,7 @@ hmo.classified_as = Type(
     label = "Works of Art",
 )
 
-# As this example HMO represents a painting, add a classification of "Paintings" as per
+# As this example HMO represents a painting, add classification of "Paintings" per
 # the Linked.Art model to specify the type of artwork that this HMO represents:
 hmo.classified_as = typed = Type(
     ident = "aat:300033618",
@@ -205,7 +205,7 @@ The primary interface to the SemanticPy library is its `Model` class which offer
    * `typed` (`bool`) – (optional) the `typed` argument can be used to specify if the model subclass should be serialised into JSON-LD with its `type` property or not; by default the `type` property is 
    always included during serialisation; this option can be used to prevent this if required.
 
- * `prefix(prefix: str, uri: str)` – the `prefix()` class method can be used to register one or more identifier prefixes with the library that will be replaced with the specified URI during document serialization.
+ * `prefix(prefix: str, uri: str)` – the `prefix()` class method can be used to register one or more identifier prefixes with the library that will be replaced with the specified URI during document serialisation.
 
  * `entity()` (`Model` | `None`) – the `entity()` method may be used to obtain the `type` reference for a named model entity, from which a new instance of that named model entity may be created; if no matching `Model` subclass can be found, the method returns `None`. The `entity()` method accepts the following arguments:
 
@@ -226,6 +226,12 @@ The primary interface to the SemanticPy library is its `Model` class which offer
 
  * `reference()` (`Model`) – the `reference()` method may be used to create a reference to a model instance – useful for referencing a model entity from a property on another model instance without incorporating and nesting all of the properties of the referenced model instance.
 
+ * `walkthrough()` (`dict[str, object]`) – the `walkthrough()` method may be used to obtain a representation of the current model instance, containing all of its properties as dictionary keys and property values as dictionary values. The `walkthrough()` method accepts the following arguments:
+
+   * `callback` (`callable`) – (optional) the `callback` argument may be used to specify a callback method that can be used to modify the value that is included in the returned container. The callback method must accept three arguments: the `key` (the name of the property as a `str` value), its `value` (an `object` value), and a reference to the current `container` (which will be either a `dict` or `list` reference). The callback must return the value to include in the container, either returning the `value` it was provided to leave the value as-is or to return a different value to change the value that will be included.
+
+   * `attribute` (`str` | `int`) – (optional) the `attribute` argument may be used to control if the `callback` method should only be called for the named/indexed property/attribute, or to if the `callback` should be called for all properties. To limit calls to the `callback`, use the `attribute` argument to specify the name of the property or the index position that would need to match in order to call the `callback` method.
+
  * `properties()` (`dict[str, object]`) – the `properties()` method may be used to obtain a dictionary representation of the current model instance, containing all of its properties as dictionary keys and property values as dictionary values. The `properties()` method accepts the following arguments:
 
    * `sorting` (`list[str]` | `dict[str, int]`) – (optional) the `sorting` argument may be used to specify a sort order that should be applied to the returned property data; sorting may be specified as a `list` of `str` values, where the list comprises the names of the properties in the order that they should be sorted into; alternatively, the `sorting` may be specified as a `dict` that comprise a list of property names associated with a sort order ranking specified as an integer where higher values integer sort later in the results.
@@ -240,8 +246,7 @@ The primary interface to the SemanticPy library is its `Model` class which offer
 
    * `default` (`object`) – (optional) the `default` argument may be used to set an alternative return value for a call to the `property()` method if the method is unable to find and return the named property.
 
- * `documents()` (`list[Model]`) – the `documents()` method may be used to obtain a list of model entity
- documents from the current model instance; the `documents()` method accepts the following
+ * `documents()` (`list[Model]`) – the `documents()` method may be used to obtain a list of model entity documents from the current model instance; the `documents()` method accepts the following
  arguments, which control whether nodes of the following types will be including in the resulting list:
 
    * `blank` (`bool`) – (optional) to return any blank nodes within the current document, leave the
@@ -255,9 +260,47 @@ The primary interface to the SemanticPy library is its `Model` class which offer
 
    * `filter` (`callable`) – (optional) to achieve finer-grained control over whether nodes are include in the resulting list, a callback method can be provided to the method via the `filter` argument; the callback method must take a reference to the current document, and its containing entity, and must return a `bool` value each time it is called; to include a node in the returned list via custom filtering, the method must return `True` and to omit the node, the method must return `False`.
 
+* `json()` – the `json()` method may be used to generate a JSON-LD representation of the current model instance; the `json()` method accepts the following arguments, which control the formatting of the JSON output:
+
+  * `compact` (`bool`) – (optional) controls if the JSON output should be emitted in its most compact form, without indentation or line breaks, when set to `True`, or allowing line breaks and indentation, when set to `False`.
+
+  * `indent` (`int`) – (optional) controls the number of spaces used to indent each level of the JSON, which can be set if the `compact` argument is not set to `True`.
+
+  * `sorting` (`list[str]` | `dict[str, int]`) – (optional) controls if and how the keys of the JSON are sorted; if a list of attribute names is provided, the matching attributes will be sorted to match the order defined in the list; if a dictionary of attribute names and numeric sort priorities are specified, the specified attribute names will be sorted according to the sort priorities specified against the attribute names; if additional attributes exist in the output that are not referenced in the list or dictionary of attribute names, their sort position is not guaranteed to be deterministic.
+
+  * `callback` (`callable`) – (optional) the callback can be used to overwrite the value of specific attributes based on a runtime call to an optional callback function; the return value of the function will be used as the new value for the current attribute; the callback function will be provided with the attribute name, its initial value, and a reference to its parent container; the callback method must return the replacement value if there is one, and if not, must return the initial value.
+
+  * `attribute` (`str`) – (optional) the attribute argument can be used to control for which model attributes the optional callback is called; if the `attribute` is not specified, the optional callback, if specified, will be called for every attribute. The attribute must be specified by its name.
+
+* `open()` – the `open()` method be used to open a pre-existing JSON-LD document mapped using the same JSON-LD context as the Model factory is instantiated with, such as the `linked-art` profile. The `open()` method accepts either a HTTP(S) URL or a file path that points to a valid JSON-LD document, and if the document can be opened and loaded, the method will return an instance of the `Model` subclass that represents the opened document. One can then access and filter properties of the document and extract data, or use the document as a starting point to build upon or modify and then re-save. See the [**Opening**](#opening) section for more information. The `open()` method accepts the following arguments:
+
+  * `filepath` (`str`) – (required) the `filepath` argument must point to a valid and accessible JSON-LD document mapped using the same context as loaded via the `Model` class' `factory()` method. The `filepath` can either point to a document available via HTTP(S) or a local file system path. Files available via HTTP(S) must have URLs beginning with `http://` or `https://`.
+
+  * `extensions` (`bool`) – (optional) the `extensions` argument controls whether the library will try to load and parse any extended data model classes and properties – those which go beyond those defined in the model context profile, which may have been added through calls to `Model.extend()`. To support the successful loading of any extended model classes or properties, the `Model.factory()` method needs to have been called followed by any necessary calls to `Model.extend()` before a record containing any extended classes or properties is loaded via the `open()` method. In such cases, the `extensions` argument can then be set to `True` allowing the extensions to load, otherwise, leaving the argument at its default value of `False`, loads all of the standard parts of the document and ignores any extended data model classes and properties.
+
+* `save()` – the `save()` method may be used to save a JSON-LD representation of the current model instance. See the [**Saving**](#saving) section for more information. The method accepts the following arguments:
+
+  * `filepath` (`str`) – (required) the `filepath` argument is required and must point to a valid local or mounted file system path at which the document can be written.
+
+  * `overwrite` (`bool`) – (optional) the `overwrite` argument controls whether the `save()` method will overwrite a document that already exists at the specified path or not. If a document already exists, and `overwrite` has its default value of `False`, an exception will be raised. To allow the method to overwrite an existing document, set the `overwrite` argument to `True`.
+
+  * `compact` (`bool`) – (optional) controls if the JSON output should be emitted in its most compact form, without indentation or line breaks, when set to `True`, or allowing line breaks and indentation, when set to `False`.
+
+  * `indent` (`int`) – (optional) controls the number of spaces used to indent each level of the JSON, which can be set if the `compact` argument is not set to `True`.
+
+  * `sorting` (`list[str]` | `dict[str, int]`) – (optional) controls if and how the keys of the JSON are sorted; if a list of attribute names is provided, the matching attributes will be sorted to match the order defined in the list; if a dictionary of attribute names and sort priorities are specified, the specified attribute names will be sorted according to the sort priorities specified against the attribute names; if additional attributes exist in the output that are not referenced in the list or dictionary of attribute names, their sort position is not guaranteed to be deterministic.
+
+  * `callback` (`callable`) – (optional) the callback can be used to overwrite the value of specific attributes based on a runtime call to an optional callback function; the return value of the function will be used as the new value for the current attribute; the callback function will be provided with the attribute name, its initial value, and a reference to its parent container; the callback method must return the replacement value if there is one, and if not, must return the initial value.
+
+  * `attribute` (`str`) – (optional) the attribute argument can be used to control for which model attributes the optional callback is called; if the `attribute` is not specified, the optional callback, if specified, will be called for every attribute. The attribute must be specified by its name.
+
+* `print()` – the `print()` method may be used to print a representation of the current model instance. The method does not accept any arguments.
+
 ### Properties
 
 The `Model` class offers the following named properties in addition to the methods defined above:
+
+ * `context` (`object`) – the `context` property provides access to the model instance's `@context` property value.
 
  * `name` (`str`) – the `name` property provides access to the model instance's class name.
 
@@ -363,7 +406,7 @@ multiple values; in the case of multi-value properties, all assignments result i
 assigned value being added to the list of values held by the property according to the
 default behaviour; any later value assignment simply appends the value to the list,
 rather than overwriting earlier values. To adjust the behaviour of appending values to
-multi-value properties, see the [Appending Modes](#appending-modes) section below.
+multi-value properties, see the [**Appending Modes**](#appending-modes) section below.
 
 <a name="appending-modes"></a>
 ### Appending Modes
@@ -667,6 +710,71 @@ This code will print the following JSON-LD output:
     }
   ]
 }
+```
+
+<a name="opening"></a>
+### Opening JSON-LD Model Document
+
+To load a pre-existing JSON-LD model document for a supported model, you can use code
+similar to the following:
+
+```python
+import semanticpy
+
+# Load desired model profile to setup necessary classes for loading document
+semanticpy.Model.factory(profile="linked-art", globals=globals())
+
+# Open the desired JSON-LD document from its local path or remote http(s) URL
+document = semanticpy.Model.open("/tests/data/examples/object.json")
+
+# Ensure that the opened JSON-LD record is of the type expected
+assert isinstance(document, HumanMadeObject)
+
+# Ensure that the record @context property is as expected
+assert document.context == "https://linked.art/ns/v1/linked-art.json"
+
+# Ensure that the record entity type is as expected
+assert document.typed == "E22"  # E22 (HumanMadeObject)
+
+# Ensure that the record type name is as expected
+assert document.type == "HumanMadeObject"
+
+# Ensure that the record identifier (the `id` property value) is as expected
+assert document.ident == "https://data.example.org/object/1"
+
+# Extract the desired identifier node by its matching classification
+identifier = document.identified_by.first(
+    classified_as=Type(ident="http://vocab.getty.edu/aat/300312355")
+)
+
+assert isinstance(identifier, Identifier)
+
+assert identifier.label == "Accession Number for Artwork"
+
+assert identifier.content == "1982.A.39"
+```
+
+<a name="saving"></a>
+### Saving JSON-LD Model Document
+
+To save model instance's data to a JSON-LD document, you can use code similar to the
+following:
+
+```python
+import semanticpy
+
+# Load desired model profile to setup necessary classes for creating document
+semanticpy.Model.factory(profile="linked-art", globals=globals())
+
+# Open the desired JSON-LD document from its local path or remote http(s) URL
+document = HumanMadeObject("https://www.example.org/object/123")
+
+document.classified_as = Type(
+  ident="http://vocab.getty.edu/aat/300133025",
+  label="Works of Art",
+)
+
+document.save("./example.json", indent=2)
 ```
 
 <a name="code-formatting"></a>

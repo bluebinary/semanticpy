@@ -317,7 +317,7 @@ class Model(Node):
         cls._appending_mode = None
 
     @classmethod
-    def open(cls, filepath: str) -> Model:
+    def open(cls, filepath: str, extensions: bool = False) -> Model:
         """Support opening and loading model instances from stored JSON-LD files"""
 
         # cls.factory(profile=profile, context=context, globals=globals)
@@ -336,11 +336,7 @@ class Model(Node):
 
         data: dict[str, object] = None
 
-        if (
-            filepath.startswith("http://")
-            or filepath.startswith("https://")
-            or filepath.startswith("//")
-        ):
+        if filepath.startswith("http://") or filepath.startswith("https://"):
             try:
                 if isinstance(response := requests.get(filepath), object):
                     if response.status_code == 200:
@@ -361,22 +357,22 @@ class Model(Node):
                     "The specified file could not be loaded (%s) from its URL!"
                     % (exception)
                 )
-        elif (
-            filepath.startswith("/")
-            or filepath.startswith("./")
-            or filepath.startswith("../")
-            or filepath.startswith("~/")
-        ):
+        else:
             if filepath.startswith("~/"):
                 filepath = os.path.expanduser(filepath)
+            else:
+                filepath = os.path.abspath(filepath)
+
+            if not os.path.exists(filepath):
+                raise ValueError(
+                    "The specified filepath (%s) does not exist!" % (filepath)
+                )
 
             with open(filepath, "r") as handle:
                 if not isinstance(data := json.load(handle), dict):
                     raise ValueError(
                         "The specified file does not contain valid JSON data!"
                     )
-        else:
-            raise ValueError("The specified filepath (%s) is unsupported!" % (filepath))
 
         if isinstance(data, dict):
             if isinstance(context := data.get("@context"), (str, dict, list)):
@@ -389,7 +385,10 @@ class Model(Node):
 
                 if typed := data.get("type"):
                     if entity := cls.entity(typed):
-                        if instance := entity(data=readonlydict(data)):
+                        if instance := entity(
+                            data=readonlydict(data),
+                            extensions=extensions,
+                        ):
                             return instance
                         else:
                             raise ValueError(
@@ -667,11 +666,30 @@ class Model(Node):
 
     # TODO: Should 'create' be a "private" method?
     @classmethod
-    def create(cls, data: dict, property: str = None) -> Model:
+    def create(
+        cls,
+        data: dict,
+        property: str = None,
+        extensions: bool = False,
+    ) -> Model:
         """Support creating a model entity from its data (dictionary) representation."""
+
+        model: Model = None
 
         if not isinstance(data, dict):
             raise TypeError("The 'data' argument must have a dictionary value!")
+
+        if property is None:
+            pass
+        elif isinstance(property, str):
+            pass
+        else:
+            raise TypeError(
+                "The 'property' argument, if specified, must have a string value!"
+            )
+
+        if not isinstance(extensions, bool):
+            raise TypeError("The 'extensions' argument must have a boolean value!")
 
         # Attempt to determine the entity type from the assigned 'type' string value
         if isinstance(typed := data.get("type"), str):
@@ -680,7 +698,7 @@ class Model(Node):
                     "The '%s' entity type cannot be mapped to a model entity!" % (typed)
                 )
 
-            if not isinstance(model := entity(data=data), Model):
+            if not isinstance(model := entity(data=data, extensions=extensions), Model):
                 raise ValueError(
                     "The '%s' entity type could not be instantiated!" % (typed)
                 )
@@ -696,7 +714,7 @@ class Model(Node):
         # If no entity type can be determined, raise an exception as the current data
         # node cannot be loaded into the data model; ensure the model has been defined
         # completely and in accordance with the provided data, including any extensions
-        else:
+        elif extensions is True:
             raise ValueError(
                 "The entity type cannot be determined for the provided data dictionary; the dictionary must contain a valid 'type' property, or be an extended model entity assigned to an expected named property!"
             )
@@ -704,7 +722,7 @@ class Model(Node):
         return model
 
     # TODO: Should 'load' be a "private" method?
-    def load(self, data: dict, model: Model) -> None:
+    def load(self, data: dict, model: Model, extensions: bool = False) -> None:
         """Support loading data into the model entity from its dictionary representation."""
 
         if not isinstance(data, dict):
@@ -716,18 +734,56 @@ class Model(Node):
                 % (self.__class__.__name__)
             )
 
+        if not isinstance(extensions, bool):
+            raise TypeError("The 'extensions' argument must have a boolean value!")
+
         for property, value in data.items():
             if isinstance(value, dict):
-                setattr(model, property, self.create(data=value, property=property))
+                value = self.create(value, property=property, extensions=extensions)
+
+                setattr(model, property, value)
             elif isinstance(value, list):
                 for index, item in enumerate(value):
-                    # if not isinstance(item, dict):
-                    #     raise TypeError(
-                    #         "The list item at index %d is not a dictionary, but rather %s!" % (index, type(item))
-                    #     )
-                    setattr(model, property, self.create(data=item, property=property))
+                    if isinstance(item, dict):
+                        item = self.create(
+                            item,
+                            property=property,
+                            extensions=extensions,
+                        )
+
+                    setattr(model, property, item)
             else:
                 setattr(model, property, value)
+
+    def save(self, filepath: str, overwrite: bool = False, **kwargs) -> str:
+        """Support saving the current Model entity to a JSON-LD file."""
+
+        if not isinstance(filepath, str):
+            raise TypeError("The 'filepath' argument must have a string value!")
+        elif not len(filepath := filepath.strip()) > 0:
+            raise ValueError(
+                "The 'filepath' argument must have a non-empty string value!"
+            )
+
+        if not isinstance(overwrite, bool):
+            raise TypeError("The 'overwrite' argument must have a boolean value!")
+
+        filepath = os.path.abspath(filepath)
+
+        if os.path.exists(filepath):
+            if not os.path.isfile(filepath):
+                raise ValueError(
+                    f"The 'filepath' specifies a path, '{filepath}', for a file-system object that is not a file, such as a directory or socket; please update the path or remove the conflicting file-system object!"
+                )
+            elif overwrite is False:
+                raise ValueError(
+                    f"The 'filepath' specifies a path, '{filepath}', for a file that already exists; set 'overwrite' to 'True' to allow the file to be overwritten!"
+                )
+
+        with open(filepath, "w+", encoding="utf-8") as handle:
+            handle.write(self.json(**kwargs))
+
+            return handle.name
 
     def __new__(cls, *args, **kwargs):
         # The '_special' list variable is defined in the base class and holds a list of
@@ -751,12 +807,16 @@ class Model(Node):
         ident: str = None,
         label: str = None,
         data: dict[str, object] = None,
+        extensions: bool = False,
         **kwargs,
     ):
         super().__init__(
             # TODO: Determine if setting data via the superclass' constructor is optimal
             # data=data,
         )
+
+        if not isinstance(extensions, bool):
+            raise TypeError("The 'extensions' argument must have a boolean value!")
 
         self._annotations: dict[str, object] = {}
 
@@ -782,7 +842,7 @@ class Model(Node):
             pass
         elif not isinstance(ident, str):
             raise TypeError(
-                "The 'ident' argument, if specified, must have a string value!"
+                "The 'ident' (identity) argument, if specified, must have a string value!"
             )
 
         self.id: str = ident or None
@@ -791,7 +851,7 @@ class Model(Node):
             pass
         elif not isinstance(label, str):
             raise TypeError(
-                "The 'label' argument, if specified, must have a string value!"
+                "The 'label' (identity) argument, if specified, must have a string value!"
             )
 
         self._label: str = label or None
@@ -820,7 +880,7 @@ class Model(Node):
         if data is None:
             pass
         elif isinstance(data, dict):
-            self.load(data=data, model=self)
+            self.load(data=data, model=self, extensions=extensions)
         else:
             raise TypeError(
                 "The 'data' argument, if specified, must have a dictionary value!"
@@ -1052,6 +1112,10 @@ class Model(Node):
                 pass
             elif not prop in properties:
                 continue
+
+            if attr := getattr(model.__class__, prop, None):
+                if isinstance(attr, property):
+                    continue
 
             if attr := getattr(model, prop):
                 if callable(attr):
