@@ -1,8 +1,6 @@
 import logging
 
-import semanticpy
-
-from semanticpy import Model, Node, Nodes
+from semanticpy import Model, Node
 
 logger = logging.getLogger(__name__)
 

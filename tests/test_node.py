@@ -1,5 +1,6 @@
 import pytest
 
+import semanticpy
 from semanticpy.types import Node
 
 
@@ -119,3 +120,170 @@ def test_node_equality_strict():
     # Ensure the two nodes, report being equal to each other as they have the same data
     assert not node1.equals(node2, strict=True)  # not equal as node1.three cannot match
     assert not node2.equals(node1, strict=True)  # not equal as node1.three cannot match
+
+
+def test_node_merge(data: callable):
+    """Test Node merging."""
+
+    model = semanticpy.Model.factory(profile="linked-art")
+
+    operson = model.Person(
+        ident="https://data.example.org/person/123",
+        label="Person 123",
+    )
+
+    operson.classified_as = model.Type(
+        ident="http://vocab.getty.edu/aat/300025103",
+        label="Artists (Visual Artists)",
+    )
+
+    operson.referred_to_by = name = model.Name(
+        ident="https://data.example.org/person/123/name",
+        label="Person 123 Name",
+    )
+
+    name.classified_as = model.Type(
+        ident="http://vocab.getty.edu/aat/300404670",
+        label="Preferred Term",
+    )
+
+    name.content = "Person 123's Name"
+
+    nperson = model.Person(
+        ident="https://data.example.org/person/123",
+        label="Person 123",
+    )
+
+    nperson.classified_as = model.Type(
+        ident="http://vocab.getty.edu/aat/300025687",
+        label="Photographers",
+    )
+
+    nperson.referred_to_by = name = model.Name(
+        ident="https://data.example.org/person/123/name-other",
+        label="Person 123 Name Other",
+    )
+
+    name.content = "Person 123's Name Other"
+
+    # Ensure that the original Person entity's classified_as list has 1 item
+    assert isinstance(operson.classified_as, list)
+    assert len(operson.classified_as) == 1
+
+    # Ensure that the new Person entity's classified_as list has 1 item
+    assert isinstance(nperson.classified_as, list)
+    assert len(nperson.classified_as) == 1
+
+    # Ensure that the original Person entity's referred_to_by list has 1 item
+    assert isinstance(operson.referred_to_by, list)
+    assert len(operson.referred_to_by) == 1
+
+    # Ensure that the new Person entity's referred_to_by list has 1 item
+    assert isinstance(nperson.referred_to_by, list)
+    assert len(nperson.referred_to_by) == 1
+
+    # Merge the new Person entity into the original Person entity
+    mperson = operson.merge(nperson)
+
+    # After merge ensure the merged Person entity's classified_as list still has 2 items
+    assert isinstance(mperson.classified_as, list)
+    assert len(mperson.classified_as) == 2
+
+    # Ensure that the item is as expected – a reference to the pre-existing item
+    assert mperson.classified_as[0] is operson.classified_as[0]
+    assert mperson.classified_as[1] is nperson.classified_as[0]
+
+    # After merge ensure that the merged Person entity's referred_to_by list has 2 items
+    assert isinstance(mperson.referred_to_by, list)
+    assert len(mperson.referred_to_by) == 2
+
+    # Ensure that the two items are as expected – references to the pre-existing items
+    assert mperson.referred_to_by[0] is operson.referred_to_by[0]
+    assert mperson.referred_to_by[1] is nperson.referred_to_by[0]
+
+    # Ensure that the merged record has the expected structure and content
+    assert mperson.json(indent=2) == data("examples/merged.json")
+
+
+def test_node_merge_for_specified_properties(data: callable):
+    """Test Node merging for specified properties."""
+
+    model = semanticpy.Model.factory(profile="linked-art")
+
+    operson = model.Person(
+        ident="https://data.example.org/person/123",
+        label="Person 123",
+    )
+
+    operson.classified_as = model.Type(
+        ident="http://vocab.getty.edu/aat/300025103",
+        label="Artists (Visual Artists)",
+    )
+
+    operson.referred_to_by = name = model.Name(
+        ident="https://data.example.org/person/123/name",
+        label="Person 123 Name",
+    )
+
+    name.classified_as = model.Type(
+        ident="http://vocab.getty.edu/aat/300404670",
+        label="Preferred Term",
+    )
+
+    name.content = "Person 123's Name"
+
+    nperson = model.Person(
+        ident="https://data.example.org/person/123",
+        label="Person 123",
+    )
+
+    nperson.classified_as = model.Type(
+        ident="http://vocab.getty.edu/aat/300025687",
+        label="Photographers",
+    )
+
+    nperson.referred_to_by = name = model.Name(
+        ident="https://data.example.org/person/123/name-other",
+        label="Person 123 Name Other",
+    )
+
+    name.content = "Person 123's Name Other"
+
+    # Ensure that the original Person entity's classified_as list has 1 item
+    assert isinstance(operson.classified_as, list)
+    assert len(operson.classified_as) == 1
+
+    # Ensure that the new Person entity's classified_as list has 1 item
+    assert isinstance(nperson.classified_as, list)
+    assert len(nperson.classified_as) == 1
+
+    # Ensure that the original Person entity's referred_to_by list has 1 item
+    assert isinstance(operson.referred_to_by, list)
+    assert len(operson.referred_to_by) == 1
+
+    # Ensure that the new Person entity's referred_to_by list has 1 item
+    assert isinstance(nperson.referred_to_by, list)
+    assert len(nperson.referred_to_by) == 1
+
+    # Merge the new Person entity into the original Person entity, but limit the merge
+    # to the specified model properties only, skipping any other model properties:
+    mperson = operson.merge(nperson, properties=["classified_as"])
+
+    # After merge ensure the merged Person entity's classified_as list still has 2 items
+    assert isinstance(mperson.classified_as, list)
+    assert len(mperson.classified_as) == 2
+
+    # Ensure that the item is as expected – a reference to the pre-existing item
+    assert mperson.classified_as[0] is operson.classified_as[0]
+    assert mperson.classified_as[1] is nperson.classified_as[0]
+
+    # After merge ensure the merged Person entity's referred_to_by list still has 1 item
+    # because the referred_to_by property was not in the list of properties to merge:
+    assert isinstance(mperson.referred_to_by, list)
+    assert len(mperson.referred_to_by) == 1
+
+    # Ensure that the item is as expected – a reference to the pre-existing item
+    assert mperson.referred_to_by[0] is operson.referred_to_by[0]
+
+    # Ensure that the merged record has the expected structure and content
+    assert mperson.json(indent=2) == data("examples/merged-specified-properties.json")
