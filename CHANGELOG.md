@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.4] - 2026-05-31
+### Added
+- Improved merge functionality and additional unit testing.
+
 ## [1.3.3] - 2026-05-28
 ### Added
 - Support for saving existing Model entities to JSON-LD documents.

@@ -1093,20 +1093,8 @@ class Model(Node):
                 "The 'properties' argument, if specified, must reference a list!"
             )
 
-        special: list[str] = [
-            "ident",
-            "label",
-            "data",
-            "name",
-            "type",
-            "is_blank",
-            "is_cloned",
-            "is_reference",
-            "was_referenced",
-        ]
-
         for prop in dir(model):
-            if prop.startswith("_") or prop in special:
+            if prop.startswith("_"):
                 continue
             elif properties is None:
                 pass
@@ -1117,7 +1105,7 @@ class Model(Node):
                 if isinstance(attr, property):
                     continue
 
-            if attr := getattr(model, prop):
+            if attr := getattr(model, prop, None):
                 if callable(attr):
                     continue
 

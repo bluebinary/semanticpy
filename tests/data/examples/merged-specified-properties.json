@@ -1,0 +1,33 @@
+{
+  "@context": "https://linked.art/ns/v1/linked-art.json",
+  "id": "https://data.example.org/person/123",
+  "type": "Person",
+  "_label": "Person 123",
+  "classified_as": [
+    {
+      "id": "http://vocab.getty.edu/aat/300025103",
+      "type": "Type",
+      "_label": "Artists (Visual Artists)"
+    },
+    {
+      "id": "http://vocab.getty.edu/aat/300025687",
+      "type": "Type",
+      "_label": "Photographers"
+    }
+  ],
+  "referred_to_by": [
+    {
+      "id": "https://data.example.org/person/123/name",
+      "type": "Name",
+      "_label": "Person 123 Name",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404670",
+          "type": "Type",
+          "_label": "Preferred Term"
+        }
+      ],
+      "content": "Person 123's Name"
+    }
+  ]
+}
