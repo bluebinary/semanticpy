@@ -255,7 +255,7 @@ class Node(object):
     @data.setter
     def data(self, data: dict[str, object]):
         if not isinstance(data, dict):
-            raise RuntimeError("The data must be defined as a dictionary!")
+            raise TypeError("The data must be defined as a dictionary!")
 
         self._data = data
 
@@ -266,17 +266,42 @@ class Node(object):
     @settings.setter
     def settings(self, settings: dict[str, object]):
         if not isinstance(settings, dict):
-            raise RuntimeError("The settings must be defined as a dictionary!")
+            raise TypeError("The settings must be defined as a dictionary!")
 
         self._settings = settings
 
-    def annotate(self, name: str, value: object):
+    def annotate(self, name: str = None, value: object = None, /, **kwargs) -> Node:
         """Support adding arbitrary named 'annotations' to a node for later retrieval"""
 
-        self._annotations[name] = value
+        annotations: dict[str, object] = {}
+
+        if name is None:
+            pass
+        elif not isinstance(name, str):
+            raise TypeError(
+                "The 'name' argument, if specified, must have a string value!"
+            )
+        elif not len(name := name.strip()) > 0:
+            raise ValueError(
+                "The 'name' argument, if specified, must have a non-empty string value!"
+            )
+        else:
+            annotations[name] = value
+
+        for name, value in kwargs.items():
+            annotations[name] = value
+
+        self._annotations.update(annotations)
+
+        return self
 
     def annotation(self, name: str, default: object = None):
         """Support retrieving a named annotation if available or returning the default"""
+
+        if not isinstance(name, str):
+            raise TypeError("The 'name' argument must have a string value!")
+        elif not len(name := name.strip()) > 0:
+            raise ValueError("The 'name' argument must have a non-empty string value!")
 
         if name in self._annotations:
             return self._annotations[name]
@@ -290,6 +315,11 @@ class Node(object):
 
     def _canonicalize(self, name: str) -> str:
         """Given a property name, return the canonical version of the property name."""
+
+        if not isinstance(name, str):
+            raise TypeError("The 'name' argument must have a string value!")
+        elif not len(name := name.strip()) > 0:
+            raise ValueError("The 'name' argument must have a non-empty string value!")
 
         if name in self._canonical:
             if name in self._namespace:
@@ -367,8 +397,8 @@ class Node(object):
 
     def properties(
         self,
-        prepend: dict = None,
-        append: dict = None,
+        prepend: dict[str, object] = None,
+        append: dict[str, object] = None,
         sorting: list[str] | dict[str, int] = None,
         callback: callable = None,
         attribute: str = None,
@@ -419,12 +449,12 @@ class Node(object):
             container = dict(self.properties())
 
         if not isinstance(container, (dict, list)):
-            raise RuntimeError("The 'container' argument must be a dictionary or list!")
+            raise TypeError("The 'container' argument must be a dictionary or list!")
 
         if not (
             attribute is None or (isinstance(attribute, str) and len(attribute) > 0)
         ):
-            raise RuntimeError(
+            raise ValueError(
                 "If provided, the 'attribute' parameter must be a non-empty string!"
             )
 

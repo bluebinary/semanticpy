@@ -287,3 +287,104 @@ def test_node_merge_for_specified_properties(data: callable):
 
     # Ensure that the merged record has the expected structure and content
     assert mperson.json(indent=2) == data("examples/merged-specified-properties.json")
+
+
+def test_node_annotate_via_name_and_value_arguments(data: callable):
+    """Test applying and retrieving annotations from Nodes via name and value arguments."""
+
+    # Create a test Node instance
+    node = Node()
+
+    # Add an annotation via the name and value arguments positionally
+    node.annotate("a", 321)
+
+    # Obtain and compare node's assigned annotations; these are returned as a dictionary
+    annotations = node.annotations()
+    assert isinstance(annotations, dict)
+    assert len(annotations) == 1
+    assert annotations == dict(a=321)
+
+    # Add another annotation via the name and value arguments positionally
+    node.annotate("b", "456")
+
+    # Obtain and compare node's assigned annotations; these are returned as a dictionary
+    annotations = node.annotations()
+    assert isinstance(annotations, dict)
+    assert len(annotations) == 2
+    assert annotations == dict(a=321, b="456")
+
+
+def test_node_annotate_via_keyword_arguments(data: callable):
+    """Test applying and retrieving annotations from Nodes via keyword arguments."""
+
+    # Create a test Node instance
+    node = Node()
+
+    # Add annotations via keyword arguments
+    node.annotate(a=123, b=456.789)
+
+    # Obtain and compare node's assigned annotations; these are returned as a dictionary
+    annotations = node.annotations()
+    assert isinstance(annotations, dict)
+    assert len(annotations) == 2
+    assert annotations == dict(a=123, b=456.789)
+
+
+def test_node_properties(data: callable):
+    """Test obtaining a Node's properties as a dictionary representation."""
+
+    # Create a test Node instance
+    node = Node()
+
+    # Assign some test values
+    node.a = 789
+    node.b = 321
+
+    # Create a nested child Node instance
+    node.c = child = Node()
+
+    # Assign some additional test values
+    child.d = 123
+    child.e = "456"
+    child.f = True
+
+    # Obtain the Node's properties; these are returned within a (nested) dictionary
+    properties = node.properties()
+
+    # Ensure that the properties dictionary has the expected type and contents
+    assert isinstance(properties, dict)
+    assert len(properties) == 3
+    assert properties == dict(a=789, b=321, c=dict(d=123, e="456", f=True))
+
+
+def test_node_json_representation(data: callable):
+    """Test obtaining a Node's JSON representation."""
+
+    # Create a test Node instance
+    node = Node()
+
+    # Assign some test values
+    node.a = 789
+    node.b = 321
+
+    # Create a nested child Node instance
+    node.c = child = Node()
+
+    # Assign some additional test values
+    child.d = 123
+    child.e = "456"
+    child.f = True
+
+    # Obtain the Node's JSON representation
+    json = node.json(compact=True)
+
+    # Ensure that the JSON representation has the expected type and contents
+    assert isinstance(json, str)
+    assert json == data("node/json/compact.json")
+
+    # Obtain the Node's JSON representation
+    json = node.json(indent=2)
+
+    # Ensure that the JSON representation has the expected type and contents
+    assert isinstance(json, str)
+    assert json == data("node/json/indented.json")
