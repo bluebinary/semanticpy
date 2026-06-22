@@ -202,10 +202,9 @@ The primary interface to the SemanticPy library is its `Model` class which offer
 
    * `globals` (`dict`) – (optional) the `globals` argument can be used to specify an optional `globals()` scope into which a reference for the extended model subclass will be added.
 
-   * `typed` (`bool`) – (optional) the `typed` argument can be used to specify if the model subclass should be serialised into JSON-LD with its `type` property or not; by default the `type` property is 
-   always included during serialisation; this option can be used to prevent this if required.
+   * `typed` (`bool`) – (optional) the `typed` argument can be used to specify if the model subclass should be serialised into JSON-LD with its `type` property or not; by default the `type` property is always included during serialisation; this option can be used to prevent this if required, by setting the keyword argument to `False`.
 
- * `prefix(prefix: str, uri: str)` – the `prefix()` class method can be used to register one or more identifier prefixes with the library that will be replaced with the specified URI during document serialisation.
+ * `prefix(prefix: str, uri: str)` – the `prefix()` class method can be optionally used to register one or more identifier prefixes with the library that will be replaced with the specified URI during document serialisation.
 
  * `entity()` (`Model` | `None`) – the `entity()` method may be used to obtain the `type` reference for a named model entity, from which a new instance of that named model entity may be created; if no matching `Model` subclass can be found, the method returns `None`. The `entity()` method accepts the following arguments:
 
@@ -272,7 +271,7 @@ The primary interface to the SemanticPy library is its `Model` class which offer
 
   * `attribute` (`str`) – (optional) the attribute argument can be used to control for which model attributes the optional callback is called; if the `attribute` is not specified, the optional callback, if specified, will be called for every attribute. The attribute must be specified by its name.
 
-* `open()` – the `open()` method be used to open a pre-existing JSON-LD document mapped using the same JSON-LD context as the Model factory is instantiated with, such as the `linked-art` profile. The `open()` method accepts either a HTTP(S) URL or a file path that points to a valid JSON-LD document, and if the document can be opened and loaded, the method will return an instance of the `Model` subclass that represents the opened document. One can then access and filter properties of the document and extract data, or use the document as a starting point to build upon or modify and then re-save. See the [**Opening**](#opening) section for more information. The `open()` method accepts the following arguments:
+* `open()` – the `open()` method can be used to open a pre-existing JSON-LD document mapped using the same JSON-LD context as the Model factory is instantiated with, such as the `linked-art` profile. The `open()` method accepts either a HTTP(S) URL or a file path that points to a valid JSON-LD document, and if the document can be opened and loaded, the method will return an instance of the `Model` subclass that represents the opened document. One can then access and filter properties of the document and extract data, or use the document as a starting point to build upon or modify and then re-save. See the [**Opening**](#opening) section for more information. The `open()` method accepts the following arguments:
 
   * `filepath` (`str`) – (required) the `filepath` argument must point to a valid and accessible JSON-LD document mapped using the same context as loaded via the `Model` class' `factory()` method. The `filepath` can either point to a document available via HTTP(S) or a local file system path. Files available via HTTP(S) must have URLs beginning with `http://` or `https://`.
 
@@ -757,7 +756,7 @@ assert identifier.content == "1982.A.39"
 <a name="saving"></a>
 ### Saving JSON-LD Model Document
 
-To save model instance's data to a JSON-LD document, you can use code similar to the
+To save a model instance's data to a JSON-LD document, you can use code similar to the
 following:
 
 ```python
@@ -766,15 +765,18 @@ import semanticpy
 # Load desired model profile to setup necessary classes for creating document
 semanticpy.Model.factory(profile="linked-art", globals=globals())
 
-# Open the desired JSON-LD document from its local path or remote http(s) URL
-document = HumanMadeObject("https://www.example.org/object/123")
+# Create the desired model entity document
+document = HumanMadeObject("https://data.example.org/object/123")
 
+# Map any desired properties and values
 document.classified_as = Type(
   ident="http://vocab.getty.edu/aat/300133025",
   label="Works of Art",
 )
 
-document.save("./example.json", indent=2)
+# Save the document to local storage, specifying the save path, any indentation, and if
+# the save operation is allowed to overwrite a file of the same name that already exists
+document.save("./example.json", indent=2, overwrite=True)
 ```
 
 <a name="code-formatting"></a>

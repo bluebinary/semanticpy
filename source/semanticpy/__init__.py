@@ -16,7 +16,11 @@ from semanticpy.types import (
 )
 from semanticpy.enumerations import OverwriteMode, AppendingMode
 
-logger.debug("semanticpy library imported from: %s" % (__file__))
+with open(os.path.join(os.path.dirname(__file__), "version.txt")) as file:
+    __version__ = file.read().strip()
+
+
+logger.debug("%s library (%s) imported from: %s", __name__, __version__, __file__)
 
 
 class Model(Node):
@@ -30,6 +34,7 @@ class Model(Node):
     _hidden: list[str] = []
     _globals: dict[str, object] = None
     _prefixes: dict[str, str] = {}
+    _loading: bool = False
 
     @classmethod
     def factory(
@@ -467,6 +472,18 @@ class Model(Node):
             if not isinstance(properties["canonical"], str):
                 raise TypeError("The 'canonical' property must have a string value!")
 
+        if "namespace" in properties:
+            if not isinstance(properties["namespace"], str):
+                raise TypeError("The 'namespace' property must have a string value!")
+            elif not len(properties["namespace"].strip()) > 0:
+                raise ValueError(
+                    "The 'namespace' property must have a non-empty string value!"
+                )
+            elif ":" in properties["namespace"]:
+                raise ValueError(
+                    "The 'namespace' property value cannot contain the ':' character!"
+                )
+
         return properties
 
     @classmethod
@@ -542,6 +559,10 @@ class Model(Node):
                     # If a property supports being specified via an alias, map that here
                     if isinstance(alias := props.get("alias"), str):
                         entity._properties[alias] = {**props, **{"alias": prop}}
+
+                    # If the property is namespaced, add its reference here
+                    if isinstance(namespace := props.get("namespace"), str):
+                        entity._properties[namespace + ":" + prop] = {**props}
 
                     if isinstance(sorting := props.get("sorting"), int):
                         entity._sorting[prop] = sorting
@@ -737,6 +758,8 @@ class Model(Node):
         if not isinstance(extensions, bool):
             raise TypeError("The 'extensions' argument must have a boolean value!")
 
+        self._loading = True
+
         for property, value in data.items():
             if isinstance(value, dict):
                 value = self.create(value, property=property, extensions=extensions)
@@ -754,6 +777,8 @@ class Model(Node):
                     setattr(model, property, item)
             else:
                 setattr(model, property, value)
+
+        self._loading = False
 
     def save(self, filepath: str, overwrite: bool = False, **kwargs) -> str:
         """Support saving the current Model entity to a JSON-LD file."""
@@ -796,9 +821,25 @@ class Model(Node):
                 "_reference",
                 "_referenced",
                 "_cloned",
+                "_loading",
             ]
             if attr not in cls._special
         ]
+
+        if cls is Model:
+            if isinstance(data := kwargs.get("data"), dict):
+                if isinstance(type := data.get("type"), str):
+                    if issubclass(entity := cls.entity(type), Model):
+                        cls = entity
+                    else:
+                        raise SemanticPyError(
+                            "Unable to determine model entity from the 'type' attribute value of %s!"
+                            % (type)
+                        )
+                else:
+                    raise SemanticPyError(
+                        "Unable to find the model 'type' attribute in the provided data!"
+                    )
 
         return super().__new__(cls)
 
@@ -911,7 +952,13 @@ class Model(Node):
         self.__dict__.update(state)
 
     def __setattr__(self, name: str, value: object) -> None:
-        # logger.debug("%s.%s(name: %s, value: %s) called" % (self.__class__.__name__, self.__setattr__.__name__, name, value))
+        logger.debug(
+            "%s.%s(name: %s, value: %s) called",
+            self.__class__.__name__,
+            self.__setattr__.__name__,
+            name,
+            value,
+        )
 
         prop: dict[str, object] = self._properties.get(name) or {}
 
@@ -925,22 +972,42 @@ class Model(Node):
             or name in self._special
             or prop.get("accepted") is True
         ):
-            raise AttributeError(
-                "Cannot set property '%s' on %s as it is not in the list of accepted properties: '%s'!"
-                % (
-                    name,
-                    self.__class__.__name__,
-                    "', '".join(
-                        sorted(
-                            [
-                                name
-                                for name, prop in self._properties.items()
-                                if prop.get("accepted") is True
-                            ]
-                        )
+            if self._loading is True:
+                logger.warning(
+                    "Cannot set property '%s' on %s as it is not in the list of accepted properties: '%s'!"
+                    % (
+                        name,
+                        self.__class__.__name__,
+                        "', '".join(
+                            sorted(
+                                [
+                                    name
+                                    for name, prop in self._properties.items()
+                                    if prop.get("accepted") is True
+                                ]
+                            )
+                        ),
                     ),
-                ),
-            )
+                )
+
+                return
+            else:
+                raise AttributeError(
+                    "Cannot set property '%s' on %s as it is not in the list of accepted properties: '%s'!"
+                    % (
+                        name,
+                        self.__class__.__name__,
+                        "', '".join(
+                            sorted(
+                                [
+                                    name
+                                    for name, prop in self._properties.items()
+                                    if prop.get("accepted") is True
+                                ]
+                            )
+                        ),
+                    ),
+                )
 
         if value is None:
             return super().__delattr__(name)
