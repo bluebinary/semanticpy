@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.6] - 2026-06-22
+### Added
+- Improved namespaced property handling and additional unit testing.
+
 ## [1.3.5] - 2026-06-22
 ### Added
 - Improved document loading, namespaced property handling and additional unit testing.
