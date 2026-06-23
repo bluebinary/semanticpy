@@ -20,9 +20,6 @@ with open(os.path.join(os.path.dirname(__file__), "version.txt")) as file:
     __version__ = file.read().strip()
 
 
-logger.debug("%s library (%s) imported from: %s", __name__, __version__, __file__)
-
-
 class Model(Node):
     """SemanticPy Base Model Class"""
 
@@ -580,7 +577,8 @@ class Model(Node):
                 props = cls._validate_properties(props, prop)
 
                 if isinstance(canonical := props.get("canonical"), str):
-                    subclass._canonical[canonical] = prop
+                    if not canonical in subclass._canonical:
+                        subclass._canonical[canonical] = prop
 
                 if isinstance(hidden := props.get("hidden"), bool):
                     if hidden is True:

@@ -321,11 +321,14 @@ class Node(object):
         elif not len(name := name.strip()) > 0:
             raise ValueError("The 'name' argument must have a non-empty string value!")
 
-        if name in self._canonical:
-            if name in self._namespace:
-                return self._namespace[name] + ":" + self._canonical[name]
+        if isinstance(canonical := self._canonical.get(name), str):
+            if isinstance(namespace := self._namespace.get(name), str):
+                if not canonical.startswith(namespace + ":"):
+                    return namespace + ":" + canonical
+                else:
+                    return canonical
             else:
-                return self._canonical[name]
+                return canonical
         else:
             return name
 

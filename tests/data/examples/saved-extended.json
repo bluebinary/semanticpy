@@ -1,0 +1,25 @@
+{
+  "@context": "https://linked.art/ns/v1/linked-art.json",
+  "id": "https://data.example.org/object/123",
+  "type": "HumanMadeObject",
+  "_label": "Example Object 123",
+  "classified_as": [
+    {
+      "id": "http://vocab.getty.edu/aat/300133025",
+      "type": "Type",
+      "_label": "Works of Art"
+    }
+  ],
+  "test:related": [
+    {
+      "id": "https://data.example.org/object/456",
+      "type": "HumanMadeObject",
+      "_label": "Related Object 456"
+    },
+    {
+      "id": "https://data.example.org/object/789",
+      "type": "HumanMadeObject",
+      "_label": "Related Object 789"
+    }
+  ]
+}
